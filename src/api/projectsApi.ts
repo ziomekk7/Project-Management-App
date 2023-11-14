@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Project } from '../types/types'
 import { delay } from '../utils/asyns'
 import * as z from 'zod'
+import { Task } from '../types/types'
 
 export type CreateProjectData = {
 	newProject: string
@@ -34,12 +35,29 @@ export type DeleteProjectData = {
 	projectId: string
 }
 
+export type EditTask = {
+	projectId: string
+	sectionId: string
+	task: Task
+	
+}
+
 const projectsSchema = z.array(
 	z.object({
 		name: z.string(),
 		id: z.string(),
 		sections: z.array(
-			z.object({ name: z.string(), id: z.string(), tasks: z.array(z.object({ name: z.string(), id: z.string() })) })
+			z.object({
+				name: z.string(),
+				id: z.string(),
+				tasks: z.array(
+					z.object({
+						name: z.string(),
+						id: z.string(),
+						date: z.coerce.date().nullable(),
+					})
+				),
+			})
 		),
 	})
 )
@@ -47,7 +65,7 @@ const projectsSchema = z.array(
 const PROJECTS_KEY = 'projects'
 
 const saveProjects = async (projects: Project[]) => {
-	await delay(1)
+	await delay(500)
 
 	try {
 		localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects))
@@ -57,7 +75,7 @@ const saveProjects = async (projects: Project[]) => {
 }
 
 export const getProjects = async (): Promise<Project[]> => {
-	await delay(1110)
+	await delay(500)
 
 	const rawProjects = localStorage.getItem(PROJECTS_KEY)
 	if (!rawProjects) {
@@ -111,8 +129,34 @@ export const createTask = async (data: CreateTaskData) => {
 		return
 	}
 
-	section.tasks.push({ name: data.newTask, id: uuidv4() })
+	section.tasks.push({
+		name: data.newTask,
+		id: uuidv4(),
+		date: null,
+	})
 
+	await saveProjects(projects)
+}
+
+export const editTask = async (data: EditTask) => {
+	const projects = await getProjects()
+	const project = projects.find(project => project.id === data.projectId)
+	if (!project) {
+		return
+	}
+
+	const section = project.sections.find(section => section.id === data.sectionId)
+	if (!section) {
+		return
+	}
+
+	const taskIndex = section.tasks.findIndex(task => task.id === data.task.id)
+	const task = section.tasks[taskIndex]
+	if (!task) {
+		return
+	}
+
+	section.tasks.splice(taskIndex, 1 , data.task)
 	await saveProjects(projects)
 }
 

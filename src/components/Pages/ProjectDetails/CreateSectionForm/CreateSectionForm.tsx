@@ -1,4 +1,4 @@
-import { Input, InputGroup, InputRightAddon, Button, ButtonGroup } from '@chakra-ui/react'
+import { Input, InputGroup, InputRightAddon, Button, ButtonGroup,  } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,7 +22,7 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = props => {
 	})
 
 	return (
-		<form
+		<form 
 			onSubmit={handleSubmit(data => {
 				props.onAddSection(data.newSection)
 			})}>

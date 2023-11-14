@@ -1,20 +1,19 @@
-import { Input, InputGroup, InputRightAddon, Button, ButtonGroup } from '@chakra-ui/react'
+import { Input, InputGroup } from '@chakra-ui/react'
 import { FC } from 'react'
 import { useForm } from 'react-hook-form'
-import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
 
 const createTaskFormSchema = z.object({
-	newTask: z.string().min(5, { message: 'Name must contain at least 5 character(s)' }),
+	newTask: z.string().min(1, { message: 'Name must contain at least 2 character(s)' }),
 })
 
 type CreateTaskFormProps = {
-	onClose: () => void
 	onCreateTask: (newSection: string) => void
-	isLoading: boolean
+	isPanding: boolean
 }
 
-const CreateTaskForm: FC<CreateTaskFormProps> = ({ onCreateTask, onClose, isLoading }) => {
+const CreateTaskForm: FC<CreateTaskFormProps> = ({ onCreateTask, isPanding }) => {
 	const {
 		register,
 		handleSubmit,
@@ -29,17 +28,7 @@ const CreateTaskForm: FC<CreateTaskFormProps> = ({ onCreateTask, onClose, isLoad
 				onCreateTask(data.newTask)
 			})}>
 			<InputGroup>
-				<Input {...register('newTask')} isDisabled={isLoading} placeholder="My new task" autoFocus></Input>
-				<InputRightAddon>
-					<ButtonGroup isAttached variant="outline">
-						<Button isLoading={isLoading} type="submit">
-							Add
-						</Button>
-						<Button onClick={onClose} isDisabled={isLoading} size="md">
-							Cancel
-						</Button>
-					</ButtonGroup>
-				</InputRightAddon>
+				<Input {...register('newTask')} isDisabled={isPanding} placeholder="My new task"></Input>
 			</InputGroup>
 			{errors.newTask?.message && <p>{errors.newTask?.message}</p>}
 		</form>

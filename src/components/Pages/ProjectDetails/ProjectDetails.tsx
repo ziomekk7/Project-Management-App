@@ -13,11 +13,9 @@ const ProjectDetails = () => {
 
 	const queryClient = useQueryClient()
 	const projectQuery = useQuery({
-		// queryKey: [queryKeys.project.projectDetails, params.projectId],
 		queryKey: queryKeys.projects.details({ projectId }),
 		queryFn: () => getProjectById(projectId),
 	})
-
 	const deleteProjectMutation = useMutation({
 		mutationFn: (data: DeleteProjectData) => deleteProject(data),
 		onSuccess: () => {
