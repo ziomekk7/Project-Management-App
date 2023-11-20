@@ -1,4 +1,4 @@
-import { Input, InputGroup, InputRightAddon, Button, ButtonGroup,  } from '@chakra-ui/react'
+import { Input, InputGroup, InputRightAddon, Button, ButtonGroup, Text } from '@chakra-ui/react'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -22,7 +22,7 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = props => {
 	})
 
 	return (
-		<form 
+		<form
 			onSubmit={handleSubmit(data => {
 				props.onAddSection(data.newSection)
 			})}>
@@ -34,10 +34,11 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = props => {
 					autoFocus></Input>
 				<InputRightAddon>
 					<ButtonGroup isAttached variant="outline">
-						<Button isLoading={props.isLoading} type="submit" size="md">
+						<Button border="none" isLoading={props.isLoading} type="submit" size="md">
 							Add
 						</Button>
 						<Button
+							border="none"
 							isDisabled={props.isLoading}
 							onClick={() => {
 								props.onClose()
@@ -48,7 +49,7 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = props => {
 					</ButtonGroup>
 				</InputRightAddon>
 			</InputGroup>
-			{errors.newSection?.message && <p>{errors.newSection?.message}</p>}
+			{errors.newSection?.message && <Text>{errors.newSection?.message}</Text>}
 		</form>
 	)
 }

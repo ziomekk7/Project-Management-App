@@ -5,13 +5,17 @@ import { FC } from 'react'
 type CreateTaskRowProps = {
 	onCreateTask: (newTask: string) => void
 	createTaskIsPending: boolean
-	
+	isAddingTask: boolean
 }
 
-const CreateTaskRow: FC<CreateTaskRowProps> = ({ onCreateTask, createTaskIsPending }) => {
+const CreateTaskRow: FC<CreateTaskRowProps> = ({ onCreateTask, createTaskIsPending, isAddingTask }) => {
 	return (
-		<Flex p="5">
-			<CreateTaskForm onCreateTask={newTask => onCreateTask(newTask)} isPanding={createTaskIsPending}  />
+		<Flex p="5" w="100%">
+			<CreateTaskForm
+				onCreateTask={newTask => onCreateTask(newTask)}
+				isPanding={createTaskIsPending}
+				isAddingTask={isAddingTask}
+			/>
 		</Flex>
 	)
 }

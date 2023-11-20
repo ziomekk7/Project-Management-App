@@ -1,4 +1,4 @@
-import { Input, InputGroup } from '@chakra-ui/react'
+import { Input, InputGroup, Text, Stack } from '@chakra-ui/react'
 import { FC } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -9,11 +9,12 @@ const createTaskFormSchema = z.object({
 })
 
 type CreateTaskFormProps = {
-	onCreateTask: (newSection: string) => void
+	onCreateTask: (newTask: string) => void
 	isPanding: boolean
+	isAddingTask: boolean
 }
 
-const CreateTaskForm: FC<CreateTaskFormProps> = ({ onCreateTask, isPanding }) => {
+const CreateTaskForm: FC<CreateTaskFormProps> = ({ onCreateTask, isAddingTask }) => {
 	const {
 		register,
 		handleSubmit,
@@ -23,15 +24,17 @@ const CreateTaskForm: FC<CreateTaskFormProps> = ({ onCreateTask, isPanding }) =>
 	})
 
 	return (
-		<form
-			onSubmit={handleSubmit(data => {
-				onCreateTask(data.newTask)
-			})}>
-			<InputGroup>
-				<Input {...register('newTask')} isDisabled={isPanding} placeholder="My new task"></Input>
-			</InputGroup>
-			{errors.newTask?.message && <p>{errors.newTask?.message}</p>}
-		</form>
+		<Stack w="100%">
+			<form
+				onSubmit={handleSubmit(data => {
+					onCreateTask(data.newTask)
+				})}>
+				<InputGroup>
+					<Input {...register('newTask')} isDisabled={isAddingTask} placeholder="My new task " ></Input>
+				</InputGroup>
+				{errors.newTask?.message && <Text>{errors.newTask?.message}</Text>}
+			</form>
+		</Stack>
 	)
 }
 

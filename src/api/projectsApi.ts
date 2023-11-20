@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { Project } from '../types/types'
 import { delay } from '../utils/asyns'
 import * as z from 'zod'
-import { Task } from '../types/types'
+import { Task, TaskPriority } from '../types/types'
 
 export type CreateProjectData = {
 	newProject: string
@@ -18,6 +18,7 @@ export type CreateTaskData = {
 	projectId: string
 	sectionId: string
 	newTask: string
+	taskId: string
 }
 
 export type DeleteTaskData = {
@@ -39,7 +40,6 @@ export type EditTask = {
 	projectId: string
 	sectionId: string
 	task: Task
-	
 }
 
 const projectsSchema = z.array(
@@ -55,6 +55,7 @@ const projectsSchema = z.array(
 						name: z.string(),
 						id: z.string(),
 						date: z.coerce.date().nullable(),
+						priority: z.nativeEnum(TaskPriority),
 					})
 				),
 			})
@@ -131,8 +132,9 @@ export const createTask = async (data: CreateTaskData) => {
 
 	section.tasks.push({
 		name: data.newTask,
-		id: uuidv4(),
+		id: data.taskId,
 		date: null,
+		priority: TaskPriority.NONE,
 	})
 
 	await saveProjects(projects)
@@ -156,7 +158,7 @@ export const editTask = async (data: EditTask) => {
 		return
 	}
 
-	section.tasks.splice(taskIndex, 1 , data.task)
+	section.tasks.splice(taskIndex, 1, data.task)
 	await saveProjects(projects)
 }
 

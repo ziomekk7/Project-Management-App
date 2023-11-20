@@ -5,6 +5,7 @@ import ProjectDetails from './components/Pages/ProjectDetails/ProjectDetails'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { routes } from './routes'
 
+
 function App() {
 	const queryClient = new QueryClient()
 	return (

@@ -17,9 +17,9 @@ const RootLayout = () => {
 	}
 
 	return (
-		<Flex direction="row" justify="space-between">
+		<Flex direction="row" justify="space-between"  >
 			<Menu>
-				<MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+				<MenuButton  bg='transparent' color='gray.50' borderRadius='none' as={Button} rightIcon={<ChevronDownIcon />}>
 					All Projects
 				</MenuButton>
 				<MenuList>
@@ -31,7 +31,7 @@ const RootLayout = () => {
 				</MenuList>
 			</Menu>
 			<h1>Project Management</h1>
-			<Button>
+			<Button bg='transparent'borderRadius='none'>
 				<Link to={routes.projects.create()}>Add Project</Link>
 			</Button>
 		</Flex>

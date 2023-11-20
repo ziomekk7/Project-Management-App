@@ -1,6 +1,5 @@
 import {
 	Button,
-	Stack,
 	Modal,
 	ModalOverlay,
 	ModalContent,
@@ -8,11 +7,21 @@ import {
 	ModalBody,
 	ModalCloseButton,
 	useDisclosure,
+	Grid,
+	GridItem,
+	Text,
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItem,
+	IconButton,
 } from '@chakra-ui/react'
-import { Task } from '../../../../../types/types'
-import { FC, useState } from 'react'
+import { DeleteIcon } from '@chakra-ui/icons'
+import { Task, TaskPriority } from '../../../../../types/types'
+import { FC, useEffect, useState } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/dist/style.css'
+import PriorityForm from '../../PriorityForm/PriorityForm'
 
 type TaskRowProps = {
 	actuallyDeletingTasks: string[]
@@ -23,28 +32,65 @@ type TaskRowProps = {
 
 const TaskRow: FC<TaskRowProps> = ({ actuallyDeletingTasks, onDeleteTask, task, onEditTask }) => {
 	const [selectedDate, setSelectedDate] = useState<Date | null>(task.date)
+	const [isLoadingDate, setIsLoadingDate] = useState(false)
+	const [selectedPriority, setSelectedPriority] = useState(task.priority)
 	const { isOpen, onOpen, onClose } = useDisclosure()
+	useEffect(() => {
+		return () => {
+			setIsLoadingDate(false)
+		}
+	}, [task])
 
-	const handleAddDate = (execiutionDate?: Date) => {
+	const handleChangeDate = (execiutionDate?: Date) => {
 		if (!execiutionDate) {
 			return
 		}
+		setIsLoadingDate(true)
 		setSelectedDate(execiutionDate)
-		onEditTask({ name: task.name, id: task.id, date: execiutionDate })
+		onEditTask({ name: task.name, id: task.id, date: execiutionDate, priority: task.priority })
+	}
+
+	const handleChangePriority = (priority: TaskPriority) => {
+		if (!priority) {
+			return
+		}
+
+		setSelectedPriority(priority)
+		onEditTask({ name: task.name, id: task.id, date: task.date, priority: priority })
 	}
 
 	return (
-		<Stack p={5} direction="row" spacing={8} justifyContent="space-between">
-			<p>{task.name}</p>
-			<Button w={120} onClick={onOpen}>
-				{task.date ? (
-					<p>
-						{task.date.getDate()}/{task.date.getMonth()}/{task.date.getFullYear()}
-					</p>
-				) : (
-					<p></p>
-				)}
-			</Button>
+		<Grid h="60px" templateColumns="3fr 1fr 1fr " borderBottom="1px solid black">
+			<GridItem ml={10} borderRight="1px solid black" display="flex" alignItems="center">
+				<Text>{task.name}</Text>
+				<Menu>
+					<MenuButton
+						border="none"
+						bg="transparent"
+						borderRadius="none"
+						as={IconButton}
+						icon={<i className="fa-solid fa-ellipsis" />}
+						variant="outline"
+						isLoading={actuallyDeletingTasks.includes(task.id)}
+					/>
+					<MenuList>
+						<MenuItem onClick={() => onDeleteTask(task.id)} icon={<DeleteIcon />}>
+							Delete Task
+						</MenuItem>
+					</MenuList>
+				</Menu>
+			</GridItem>
+			<GridItem borderRight="1px solid black" display="flex" alignItems="center" justifyContent="center">
+				<Button isLoading={isLoadingDate} color="gray.50" bg="transparent" w={120} variant="ghost" onClick={onOpen}>
+					{task.date ? (
+						<Text>
+							{task.date.getDate()}/{task.date.getMonth()}/{task.date.getFullYear()}
+						</Text>
+					) : (
+						<Text>None</Text>
+					)}
+				</Button>
+			</GridItem>
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent>
@@ -52,18 +98,17 @@ const TaskRow: FC<TaskRowProps> = ({ actuallyDeletingTasks, onDeleteTask, task, 
 					<ModalCloseButton />
 					<ModalBody>
 						{selectedDate ? (
-							<DayPicker mode="single" selected={selectedDate} onSelect={handleAddDate} />
+							<DayPicker mode="single" selected={selectedDate} onSelect={handleChangeDate} />
 						) : (
-							<DayPicker mode="single" selected={new Date()} onSelect={handleAddDate} />
+							<DayPicker mode="single" selected={new Date()} onSelect={handleChangeDate} />
 						)}
 					</ModalBody>
 				</ModalContent>
 			</Modal>
-
-			<Button isLoading={actuallyDeletingTasks.includes(task.id)} onClick={() => onDeleteTask(task.id)} size="sm">
-				Delete task
-			</Button>
-		</Stack>
+			<GridItem borderRight="1px solid black" display="flex" alignItems="center" justifyContent="flex-start" ml="20px">
+				<PriorityForm onSelectPriority={handleChangePriority} selectedPriority={selectedPriority} />
+			</GridItem>
+		</Grid>
 	)
 }
 

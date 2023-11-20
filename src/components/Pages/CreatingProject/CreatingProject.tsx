@@ -1,4 +1,4 @@
-import { FormControl, FormLabel, Input, Button, Container, Flex } from '@chakra-ui/react'
+import { FormControl, FormLabel, Input, Button, Container, Flex, Text } from '@chakra-ui/react'
 import { Link, useNavigate } from 'react-router-dom'
 import { createProject } from '../../../api/projectsApi'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -40,7 +40,7 @@ const CreatingProject = () => {
 	}
 
 	return (
-		<Container>
+		<Container >
 			<form
 				onSubmit={handleSubmit(data => {
 					handleAddProject(data.newProject)
@@ -52,7 +52,7 @@ const CreatingProject = () => {
 
 						<Flex direction="row" justify="space-between">
 							{createProjectMutation.isPending ? (
-								<div>Loading</div>
+								<Text>Loading</Text>
 							) : (
 								<>
 									{' '}
@@ -65,7 +65,7 @@ const CreatingProject = () => {
 						</Flex>
 					</Flex>
 				</FormControl>
-				{errors.newProject?.message && <p>{errors.newProject?.message}</p>}
+				{errors.newProject?.message && <Text>{errors.newProject?.message}</Text>}
 			</form>
 		</Container>
 	)
