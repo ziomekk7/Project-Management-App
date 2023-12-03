@@ -1,41 +1,54 @@
-import { getProjects } from '../../api/projectsApi'
-import { Link } from 'react-router-dom'
-import { ChevronDownIcon } from '@chakra-ui/icons'
-import { Button, Menu, MenuButton, MenuList, MenuItem, Flex } from '@chakra-ui/react'
-import { useQuery } from '@tanstack/react-query'
-import { routes } from '../../routes'
-import { queryKeys } from '../../queryKeys'
+import { Stack, Button, Heading, Text } from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
+import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../../queryKeys";
+import { getProjects } from "../../api/projectsApi";
+import { routes } from "../../routes";
+import { Link } from "react-router-dom";
 
 const RootLayout = () => {
-	const projectsQuery = useQuery({
-		queryKey: queryKeys.projects.all(),
-		queryFn: getProjects,
-	})
+  const projectsQuery = useQuery({
+    queryKey: queryKeys.projects.all(),
+    queryFn: getProjects,
+  });
 
-	if (projectsQuery.isLoading) {
-		return <div>Loading....</div>
-	}
+  if (projectsQuery.isLoading) {
+    return <div>Loading....</div>;
+  }
 
-	return (
-		<Flex direction="row" justify="space-between"  >
-			<Menu>
-				<MenuButton  bg='transparent' color='gray.50' borderRadius='none' as={Button} rightIcon={<ChevronDownIcon />}>
-					All Projects
-				</MenuButton>
-				<MenuList>
-					{projectsQuery.data?.map(project => (
-						<MenuItem key={project.id}>
-							<Link to={routes.projects.details({projectId:project.id})}>{project.name}</Link>
-						</MenuItem>
-					))}
-				</MenuList>
-			</Menu>
-			<h1>Project Management</h1>
-			<Button bg='transparent'borderRadius='none'>
-				<Link to={routes.projects.create()}>Add Project</Link>
-			</Button>
-		</Flex>
-	)
-}
+  return (
+    <Stack direction="column" alignItems="center" pt={8}>
+      <Button
+        variant="ghost"
+        background="red.400"
+        maxW={36}
+        leftIcon={<AddIcon />}
+      >
+        <Link key="test" to={routes.projects.create()}>
+          Add Project
+        </Link>
+      </Button>
+      {projectsQuery.data && projectsQuery.data.length === 0 && (
+        <Text>No Projects</Text>
+      )}
 
-export default RootLayout
+      {projectsQuery.data && projectsQuery.data.length > 0 && (
+        <>
+          <Heading as="h2" size="md">
+            All Projects
+          </Heading>
+
+          {projectsQuery.data.map((project) => (
+            <Button key={project.id} variant="ghost">
+              <Link to={routes.projects.details({ projectId: project.id })}>
+                {project.name}
+              </Link>
+            </Button>
+          ))}
+        </>
+      )}
+    </Stack>
+  );
+};
+
+export default RootLayout;
