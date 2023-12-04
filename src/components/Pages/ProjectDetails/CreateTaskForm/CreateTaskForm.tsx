@@ -1,49 +1,61 @@
-import { Input, InputGroup, InputRightAddon, Button, ButtonGroup } from '@chakra-ui/react'
-import { FC } from 'react'
-import { useForm } from 'react-hook-form'
-import * as z from 'zod'
-import { zodResolver } from '@hookform/resolvers/zod'
+import { Input, InputGroup, Text, Stack } from "@chakra-ui/react";
+import { FC } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Task } from "../../../../types/types";
+import { v4 as uuidv4 } from "uuid";
+import { TaskPriority } from "../../../../types/types";
 
 const createTaskFormSchema = z.object({
-	newTask: z.string().min(5, { message: 'Name must contain at least 5 character(s)' }),
-})
+  newTask: z
+    .string()
+    .min(1, { message: "Name must contain at least 2 character(s)" }),
+});
 
 type CreateTaskFormProps = {
-	onClose: () => void
-	onCreateTask: (newSection: string) => void
-	isLoading: boolean
-}
+  onCreateTask: (task: Task) => void;
+  isCreatingTask: boolean;
+};
 
-const CreateTaskForm: FC<CreateTaskFormProps> = ({ onCreateTask, onClose, isLoading }) => {
-	const {
-		register,
-		handleSubmit,
-		formState: { errors },
-	} = useForm<z.infer<typeof createTaskFormSchema>>({
-		resolver: zodResolver(createTaskFormSchema),
-	})
+const CreateTaskForm: FC<CreateTaskFormProps> = ({
+  onCreateTask,
+  isCreatingTask,
+}) => {
+  const {
+    resetField,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<z.infer<typeof createTaskFormSchema>>({
+    resolver: zodResolver(createTaskFormSchema),
+  });
 
-	return (
-		<form
-			onSubmit={handleSubmit(data => {
-				onCreateTask(data.newTask)
-			})}>
-			<InputGroup>
-				<Input {...register('newTask')} isDisabled={isLoading} placeholder="My new task" autoFocus></Input>
-				<InputRightAddon>
-					<ButtonGroup isAttached variant="outline">
-						<Button isLoading={isLoading} type="submit">
-							Add
-						</Button>
-						<Button onClick={onClose} isDisabled={isLoading} size="md">
-							Cancel
-						</Button>
-					</ButtonGroup>
-				</InputRightAddon>
-			</InputGroup>
-			{errors.newTask?.message && <p>{errors.newTask?.message}</p>}
-		</form>
-	)
-}
+  return (
+    <Stack w="100%">
+      <form
+        onSubmit={handleSubmit((data) => {
+          onCreateTask({
+            name: data.newTask,
+            id: uuidv4(),
+            date: null,
+            priority: TaskPriority.NONE,
+            description: null,
+          }),
+            resetField("newTask");
+        })}
+      >
+        <InputGroup>
+          <Input
+            {...register("newTask")}
+            isDisabled={isCreatingTask}
+            placeholder="My new task "
+          ></Input>
+        </InputGroup>
+        {errors.newTask?.message && <Text>{errors.newTask?.message}</Text>}
+      </form>
+    </Stack>
+  );
+};
 
-export default CreateTaskForm
+export default CreateTaskForm;

@@ -1,115 +1,102 @@
-import { createProjectSection, createTask, deleteSection, deleteTask } from '../../../../api/projectsApi'
-import { Button } from '@chakra-ui/react'
-import React, { useState } from 'react'
-import CreateSectionForm from '../CreateSectionForm/CreateSectionForm'
-import SectionTable from './SectionTable/SectionTable'
-import { Project } from '../../../../types/types'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { queryKeys } from '../../../../queryKeys'
+import { Box, Button, Stack } from "@chakra-ui/react";
+import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
+import { Project, Task } from "../../../../types/types";
+import SectionHeader from "./SectionTable/SectionHeader";
+import SectionBody from "./SectionTable/SectionBody";
+import ExampleTaskRow from "./SectionTable/ExampleTaskRow";
+import ProjectHeader from "./ProjectHeader/ProjectHeader";
 
 type ProjectDetailListViewProps = {
-	project: Project
-}
+  project: Project;
+  actuallyDeletingTasks: string[];
+  isCreateTaskPending: boolean;
+  isCreateSectionFormVisible: boolean;
+  hiddenSections: string[];
+  isCreatingTask: boolean;
+  onDeleteProject: (projectId: string) => void;
+  onCreateSection: (name: string) => void;
+  onDeleteSection: (sectionId: string) => void;
+  onEditTask: (task: Task, sectionId: string) => void;
+  onDeleteTask: (sectionId: string, taskId: string) => void;
+  onCreateTask: (sectionId: string, task: Task) => void;
+  onHideSectionId: (sectionId: string) => void;
+  onOpenCreateSectionForm: () => void;
+  onCloseCreateSectionForm: () => void;
+  actuallyDeletingSections: string[];
+  onDuplicateTask: (sectionId: string, task: Task) => void;
+  isCreatingSection: boolean;
+};
 
-const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({ project }) => {
-	const queryClient = useQueryClient()
-	const [isCreateSectionFormVisible, setIsCreateSectionFormVisible] = useState(false)
-	const [visibleCreateTaskFormSectionId, setVisibleCreateTaskFormSectionId] = useState('')
-	const [actuallyDeletingTasks, setActuallyDeletingTasks] = useState<string[]>([])
+const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
+  project,
+  isCreateTaskPending,
+  isCreateSectionFormVisible,
+  hiddenSections,
+  actuallyDeletingTasks,
+  onCreateSection,
+  onDeleteSection,
+  onDeleteTask,
+  onCreateTask,
+  onEditTask,
+  onHideSectionId,
+  onOpenCreateSectionForm,
+  onCloseCreateSectionForm,
+  isCreatingTask,
+  actuallyDeletingSections,
+  onDuplicateTask,
+  isCreatingSection,
+  onDeleteProject,
+}) => {
+  return (
+    <Stack w="100%">
+      <ProjectHeader
+        project={project}
+        onDeleteProject={() => onDeleteProject(project.id)}
+      />
+      <ExampleTaskRow />
+      {project.sections.map((section) => (
+        <div key={section.id}>
+          <SectionHeader
+            actuallyDeletingSections={actuallyDeletingSections}
+            section={section}
+            onDeleteSection={() => onDeleteSection(section.id)}
+            onToggleHideSection={() => onHideSectionId(section.id)}
+            hiddenSections={hiddenSections}
+          />
 
-	const createProjectSectionMutation = useMutation({
-		mutationFn: createProjectSection,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() })
-			setIsCreateSectionFormVisible(false)
-		},
-	})
+          {!hiddenSections.some((sectionId) => sectionId === section.id) && (
+            <SectionBody
+              onDuplicateTask={(task) => onDuplicateTask(section.id, task)}
+              section={section}
+              onDeleteTask={(taskId) => onDeleteTask(section.id, taskId)}
+              actuallyDeletingTasks={actuallyDeletingTasks}
+              onEditTask={(task) => onEditTask(task, section.id)}
+              onCreateTask={(task) => {
+                onCreateTask(section.id, task);
+              }}
+              isCreateTaskPending={isCreateTaskPending}
+              isCreatingTask={isCreatingTask}
+            />
+          )}
+        </div>
+      ))}
+      <Stack p={4} w="md">
+        {isCreateSectionFormVisible ? (
+          <CreateSectionForm
+            isCreatingSection={isCreatingSection}
+            onClose={() => onCloseCreateSectionForm()}
+            onCreateSection={(name) => onCreateSection(name)}
+          />
+        ) : !isCreatingSection ? (
+          <Box>
+            <Button variant="outline" onClick={() => onOpenCreateSectionForm()}>
+              Create Section
+            </Button>
+          </Box>
+        ) : null}
+      </Stack>
+    </Stack>
+  );
+};
 
-	const createTaskMutation = useMutation({
-		mutationFn: createTask,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() })
-			setVisibleCreateTaskFormSectionId('')
-		},
-	})
-
-	const deleteSectionMutation = useMutation({
-		mutationFn: deleteSection,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() })
-		},
-	})
-
-	const deleteTaskMutation = useMutation({
-		mutationFn: deleteTask,
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() })
-		},
-		onError: (_, variables) => {
-			setActuallyDeletingTasks(prevActuallyDeletingTasks =>
-				prevActuallyDeletingTasks.filter(taskId => taskId !== variables.taskId)
-			)
-		},
-	})
-
-	const handleCreateSection = (newSection: string) => {
-		createProjectSectionMutation.mutate({
-			newSection,
-			projectId: project.id,
-		})
-	}
-
-	const handleCreateTask = (sectionId: string, newTask: string) => {
-		createTaskMutation.mutate({
-			projectId: project.id,
-			sectionId: sectionId,
-			newTask: newTask,
-		})
-	}
-
-	const handleDeleteTask = (sectionId: string, taskId: string) => {
-		setActuallyDeletingTasks(prevActuallyDeletingTasks => [...prevActuallyDeletingTasks, taskId])
-		deleteTaskMutation.mutate({
-			projectId: project.id,
-			sectionId: sectionId,
-			taskId: taskId,
-		})
-	}
-	const handleDeleteSection = (sectionId: string) => {
-		deleteSectionMutation.mutate({
-			projectId: project.id,
-			sectionId: sectionId,
-		})
-	}
-
-	return (
-		<>
-			{project.sections.map(section => (
-				<div key={section.id}>
-					<SectionTable
-						key={section.id}
-						section={section}
-						isCreatingTask={createTaskMutation.isPending}
-						isCreateTaskFormVisible={visibleCreateTaskFormSectionId === section.id}
-						actuallyDeletingTasks={actuallyDeletingTasks}
-						onDeleteSection={() => handleDeleteSection(section.id)}
-						onDeleteTask={handleDeleteTask}
-						onCreateTask={handleCreateTask}
-						onCreateTaskFormVisible={sectionId => setVisibleCreateTaskFormSectionId(sectionId)}
-					/>
-				</div>
-			))}
-			{isCreateSectionFormVisible ? (
-				<CreateSectionForm
-					isLoading={createProjectSectionMutation.isPending}
-					onClose={() => setIsCreateSectionFormVisible(false)}
-					onAddSection={handleCreateSection}
-				/>
-			) : (
-				<Button onClick={() => setIsCreateSectionFormVisible(true)}>Add Section</Button>
-			)}
-		</>
-	)
-}
-
-export default ProjectDetailListView
+export default ProjectDetailListView;
