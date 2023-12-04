@@ -20,8 +20,8 @@ import {
 import { Task } from "../../../../../types/types";
 import PriorityForm from "../../PriorityForm/PriorityForm";
 import { TaskPriority } from "../../../../../types/types";
-import DatePicker from "./DatePicker";
-import { useState, useEffect, useCallback } from "react";
+import DatePicker from "./DatePicker/DatePicker";
+import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import DuplicateTaskModal from "./DuplicateTaskModal";
 import { DeleteIcon } from "@chakra-ui/icons";
@@ -36,12 +36,12 @@ type TaskDetailsProps = {
   isLoadingPriority: boolean;
   taskDate: Date | null;
   selectedDate: Date | null;
-  onChangeDate: (selectedDate: Date | undefined) => void;
+  onChangeDate: (selectedDate: Date) => void;
   onDeleteTask: (taskId: string) => void;
-  actuallyDeletingTasks: boolean;
+  isDeletingTask: boolean;
   isOpenMenu: boolean;
   onClose: () => void;
-  duplicatedTask: (task: Task) => void;
+  onDuplicateTask: (task: Task) => void;
 };
 const TaskDetails: React.FC<TaskDetailsProps> = ({
   task,
@@ -53,31 +53,26 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   onChangeDate,
   onChangeDescription,
   onDeleteTask,
-  actuallyDeletingTasks,
+  isDeletingTask,
   isOpenMenu,
   onClose,
-  duplicatedTask,
+  onDuplicateTask,
   isLoadingPriority,
 }) => {
   const duplicateTaskModal = useDisclosure();
-  const [inputValue, setInputValue] = useState<string | null>(task.description);
+  const [inputValue, setInputValue] = useState(task.description);
   const [debouncedValue] = useDebounce(inputValue, 200);
   useEffect(() => {
     onChangeDescription(debouncedValue);
   }, [debouncedValue]);
 
-  const handleChangeDescription = useCallback((description: string) => {
+  const handleChangeDescription = (description: string) => {
     setInputValue(description);
-  }, []);
+  };
 
   return (
     <>
-      <Drawer
-        size="sm"
-        isOpen={isOpenMenu}
-        placement="right"
-        onClose={() => onClose()}
-      >
+      <Drawer size="sm" isOpen={isOpenMenu} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent justifyContent="row-reverse">
           <DrawerCloseButton />
@@ -93,7 +88,8 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 <MenuButton
                   as={IconButton}
                   icon={<EllipsisHorizontal />}
-                  isLoading={actuallyDeletingTasks}
+                  // TODO isLoading = actuallyDeletingTasks ???
+                  isLoading={isDeletingTask}
                   variant="ghost"
                   ml={2.5}
                 />
@@ -134,7 +130,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             <Stack mt={1.5}>
               <Text>Description</Text>
               <Textarea
-                value={inputValue ? inputValue : ""}
+                value={inputValue || ""}
                 onChange={(e) => handleChangeDescription(e.target.value)}
                 placeholder="Here is a example description"
               />
@@ -144,7 +140,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       </Drawer>
 
       <DuplicateTaskModal
-        duplicatedTask={(task) => duplicatedTask(task)}
+        onDuplicateTask={(task) => onDuplicateTask(task)}
         task={task}
         isOpen={duplicateTaskModal.isOpen}
         onClose={duplicateTaskModal.onClose}

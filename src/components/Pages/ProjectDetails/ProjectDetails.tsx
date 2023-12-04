@@ -16,7 +16,7 @@ import { queryKeys } from "../../../queryKeys";
 import { Task } from "../../../types/types";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { Stack} from "@chakra-ui/react";
+import RootLayout from "../../Roots/RootLayout";
 
 const ProjectDetails = () => {
   const [isCreateSectionFormVisible, setIsCreateSectionFormVisible] =
@@ -28,11 +28,11 @@ const ProjectDetails = () => {
     string[]
   >([]);
   const [hiddenSections, setHiddenSection] = useState<string[]>([]);
-  const [isAddingTask, setIsAddingTask] = useState<{
+  const [creatingTaskLocalization, setCreatingTaskLocalization] = useState<{
     sectionId: string;
     taskId: string;
   } | null>(null);
-  const [isAddingSection, setIsAddingSection] = useState(false);
+  const [isCreatingSection, setIsCreatingSection] = useState(false);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -45,7 +45,7 @@ const ProjectDetails = () => {
   });
 
   useEffect(() => {
-    setIsAddingSection(false);
+    setIsCreatingSection(false);
   }, [projectQuery.data]);
 
   useEffect(() => {
@@ -53,21 +53,25 @@ const ProjectDetails = () => {
       if (!projectQuery.data) {
         return;
       }
-      if (!isAddingTask) {
+      if (!creatingTaskLocalization) {
         return;
       }
       const section = projectQuery.data.sections.find(
-        (section) => isAddingTask.sectionId === section.id
+        (section) => creatingTaskLocalization.sectionId === section.id
       );
       if (!section) {
         return;
       }
 
-      if (!section.tasks.find((task) => isAddingTask.taskId === task.id)) {
-        setIsAddingTask(null);
+      if (
+        !section.tasks.find(
+          (task) => creatingTaskLocalization.taskId === task.id
+        )
+      ) {
+        setCreatingTaskLocalization(null);
       }
     };
-  }, [projectQuery.data, isAddingTask]);
+  }, [projectQuery.data, creatingTaskLocalization]);
 
   const deleteProjectMutation = useMutation({
     mutationFn: (data: DeleteProjectData) => deleteProject(data),
@@ -127,12 +131,12 @@ const ProjectDetails = () => {
   });
 
   const handleDeleteProject = (projectId: string) => {
-    navigate(routes.home());
     deleteProjectMutation.mutate({ projectId: projectId });
+    navigate(routes.home());
   };
 
   const handleCreateSection = (newSection: string) => {
-    setIsAddingSection(true);
+    setIsCreatingSection(true);
     createProjectSectionMutation.mutate({
       newSection,
       projectId,
@@ -165,7 +169,7 @@ const ProjectDetails = () => {
 
   const handleCreateTask = (sectionId: string, task: Task) => {
     const newTaskId = uuidv4();
-    setIsAddingTask({ sectionId: sectionId, taskId: newTaskId });
+    setCreatingTaskLocalization({ sectionId: sectionId, taskId: newTaskId });
     createTaskMutation.mutate({
       projectId,
       sectionId: sectionId,
@@ -195,37 +199,43 @@ const ProjectDetails = () => {
 
   if (!projectQuery.data) {
     if (projectQuery.isLoading) {
-      return <div>Loading....</div>;
+      return (
+        <RootLayout>
+          <div>Loading....</div>
+        </RootLayout>
+      );
     }
 
-    return <div>Project not found</div>;
+    return (
+      <RootLayout>
+        <div>Project not found</div>
+      </RootLayout>
+    );
   }
 
   return (
-    <>
-      <Stack direction="row">
-        <ProjectDetailListView
-          onDeleteProject={handleDeleteProject}
-          isAddingSection={isAddingSection}
-          duplicatedTask={handleCreateTask}
-          actuallyDeletingSections={actuallyDeletingSections}
-          project={projectQuery.data}
-          isCreateTaskPending={createTaskMutation.isPending}
-          hiddenSections={hiddenSections}
-          isCreateSectionFormVisible={isCreateSectionFormVisible}
-          actuallyDeletingTasks={actuallyDeletingTasks}
-          isAddingTask={!isAddingTask ? false : true}
-          onCreateSection={handleCreateSection}
-          onDeleteSection={handleDeleteSection}
-          onDeleteTask={handleDeleteTask}
-          onCreateTask={handleCreateTask}
-          onEditTask={handleEditTask}
-          onHideSectionId={handleHideSection}
-          onOpenCreateSectionForm={() => setIsCreateSectionFormVisible(true)}
-          onCloseCreateSectionForm={() => setIsCreateSectionFormVisible(false)}
-        />
-      </Stack>
-    </>
+    <RootLayout>
+      <ProjectDetailListView
+        onDeleteProject={handleDeleteProject}
+        isCreatingSection={isCreatingSection}
+        onDuplicateTask={handleCreateTask}
+        actuallyDeletingSections={actuallyDeletingSections}
+        project={projectQuery.data}
+        isCreateTaskPending={createTaskMutation.isPending}
+        hiddenSections={hiddenSections}
+        isCreateSectionFormVisible={isCreateSectionFormVisible}
+        actuallyDeletingTasks={actuallyDeletingTasks}
+        isCreatingTask={!creatingTaskLocalization ? false : true}
+        onCreateSection={handleCreateSection}
+        onDeleteSection={handleDeleteSection}
+        onDeleteTask={handleDeleteTask}
+        onCreateTask={handleCreateTask}
+        onEditTask={handleEditTask}
+        onHideSectionId={handleHideSection}
+        onOpenCreateSectionForm={() => setIsCreateSectionFormVisible(true)}
+        onCloseCreateSectionForm={() => setIsCreateSectionFormVisible(false)}
+      />
+    </RootLayout>
   );
 };
 

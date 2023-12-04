@@ -13,14 +13,14 @@ import { EllipsisHorizontal } from "../../../../UI/icons";
 
 type ProjectHeaderProps = {
   project: Project;
-  onDeleteProject: (projectId: string) => void;
+  onDeleteProject: () => void;
 };
 
-const ProjectHeader: React.FC<ProjectHeaderProps> = (props) => {
+const ProjectHeader: React.FC<ProjectHeaderProps> = ({ project, onDeleteProject }) => {
   return (
     <Stack p={5} direction="row" spacing={8} w="100%">
       <Heading as="h1" size="xl">
-        {props.project.name}
+        {project.name}
       </Heading>
       <Menu>
         <MenuButton
@@ -29,13 +29,8 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = (props) => {
           variant="ghost"
         />
         <MenuList>
-          <MenuItem
-            onClick={() => {
-              props.onDeleteProject(props.project.id);
-            }}
-            icon={<DeleteIcon />}
-          >
-            delete project
+          <MenuItem onClick={()=>onDeleteProject()} icon={<DeleteIcon />}>
+            Delete project
           </MenuItem>
         </MenuList>
       </Menu>

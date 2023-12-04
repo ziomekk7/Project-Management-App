@@ -136,13 +136,6 @@ export const createTask = async (data: CreateTaskData) => {
 
   await saveProjects(projects);
 };
-// {
-// 	name: data.newTask,
-// 	id: data.taskId,
-// 	date: null,
-// 	priority: TaskPriority.NONE,
-// 	description: null,
-// }
 
 export const editTask = async (data: EditTask) => {
   const projects = await getProjects();

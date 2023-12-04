@@ -9,9 +9,8 @@ type SectionBodyProps = {
   onCreateTask: (task: Task) => void;
   actuallyDeletingTasks: string[];
   isCreateTaskPending: boolean;
-  isAddingTask: boolean;
-  hiddenSections: string[];
-  duplicatedTask: (task: Task) => void;
+  isCreatingTask: boolean;
+  onDuplicateTask: (task: Task) => void;
 };
 
 const SectionBody: React.FC<SectionBodyProps> = ({
@@ -20,33 +19,28 @@ const SectionBody: React.FC<SectionBodyProps> = ({
   onDeleteTask,
   onEditTask,
   actuallyDeletingTasks,
-  isAddingTask,
-  hiddenSections,
-  duplicatedTask,
+  isCreatingTask,
+  onDuplicateTask,
 }) => {
   return (
-    <>
-      {!hiddenSections.find((sectionId) => sectionId === section.id) ? (
-        <div>
-          {section.tasks.map((task) => (
-            <TaskRow
-              duplicatedTask={(task) => duplicatedTask(task)}
-              key={task.id}
-              task={task}
-              onDeleteTask={(taskId) => onDeleteTask(taskId)}
-              actuallyDeletingTasks={actuallyDeletingTasks}
-              onEditTask={(task) => onEditTask(task, section.id)}
-            />
-          ))}
-          <CreateTaskRow
-            onCreateTask={(task) => {
-              onCreateTask(task);
-            }}
-            isAddingTask={isAddingTask}
-          />
-        </div>
-      ) : null}
-    </>
+    <div>
+      {section.tasks.map((task) => (
+        <TaskRow
+          onDuplicateTask={onDuplicateTask}
+          key={task.id}
+          task={task}
+          onDeleteTask={onDeleteTask}
+          actuallyDeletingTasks={actuallyDeletingTasks}
+          onEditTask={(task) => onEditTask(task, section.id)}
+        />
+      ))}
+      <CreateTaskRow
+        onCreateTask={(task) => {
+          onCreateTask(task);
+        }}
+        isCreatingTask={isCreatingTask}
+      />
+    </div>
   );
 };
 

@@ -17,9 +17,9 @@ const createSectionFormSchema = z.object({
 });
 
 type CreateSectionFormProps = {
-  isAddingSection: boolean;
+  isCreatingSection: boolean;
   onClose: () => void;
-  onAddSection: (newSection: string) => void;
+  onCreateSection: (newSection: string) => void;
 };
 const CreateSectionForm: React.FC<CreateSectionFormProps> = (props) => {
   const {
@@ -33,20 +33,20 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = (props) => {
   return (
     <form
       onSubmit={handleSubmit((data) => {
-        props.onAddSection(data.newSection);
+        props.onCreateSection(data.newSection);
       })}
     >
       <InputGroup>
         <Input
           {...register("newSection")}
-          isDisabled={props.isAddingSection}
+          isDisabled={props.isCreatingSection}
           placeholder="Name of new section"
           autoFocus
         ></Input>
         <InputRightAddon>
           <ButtonGroup isAttached variant="outline">
             <Button type="submit" size="md" variant="ghost" >
-              Add
+              Create
             </Button>
             <Button
               variant="ghost"

@@ -30,7 +30,7 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
         _hover={{ bg: PRIORITY_COLORS_HOVER[selectedPriority] }}
         isLoading={isLoadingPriority}
       >
-        {selectedPriority ? PRIORITY_LABELS[selectedPriority] : "-"}
+        {PRIORITY_LABELS[selectedPriority]}
       </MenuButton>
 
       <MenuList overflow="hidden" p={2}>

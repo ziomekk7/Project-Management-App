@@ -1,54 +1,14 @@
-import { Stack, Button, Heading, Text } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "../../queryKeys";
-import { getProjects } from "../../api/projectsApi";
-import { routes } from "../../routes";
-import { Link } from "react-router-dom";
-
-const RootLayout = () => {
-  const projectsQuery = useQuery({
-    queryKey: queryKeys.projects.all(),
-    queryFn: getProjects,
-  });
-
-  if (projectsQuery.isLoading) {
-    return <div>Loading....</div>;
-  }
-
+import { Grid, GridItem } from "@chakra-ui/react";
+import Menu from "../Pages/Menu";
+import React from "react";
+const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Stack direction="column" alignItems="center" pt={8}>
-      <Button
-        variant="ghost"
-        background="red.400"
-        maxW={36}
-        leftIcon={<AddIcon />}
-      >
-        <Link key="test" to={routes.projects.create()}>
-          Add Project
-        </Link>
-      </Button>
-      {projectsQuery.data && projectsQuery.data.length === 0 && (
-        <Text>No Projects</Text>
-      )}
-
-      {projectsQuery.data && projectsQuery.data.length > 0 && (
-        <>
-          <Heading as="h2" size="md">
-            All Projects
-          </Heading>
-
-          {projectsQuery.data.map((project) => (
-            <Button key={project.id} variant="ghost">
-              <Link to={routes.projects.details({ projectId: project.id })}>
-                {project.name}
-              </Link>
-            </Button>
-          ))}
-        </>
-      )}
-    </Stack>
+    <Grid templateColumns="1fr 4fr ">
+      <GridItem>
+        <Menu />
+      </GridItem>
+      <GridItem>{children}</GridItem>
+    </Grid>
   );
 };
-
 export default RootLayout;

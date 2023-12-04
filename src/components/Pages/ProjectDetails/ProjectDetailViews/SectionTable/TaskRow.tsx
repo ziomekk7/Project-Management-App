@@ -15,7 +15,7 @@ import { FC, useEffect, useState } from "react";
 import "react-day-picker/dist/style.css";
 import PriorityForm from "../../PriorityForm/PriorityForm";
 import TaskDetails from "./TaskDetails";
-import DatePicker from "./DatePicker";
+import DatePicker from "./DatePicker/DatePicker";
 import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +28,7 @@ type TaskRowProps = {
   onDeleteTask: (taskId: string) => void;
   task: Task;
   onEditTask: (task: Task) => void;
-  duplicatedTask: (task: Task) => void;
+  onDuplicateTask: (task: Task) => void;
 };
 
 const createTaskFormSchema = z.object({
@@ -42,12 +42,11 @@ const TaskRow: FC<TaskRowProps> = ({
   onDeleteTask,
   task,
   onEditTask,
-  duplicatedTask,
+  onDuplicateTask,
 }) => {
-  const [selectedDate, setSelectedDate] = useState<Date | null>(task.date);
+  const [selectedDate, setSelectedDate] = useState(task.date);
   const [isLoadingDate, setIsLoadingDate] = useState(false);
   const [isLoadingPriority, setIsLoadingPriority] = useState(false);
-  const [selectedPriority, setSelectedPriority] = useState(task.priority);
   const [taskName, setTaskName] = useState(task.name);
   const taskDetailsDrawer = useDisclosure();
   const debounced = useDebouncedCallback(
@@ -80,7 +79,6 @@ const TaskRow: FC<TaskRowProps> = ({
 
   const handleChangeTask = (editedTask: Task) => {
     if (editedTask.date === task.date) {
-      setSelectedPriority(editedTask.priority);
       onEditTask(editedTask);
       return;
     }
@@ -161,9 +159,6 @@ const TaskRow: FC<TaskRowProps> = ({
             taskDate={task.date}
             selectedDate={selectedDate}
             onSelect={(date) => {
-              if (!date) {
-                return;
-              }
               setIsLoadingDate(true);
               handleChangeTask({
                 name: task.name,
@@ -191,10 +186,9 @@ const TaskRow: FC<TaskRowProps> = ({
                 date: task.date,
                 priority: priority,
                 description: task.description,
-              }),
-                setIsLoadingPriority(true);
+              });
             }}
-            selectedPriority={selectedPriority}
+            selectedPriority={task.priority}
             isLoadingPriority={isLoadingPriority}
           />
         </GridItem>
@@ -203,15 +197,12 @@ const TaskRow: FC<TaskRowProps> = ({
         isLoadingPriority={isLoadingPriority}
         onClose={taskDetailsDrawer.onClose}
         isOpenMenu={taskDetailsDrawer.isOpen}
-        actuallyDeletingTasks={handleCheckDeletingTaskStatus()}
+        isDeletingTask={handleCheckDeletingTaskStatus()}
         isLoadingDate={isLoadingDate}
         taskDate={task.date}
         selectedDate={selectedDate}
-        duplicatedTask={(task) => duplicatedTask(task)}
+        onDuplicateTask={(task) => onDuplicateTask(task)}
         onChangeDate={(date) => {
-          if (!date) {
-            return;
-          }
           setIsLoadingDate(true);
           handleChangeTask({
             name: task.name,
@@ -222,14 +213,14 @@ const TaskRow: FC<TaskRowProps> = ({
           });
         }}
         onChangePriority={(priority) => {
+          setIsLoadingPriority(true);
           handleChangeTask({
             name: task.name,
             id: task.id,
             date: task.date,
             priority: priority,
             description: task.description,
-          }),
-            setIsLoadingPriority(true);
+          });
         }}
         onChangeDescription={(description) =>
           handleChangeTask({
@@ -241,7 +232,7 @@ const TaskRow: FC<TaskRowProps> = ({
           })
         }
         onDeleteTask={(taskId) => onDeleteTask(taskId)}
-        selectedPriority={selectedPriority}
+        selectedPriority={task.priority}
         task={task}
       />
     </>

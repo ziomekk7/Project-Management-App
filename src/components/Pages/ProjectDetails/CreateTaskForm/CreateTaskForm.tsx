@@ -15,12 +15,12 @@ const createTaskFormSchema = z.object({
 
 type CreateTaskFormProps = {
   onCreateTask: (task: Task) => void;
-  isAddingTask: boolean;
+  isCreatingTask: boolean;
 };
 
 const CreateTaskForm: FC<CreateTaskFormProps> = ({
   onCreateTask,
-  isAddingTask,
+  isCreatingTask,
 }) => {
   const {
     resetField,
@@ -48,7 +48,7 @@ const CreateTaskForm: FC<CreateTaskFormProps> = ({
         <InputGroup>
           <Input
             {...register("newTask")}
-            isDisabled={isAddingTask}
+            isDisabled={isCreatingTask}
             placeholder="My new task "
           ></Input>
         </InputGroup>

@@ -20,7 +20,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 
 const duplicateTaskFormSchema = z.object({
-  duplicatedTaskNewName: z
+  name: z
     .string()
     .min(1, { message: "Name must contain at least 1 character(s)" }),
 });
@@ -29,16 +29,16 @@ export type DuplicateTaskModalProps = {
   isOpen: boolean;
   onClose: () => void;
   task: Task;
-  duplicatedTask: (task: Task) => void;
+  onDuplicateTask: (task: Task) => void;
 };
 
 const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
   isOpen,
   onClose,
   task,
-  duplicatedTask,
+  onDuplicateTask,
 }) => {
-  const [checkedItems, setCheckedItems] = useState({
+  const [checkedFields, setCheckedFields] = useState({
     date: false,
     priority: false,
     description: false,
@@ -51,79 +51,77 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
     formState: { errors },
   } = useForm<z.infer<typeof duplicateTaskFormSchema>>({
     resolver: zodResolver(duplicateTaskFormSchema),
-    defaultValues: { duplicatedTaskNewName: `Duplicated ${task.name}` },
+    defaultValues: { name: `Duplicated ${task.name}` },
   });
 
-  const handleDuplicateTask = (data: string) => {
-    duplicatedTask({
-      name: data,
-      date: checkedItems.date ? task.date : null,
-      priority: checkedItems.priority ? task.priority : TaskPriority.NONE,
-      description: checkedItems.description ? task.description : null,
+  const handleInnerSubmit = (data: z.infer<typeof duplicateTaskFormSchema>) => {
+    handleDuplicateTask(data);
+    onClose();
+    resetField("name");
+  };
+
+  const handleDuplicateTask = (
+    data: z.infer<typeof duplicateTaskFormSchema>
+  ) => {
+    onDuplicateTask({
+      name: data.name,
+      date: checkedFields.date ? task.date : null,
+      priority: checkedFields.priority ? task.priority : TaskPriority.NONE,
+      description: checkedFields.description ? task.description : null,
       id: uuidv4(),
     });
   };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>
-          <form
-            onSubmit={handleSubmit((data) => {
-              handleDuplicateTask(data.duplicatedTaskNewName),
-                onClose(),
-                resetField("duplicatedTaskNewName");
-            })}
-          >
-            <Input w="70%" {...register("duplicatedTaskNewName")}></Input>
-            {errors.duplicatedTaskNewName?.message && (
-              <Text>{errors.duplicatedTaskNewName?.message}</Text>
-            )}
+          <form onSubmit={handleSubmit(handleInnerSubmit)}>
+            <Input w="70%" {...register("name")}></Input>
+            {errors.name?.message && <Text>{errors.name?.message}</Text>}
             <CheckboxGroup>
               <Stack>
                 <Text>Include</Text>
                 <Checkbox
-                  isChecked={checkedItems.date}
+                  isChecked={checkedFields.date}
                   onChange={(e) =>
-                    setCheckedItems({
+                    setCheckedFields({
                       date: e.target.checked,
-                      priority: checkedItems.priority,
-                      description: checkedItems.description,
+                      priority: checkedFields.priority,
+                      description: checkedFields.description,
                     })
                   }
-                  value="Execution Date"
                 >
                   Execution Date
                 </Checkbox>
                 <Checkbox
-                  isChecked={checkedItems.priority}
+                  isChecked={checkedFields.priority}
                   onChange={(e) =>
-                    setCheckedItems({
-                      date: checkedItems.date,
+                    setCheckedFields({
+                      date: checkedFields.date,
                       priority: e.target.checked,
-                      description: checkedItems.description,
+                      description: checkedFields.description,
                     })
                   }
-                  value="Priority"
                 >
                   Priority
                 </Checkbox>
                 <Checkbox
-                  isChecked={checkedItems.description}
+                  isChecked={checkedFields.description}
                   onChange={(e) =>
-                    setCheckedItems({
-                      date: checkedItems.date,
-                      priority: checkedItems.priority,
+                    setCheckedFields({
+                      date: checkedFields.date,
+                      priority: checkedFields.priority,
                       description: e.target.checked,
                     })
                   }
-                  value="Description"
                 >
                   Description
                 </Checkbox>
                 <Stack direction="row" justifyContent="space-around">
                   <Button type="submit" variant="outline">
-                    Add duplicate task
+                    Create duplicate task
                   </Button>
                   <Button mr={3} onClick={onClose} variant="outline">
                     Close
