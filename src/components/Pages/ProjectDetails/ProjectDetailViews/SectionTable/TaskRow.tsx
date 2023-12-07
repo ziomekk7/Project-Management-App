@@ -20,7 +20,7 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useDebouncedCallback } from "use-debounce";
+import { useDebounce} from "use-debounce";
 import { EllipsisHorizontal } from "../../../../UI/icons";
 
 type TaskRowProps = {
@@ -49,20 +49,16 @@ const TaskRow: FC<TaskRowProps> = ({
   const [isLoadingPriority, setIsLoadingPriority] = useState(false);
   const [taskName, setTaskName] = useState(task.name);
   const taskDetailsDrawer = useDisclosure();
-  const debounced = useDebouncedCallback(
-    (taskName) => setTaskName(taskName),
-    200
-  );
-
+  const [debouncedValue] = useDebounce(taskName, 200);
   useEffect(() => {
     onEditTask({
-      name: taskName,
+      name: debouncedValue,
       id: task.id,
       date: task.date,
-      description: task.description,
       priority: task.priority,
+      description: task.description,
     });
-  }, [taskName]);
+  }, [debouncedValue]);
 
   useEffect(() => {
     return () => {
@@ -119,7 +115,7 @@ const TaskRow: FC<TaskRowProps> = ({
           >
             <Input
               {...register("newTaskName")}
-              onChange={(e) => debounced(e.target.value)}
+              onChange={(e) => setTaskName(e.target.value)}
               border="none"
               value={taskName}
             ></Input>
