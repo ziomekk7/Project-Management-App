@@ -17,6 +17,8 @@ import { Task } from "../../../types/types";
 import { useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import RootLayout from "../../Roots/RootLayout";
+import ProjectDetailBoardView from "./ProjectDetailViews/ProjectDetailBoardView";
+import ProjectHeader from "./ProjectDetailViews/ProjectHeader/ProjectHeader";
 
 const ProjectDetails = () => {
   const [isCreateSectionFormVisible, setIsCreateSectionFormVisible] =
@@ -33,6 +35,7 @@ const ProjectDetails = () => {
     taskId: string;
   } | null>(null);
   const [isCreatingSection, setIsCreatingSection] = useState(false);
+  const [selectedView, setSelectedView] = useState("list");
 
   const navigate = useNavigate();
   const params = useParams();
@@ -130,8 +133,8 @@ const ProjectDetails = () => {
     },
   });
 
-  const handleDeleteProject = (projectId: string) => {
-    deleteProjectMutation.mutate({ projectId: projectId });
+  const handleDeleteProject = () => {
+    deleteProjectMutation.mutate({ projectId });
     navigate(routes.home());
   };
 
@@ -212,29 +215,38 @@ const ProjectDetails = () => {
       </RootLayout>
     );
   }
-
   return (
     <RootLayout>
-      <ProjectDetailListView
+      <ProjectHeader
+        onChangeView={(view) => setSelectedView(view)}
         onDeleteProject={handleDeleteProject}
-        isCreatingSection={isCreatingSection}
-        onDuplicateTask={handleCreateTask}
-        actuallyDeletingSections={actuallyDeletingSections}
         project={projectQuery.data}
-        isCreateTaskPending={createTaskMutation.isPending}
-        hiddenSections={hiddenSections}
-        isCreateSectionFormVisible={isCreateSectionFormVisible}
-        actuallyDeletingTasks={actuallyDeletingTasks}
-        isCreatingTask={!creatingTaskLocalization ? false : true}
-        onCreateSection={handleCreateSection}
-        onDeleteSection={handleDeleteSection}
-        onDeleteTask={handleDeleteTask}
-        onCreateTask={handleCreateTask}
-        onEditTask={handleEditTask}
-        onHideSectionId={handleHideSection}
-        onOpenCreateSectionForm={() => setIsCreateSectionFormVisible(true)}
-        onCloseCreateSectionForm={() => setIsCreateSectionFormVisible(false)}
       />
+      {selectedView === "list" ? (
+        <ProjectDetailListView
+          isCreatingSection={isCreatingSection}
+          onDuplicateTask={handleCreateTask}
+          actuallyDeletingSections={actuallyDeletingSections}
+          project={projectQuery.data}
+          isCreateTaskPending={createTaskMutation.isPending}
+          hiddenSections={hiddenSections}
+          isCreateSectionFormVisible={isCreateSectionFormVisible}
+          actuallyDeletingTasks={actuallyDeletingTasks}
+          isCreatingTask={!creatingTaskLocalization ? false : true}
+          onCreateSection={handleCreateSection}
+          onDeleteSection={handleDeleteSection}
+          onDeleteTask={handleDeleteTask}
+          onCreateTask={handleCreateTask}
+          onEditTask={handleEditTask}
+          onHideSectionId={handleHideSection}
+          onOpenCreateSectionForm={() => setIsCreateSectionFormVisible(true)}
+          onCloseCreateSectionForm={() => setIsCreateSectionFormVisible(false)}
+        />
+      ) : (
+        <ProjectDetailBoardView
+          project={projectQuery.data}
+        />
+      )}
     </RootLayout>
   );
 };

@@ -4,8 +4,6 @@ import { Project, Task } from "../../../../types/types";
 import SectionHeader from "./SectionTable/SectionHeader";
 import SectionBody from "./SectionTable/SectionBody";
 import ExampleTaskRow from "./SectionTable/ExampleTaskRow";
-import ProjectHeader from "./ProjectHeader/ProjectHeader";
-
 type ProjectDetailListViewProps = {
   project: Project;
   actuallyDeletingTasks: string[];
@@ -13,7 +11,6 @@ type ProjectDetailListViewProps = {
   isCreateSectionFormVisible: boolean;
   hiddenSections: string[];
   isCreatingTask: boolean;
-  onDeleteProject: (projectId: string) => void;
   onCreateSection: (name: string) => void;
   onDeleteSection: (sectionId: string) => void;
   onEditTask: (task: Task, sectionId: string) => void;
@@ -45,57 +42,55 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   actuallyDeletingSections,
   onDuplicateTask,
   isCreatingSection,
-  onDeleteProject,
 }) => {
   return (
-    <Stack w="100%">
-      <ProjectHeader
-        project={project}
-        onDeleteProject={() => onDeleteProject(project.id)}
-      />
-      <ExampleTaskRow />
-      {project.sections.map((section) => (
-        <div key={section.id}>
-          <SectionHeader
-            actuallyDeletingSections={actuallyDeletingSections}
-            section={section}
-            onDeleteSection={() => onDeleteSection(section.id)}
-            onToggleHideSection={() => onHideSectionId(section.id)}
-            hiddenSections={hiddenSections}
-          />
-
-          {!hiddenSections.some((sectionId) => sectionId === section.id) && (
-            <SectionBody
-              onDuplicateTask={(task) => onDuplicateTask(section.id, task)}
+      <Stack  overflow="auto" h="85%" >
+        <ExampleTaskRow />
+        {project.sections.map((section) => (
+          <div key={section.id}>
+            <SectionHeader
+              actuallyDeletingSections={actuallyDeletingSections}
               section={section}
-              onDeleteTask={(taskId) => onDeleteTask(section.id, taskId)}
-              actuallyDeletingTasks={actuallyDeletingTasks}
-              onEditTask={(task) => onEditTask(task, section.id)}
-              onCreateTask={(task) => {
-                onCreateTask(section.id, task);
-              }}
-              isCreateTaskPending={isCreateTaskPending}
-              isCreatingTask={isCreatingTask}
+              onDeleteSection={() => onDeleteSection(section.id)}
+              onToggleHideSection={() => onHideSectionId(section.id)}
+              hiddenSections={hiddenSections}
             />
-          )}
-        </div>
-      ))}
-      <Stack p={4} w="md">
-        {isCreateSectionFormVisible ? (
-          <CreateSectionForm
-            isCreatingSection={isCreatingSection}
-            onClose={() => onCloseCreateSectionForm()}
-            onCreateSection={(name) => onCreateSection(name)}
-          />
-        ) : !isCreatingSection ? (
-          <Box>
-            <Button variant="outline" onClick={() => onOpenCreateSectionForm()}>
-              Create Section
-            </Button>
-          </Box>
-        ) : null}
+
+            {!hiddenSections.some((sectionId) => sectionId === section.id) && (
+              <SectionBody
+                onDuplicateTask={(task) => onDuplicateTask(section.id, task)}
+                section={section}
+                onDeleteTask={(taskId) => onDeleteTask(section.id, taskId)}
+                actuallyDeletingTasks={actuallyDeletingTasks}
+                onEditTask={(task) => onEditTask(task, section.id)}
+                onCreateTask={(task) => {
+                  onCreateTask(section.id, task);
+                }}
+                isCreateTaskPending={isCreateTaskPending}
+                isCreatingTask={isCreatingTask}
+              />
+            )}
+          </div>
+        ))}
+        <Stack p={4} w="md">
+          {isCreateSectionFormVisible ? (
+            <CreateSectionForm
+              isCreatingSection={isCreatingSection}
+              onClose={() => onCloseCreateSectionForm()}
+              onCreateSection={(name) => onCreateSection(name)}
+            />
+          ) : !isCreatingSection ? (
+            <Box>
+              <Button
+                variant="outline"
+                onClick={() => onOpenCreateSectionForm()}
+              >
+                Create Section
+              </Button>
+            </Box>
+          ) : null}
+        </Stack>
       </Stack>
-    </Stack>
   );
 };
 
