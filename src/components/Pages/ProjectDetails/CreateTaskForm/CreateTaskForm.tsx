@@ -1,5 +1,5 @@
 import { Input, InputGroup, Text, Stack } from "@chakra-ui/react";
-import { FC } from "react";
+import { FC, CSSProperties } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -16,11 +16,14 @@ const createTaskFormSchema = z.object({
 type CreateTaskFormProps = {
   onCreateTask: (task: Task) => void;
   isCreatingTask: boolean;
+  setAutoFocus:boolean,
+  style?: CSSProperties;
 };
 
 const CreateTaskForm: FC<CreateTaskFormProps> = ({
   onCreateTask,
   isCreatingTask,
+  setAutoFocus
 }) => {
   const {
     resetField,
@@ -46,11 +49,17 @@ const CreateTaskForm: FC<CreateTaskFormProps> = ({
         })}
       >
         <InputGroup>
-          <Input
+        {setAutoFocus? ( <Input
             {...register("newTask")}
             isDisabled={isCreatingTask}
             placeholder="My new task "
-          ></Input>
+            autoFocus
+          ></Input>):( <Input
+            {...register("newTask")}
+            isDisabled={isCreatingTask}
+            placeholder="My new task "
+          ></Input>)}
+       
         </InputGroup>
         {errors.newTask?.message && <Text>{errors.newTask?.message}</Text>}
       </form>

@@ -11,7 +11,7 @@ import {
   Box,
   Button,
 } from "@chakra-ui/react";
-import { EllipsisHorizontal } from "../../../../UI/icons";
+import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 
 type ProjectHeaderProps = {
   project: Project;
@@ -26,7 +26,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 }) => {
   return (
     <Box h="15%">
-      <Stack p={5} direction="row" spacing={8} w="100%" >
+      <Stack p={5} direction="row" spacing={8} w="100%">
         <Heading as="h1" size="xl">
           {project.name}
         </Heading>

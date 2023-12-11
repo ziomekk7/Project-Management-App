@@ -232,7 +232,7 @@ const ProjectDetails = () => {
           hiddenSections={hiddenSections}
           isCreateSectionFormVisible={isCreateSectionFormVisible}
           actuallyDeletingTasks={actuallyDeletingTasks}
-          isCreatingTask={!creatingTaskLocalization ? false : true}
+          isCreatingTask={creatingTaskLocalization ? true : false}
           onCreateSection={handleCreateSection}
           onDeleteSection={handleDeleteSection}
           onDeleteTask={handleDeleteTask}
@@ -244,6 +244,8 @@ const ProjectDetails = () => {
         />
       ) : (
         <ProjectDetailBoardView
+        isCreatingTask={!creatingTaskLocalization ? false : true}
+          onCreateTask={handleCreateTask}
           project={projectQuery.data}
         />
       )}

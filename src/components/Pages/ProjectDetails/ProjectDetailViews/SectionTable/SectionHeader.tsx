@@ -14,7 +14,7 @@ import {
 } from "@chakra-ui/icons";
 import { Section } from "../../../../../types/types";
 import { FC } from "react";
-import { EllipsisHorizontal } from "../../../../UI/icons";
+import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 
 type SectionHeaderProps = {
   section: Section;
