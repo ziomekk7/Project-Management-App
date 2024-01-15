@@ -1,19 +1,26 @@
 import {
   Stack,
-  Text,
   Card,
   CardBody,
   Box,
   Heading,
   Button,
-  useOutsideClick,
+  Menu,
+  MenuItem,
+  MenuButton,
+  MenuList,
+  IconButton,
 } from "@chakra-ui/react";
 import { Project, Task } from "../../../../types/types";
-import { PRIORITY_COLORS } from "../../../../config";
 import { TaskPriority } from "../../../../types/types";
-import { format } from "date-fns";
-import { useRef, useState } from "react";
-import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
+import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
+import { AddIcon, DeleteIcon } from "@chakra-ui/icons";
+import DatePicker from "./SectionTable/DatePicker/DatePicker";
+import PriorityForm from "../PriorityForm/PriorityForm";
+import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
+import { CreateTaskCard } from "./CreateTaskCard/CreateTaskCard";
+import { useState } from "react";
+import { EditNameInput } from "./EditNameInput";
 
 const PRIORITY_LABELS: Record<TaskPriority, string> = {
   [TaskPriority.HIGH]: "High",
@@ -23,103 +30,171 @@ const PRIORITY_LABELS: Record<TaskPriority, string> = {
 };
 
 type ProjectDetailBoardView = {
-  project: Project;
-  onCreateTask:(sectionId:string, task:Task)=>void;
-  isCreatingTask: boolean;
+  isCreatingSection: boolean;
+  project: Project | null | undefined;
+  onOpenTaskDetails: (taskId: string, sectionId: string) => void;
+  isCreateSectionFormVisible: boolean;
+  onCreateSection: (name: string) => void;
+  onDeleteSection: (sectionId: string) => void;
+  onCreateTask: (task: Task, sectionId: string) => void;
+  onOpenCreateSectionForm: () => void;
+  onCloseCreateSectionForm: () => void;
+  onEditTask: (task: Task) => void;
+};
+
+type SectionMenuProps = {
+  onDeleteSection: () => void;
+};
+
+const SectionMenu: React.FC<SectionMenuProps> = ({ onDeleteSection }) => {
+  return (
+    <Menu>
+      <MenuButton
+        as={IconButton}
+        icon={<EllipsisHorizontal />}
+        variant="ghost"
+      />
+      <MenuList>
+        <MenuItem onClick={onDeleteSection} icon={<DeleteIcon />}>
+          Delete Section
+        </MenuItem>
+      </MenuList>
+    </Menu>
+  );
 };
 
 const ProjectDetailBoardView: React.FC<ProjectDetailBoardView> = ({
-  project, onCreateTask, isCreatingTask
+  isCreatingSection,
+  project,
+  onOpenTaskDetails,
+  isCreateSectionFormVisible,
+  onCreateSection,
+  onDeleteSection,
+  onCreateTask,
+  onOpenCreateSectionForm,
+  onCloseCreateSectionForm,
+  onEditTask,
 }) => {
-  const [onHideCreateTaskForm, setOnHideCreateTaskForm] = useState<
-    string | null
-  >(null);
-  const createTaskRef = useRef(null);
-  useOutsideClick({
-    ref: createTaskRef,
-    handler: () => setOnHideCreateTaskForm(null),
-  });
+  const [selectedDate, setSelectedDate] = useState<Date | null>();
+
   return (
-    <Stack direction="row" overflow="auto" h="85%">
-      {project.sections.map((section) => (
-        <Stack
-          mr={1}
-          ml={1}
-          maxW={72}
-          minW={60}
-          key={section.id}
-          className="test2"
-        >
-          <Card variant="outline" h="100%">
-            <Heading size="md" p={3}>
-              {section.name}
-            </Heading>
-            {section.tasks.length === 0 ? (
-              <Card>
-                <Button>Create Task</Button>
-              </Card>
-            ) : (
-              <Box overflow="auto">
-                {section.tasks.map((task) => (
+    <>
+      <Stack direction="row" overflow="auto" h="85%">
+        {project &&
+          project.sections.map((section) => (
+            <Stack
+              mr={1}
+              ml={1}
+              maxW={72}
+              minW={60}
+              key={section.id}
+              className="test2"
+            >
+              <Card variant="outline" h="100%" w={64} p={1}>
+                <Stack direction="row" alignItems="center">
+                  <Heading size="md" p={3}>
+                    {section.name}
+                  </Heading>
+                  <SectionMenu
+                    onDeleteSection={() => onDeleteSection(section.id)}
+                  />
+                </Stack>
+                {section.tasks.length === 0 ? (
                   <Card
-                    key={task.id}
-                    border="1px"
                     mb={2}
-                    borderColor="gray.600"
+                    h="100%"
+                    minH={80}
+                    bgGradient="linear(to-b, gray.700, gray.800)"
                   >
                     <CardBody>
-                      <Text mb={2} size="md">
-                        {task.name}
-                      </Text>
-                      <Stack>
-                        <Button
-                          mb={2}
-                          size="xs"
-                          maxW={20}
-                          bg={PRIORITY_COLORS[task.priority]}
-                          variant="outline"
-                        >
-                          {PRIORITY_LABELS[task.priority]}
-                        </Button>
-                        <Button
-                          mb={2}
-                          size="xs"
-                          maxW={20}
-                          bg="transparent"
-                          variant="outline"
-                        >
-                          {task.date ? format(task.date, "d/L/yyyy") : "---"}
-                        </Button>
-                      </Stack>
+                      <CreateTaskCard
+                        onCreateTask={(task) => onCreateTask(task, section.id)}
+                      />
                     </CardBody>
                   </Card>
-                ))}
-                {onHideCreateTaskForm === section.id ? (
-                  <Card
-                    ref={createTaskRef}
-                    border="1px"
-                    h={24}
-                    mt={2}
-                    borderColor="gray.600"
-                    justifyContent="center"
-                  >
-                    <CreateTaskForm
-                      onCreateTask={(task) => {onCreateTask(section.id, task), setOnHideCreateTaskForm(null)}}
-                      isCreatingTask={isCreatingTask}
-                      setAutoFocus={true}
-                    />
-                  </Card>
                 ) : (
-                  <Button onClick={() => setOnHideCreateTaskForm(section.id)}>
-                    Create Task
-                  </Button>
+                  <Box overflow="auto">
+                    {section.tasks.map((task) => (
+                      <div
+                        key={task.id}
+                        onClick={() => onOpenTaskDetails(task.id, section.id)}
+                      >
+                        <Card border="1px" mb={2} borderColor="gray.600">
+                          <CardBody>
+                            <EditNameInput
+                              task={task}
+                              onEditTask={onEditTask}
+                            />
+                            <Stack>
+                              <PriorityForm
+                                onChangePriority={(priority) => {
+                                  onEditTask({
+                                    ...task,
+                                    priority: priority,
+                                  });
+                                }}
+                                selectedPriority={task.priority}
+                              />
+                              {PRIORITY_LABELS[task.priority]}
+                              <DatePicker
+                                taskDate={task.date}
+                                selectedDate={
+                                  selectedDate ? selectedDate : null
+                                }
+                                onSelect={(date) => {
+                                  setSelectedDate(date);
+                                  onEditTask({
+                                    ...task,
+                                    date: date,
+                                  });
+                                }}
+                              />
+                            </Stack>
+                          </CardBody>
+                        </Card>
+                      </div>
+                    ))}
+                    <Card bg="transparent" mt={1} h={40}>
+                      <CardBody>
+                        <CreateTaskCard
+                          onCreateTask={(task) =>
+                            onCreateTask(task, section.id)
+                          }
+                        />
+                      </CardBody>
+                    </Card>
+                  </Box>
                 )}
-              </Box>
-            )}
-          </Card>
-        </Stack>
-      ))}
-    </Stack>
+              </Card>
+            </Stack>
+          ))}
+        <Card variant="outline" minH="100%" w={60} minW={60} p={1} ml={1}>
+          <Stack direction="row" justify="center" mb={2}>
+            {isCreateSectionFormVisible ? (
+              <CreateSectionForm
+                isCreatingSection={isCreatingSection}
+                onClose={() => onCloseCreateSectionForm()}
+                onCreateSection={(name) => onCreateSection(name)}
+              />
+            ) : !isCreatingSection ? (
+              <Button
+                leftIcon={<AddIcon />}
+                w="100%"
+                variant="outline"
+                onClick={() => onOpenCreateSectionForm()}
+              >
+                Create Section
+              </Button>
+            ) : null}
+          </Stack>
+          <Card
+            mb={2}
+            h="100%"
+            bgGradient="linear(to-b, gray.700, gray.800)"
+          ></Card>
+        </Card>
+      </Stack>
+    </>
   );
 };
 

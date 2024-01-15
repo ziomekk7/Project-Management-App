@@ -1,14 +1,8 @@
-import {
-  Input,
-  InputGroup,
-  InputRightAddon,
-  Button,
-  ButtonGroup,
-  Text,
-} from "@chakra-ui/react";
+import { Input, InputGroup, Text, useOutsideClick } from "@chakra-ui/react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRef } from "react";
 
 const createSectionFormSchema = z.object({
   newSection: z
@@ -22,6 +16,11 @@ type CreateSectionFormProps = {
   onCreateSection: (newSection: string) => void;
 };
 const CreateSectionForm: React.FC<CreateSectionFormProps> = (props) => {
+  const createSectionFormRef = useRef(null);
+  useOutsideClick({
+    ref: createSectionFormRef,
+    handler: () => props.onClose(),
+  });
   const {
     register,
     handleSubmit,
@@ -32,6 +31,7 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = (props) => {
 
   return (
     <form
+      ref={createSectionFormRef}
       onSubmit={handleSubmit((data) => {
         props.onCreateSection(data.newSection);
       })}
@@ -43,22 +43,6 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = (props) => {
           placeholder="Name of new section"
           autoFocus
         ></Input>
-        <InputRightAddon>
-          <ButtonGroup isAttached variant="outline">
-            <Button type="submit" size="md" variant="ghost" >
-              Create
-            </Button>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                props.onClose();
-              }}
-              size="md"
-            >
-              Cancel
-            </Button>
-          </ButtonGroup>
-        </InputRightAddon>
       </InputGroup>
       {errors.newSection?.message && <Text>{errors.newSection?.message}</Text>}
     </form>

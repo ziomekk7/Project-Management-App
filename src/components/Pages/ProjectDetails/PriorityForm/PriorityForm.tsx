@@ -12,28 +12,27 @@ const PRIORITY_LABELS: Record<TaskPriority, string> = {
 type PriorityFormProps = {
   onChangePriority: (priority: TaskPriority) => void;
   selectedPriority: TaskPriority;
-  isLoadingPriority: boolean;
 };
 
 const PriorityForm: React.FC<PriorityFormProps> = ({
   onChangePriority,
   selectedPriority,
-  isLoadingPriority,
 }) => {
   return (
     <Menu>
       <MenuButton
+        w={120}
         bg={
           !selectedPriority ? "transparent" : PRIORITY_COLORS[selectedPriority]
         }
         as={Button}
         _hover={{ bg: PRIORITY_COLORS_HOVER[selectedPriority] }}
-        isLoading={isLoadingPriority}
+        onClick={(e) => e.stopPropagation()}
       >
         {PRIORITY_LABELS[selectedPriority]}
       </MenuButton>
 
-      <MenuList overflow="hidden" p={2}>
+      <MenuList overflow="hidden" p={2} >
         {Object.values(TaskPriority).map((priority) => (
           <MenuItem
             mb={2}
@@ -41,7 +40,9 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
             as={Button}
             bg={PRIORITY_COLORS[priority]}
             _hover={{ bg: PRIORITY_COLORS_HOVER[priority] }}
-            onClick={() => onChangePriority(priority)}
+            onClick={(e) => {
+              onChangePriority(priority), e.stopPropagation();
+            }}
           >
             {PRIORITY_LABELS[priority]}
           </MenuItem>

@@ -21,7 +21,6 @@ type SectionHeaderProps = {
   onDeleteSection: () => void;
   onToggleHideSection: () => void;
   hiddenSections: string[];
-  actuallyDeletingSections: string[];
 };
 
 const SectionHeader: FC<SectionHeaderProps> = ({
@@ -29,7 +28,6 @@ const SectionHeader: FC<SectionHeaderProps> = ({
   onDeleteSection,
   onToggleHideSection,
   hiddenSections,
-  actuallyDeletingSections,
 }) => {
   return (
     <Stack
@@ -57,7 +55,6 @@ const SectionHeader: FC<SectionHeaderProps> = ({
       </Heading>
       <Menu>
         <MenuButton
-          isLoading={actuallyDeletingSections.includes(section.id)}
           as={IconButton}
           icon={<EllipsisHorizontal />}
           variant="ghost"

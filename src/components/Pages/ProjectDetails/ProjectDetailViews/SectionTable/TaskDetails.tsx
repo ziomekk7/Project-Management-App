@@ -29,41 +29,31 @@ import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 
 type TaskDetailsProps = {
   task: Task;
-  onChangePriority: (priority: TaskPriority) => void;
-  onChangeDescription: (description: string | null) => void;
+  onEditTask: (task: Task) => void;
   selectedPriority: TaskPriority;
-  isLoadingDate: boolean;
-  isLoadingPriority: boolean;
   taskDate: Date | null;
   selectedDate: Date | null;
-  onChangeDate: (selectedDate: Date) => void;
   onDeleteTask: (taskId: string) => void;
-  isDeletingTask: boolean;
   isOpenMenu: boolean;
   onClose: () => void;
   onDuplicateTask: (task: Task) => void;
 };
 const TaskDetails: React.FC<TaskDetailsProps> = ({
   task,
-  onChangePriority,
   selectedPriority,
-  isLoadingDate,
   taskDate,
   selectedDate,
-  onChangeDate,
-  onChangeDescription,
+  onEditTask,
   onDeleteTask,
-  isDeletingTask,
   isOpenMenu,
   onClose,
   onDuplicateTask,
-  isLoadingPriority,
 }) => {
   const duplicateTaskModal = useDisclosure();
   const [inputValue, setInputValue] = useState(task.description);
-  const [debouncedValue] = useDebounce(inputValue, 200);
+  const [debouncedValue] = useDebounce(inputValue, 2000);
   useEffect(() => {
-    onChangeDescription(debouncedValue);
+    onEditTask({ ...task, description: debouncedValue });
   }, [debouncedValue]);
 
   const handleChangeDescription = (description: string) => {
@@ -88,15 +78,15 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 <MenuButton
                   as={IconButton}
                   icon={<EllipsisHorizontal />}
-                  // TODO isLoading = actuallyDeletingTasks ???
-                  isLoading={isDeletingTask}
                   variant="ghost"
                   ml={2.5}
                 />
                 <MenuList>
                   <MenuItem
                     icon={<DeleteIcon />}
-                    onClick={() => onDeleteTask(task.id)}
+                    onClick={() => {
+                      onDeleteTask(task.id), onClose();
+                    }}
                   >
                     Delete
                   </MenuItem>
@@ -113,17 +103,19 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             <Stack display="flex" alignItems="center" direction="row" mt={1.5}>
               <Text>Execution Date </Text>
               <DatePicker
-                isLoadingDate={isLoadingDate}
                 taskDate={taskDate}
                 selectedDate={selectedDate}
-                onSelect={(selectedDate) => onChangeDate(selectedDate)}
+                onSelect={(selectedDate) =>
+                  onEditTask({ ...task, date: selectedDate })
+                }
               />
             </Stack>
             <Stack mt={1.5} direction="row" display="flex" alignItems="center">
               <Text>Priority</Text>
               <PriorityForm
-                isLoadingPriority={isLoadingPriority}
-                onChangePriority={onChangePriority}
+                onChangePriority={(priority) =>
+                  onEditTask({ ...task, priority: priority })
+                }
                 selectedPriority={selectedPriority}
               />
             </Stack>
