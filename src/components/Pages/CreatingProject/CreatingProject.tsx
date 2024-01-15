@@ -67,10 +67,11 @@ const CreatingProject = () => {
                 autoFocus
               />
 
-              <Flex direction="row" justify="space-between">
+              <Flex direction="row" justify="space-between" m={2}>
                 <Button
                   isLoading={createProjectMutation.isPending}
                   type="submit"
+                  m={1}
                 >
                   Create
                 </Button>
@@ -78,6 +79,7 @@ const CreatingProject = () => {
                   isDisabled={createProjectMutation.isPending}
                   as={Link}
                   to={routes.home()}
+                  m={1}
                 >
                   Cancel
                 </Button>

@@ -1,4 +1,4 @@
-import { Stack, Button, Heading, Text,  } from "@chakra-ui/react";
+import { Stack, Button, Heading, Text } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../../queryKeys";
@@ -17,39 +17,36 @@ const Menu = () => {
   }
 
   return (
-      <Stack
-        direction="column"
-        alignItems="center"
-        bg="gray.700"
-        h="100%"
-        w="100%"
-      >
-        
-        <Button variant="outline" maxW={36} p={1}  leftIcon={<AddIcon />}>
-          <Link  to={routes.projects.create()}>
-            Create Project
-          </Link>
-        </Button>
-        {projectsQuery.data && projectsQuery.data.length === 0 && (
-          <Text>No Projects</Text>
-        )}
+    <Stack
+      direction="column"
+      alignItems="center"
+      bg="gray.700"
+      h="100%"
+      w="100%"
+    >
+      <Button variant="outline" maxW={36} p={1} leftIcon={<AddIcon />}>
+        <Link to={routes.projects.create()}>Create Project</Link>
+      </Button>
+      {projectsQuery.data && projectsQuery.data.length === 0 && (
+        <Text>No Projects</Text>
+      )}
 
-        {projectsQuery.data && projectsQuery.data.length > 0 && (
-          <>
-            <Heading as="h2" size="md">
-              All Projects
-            </Heading>
+      {projectsQuery.data && projectsQuery.data.length > 0 && (
+        <>
+          <Heading as="h2" size="md">
+            All Projects
+          </Heading>
 
-            {projectsQuery.data.map((project) => (
-              <Button key={project.id} variant="ghost">
-                <Link to={routes.projects.details({ projectId: project.id })}>
-                  {project.name}
-                </Link>
-              </Button>
-            ))}
-          </>
-        )}
-      </Stack>
+          {projectsQuery.data.map((project) => (
+            <Button key={project.id} variant="ghost">
+              <Link to={routes.projects.details({ projectId: project.id })}>
+                {project.name}
+              </Link>
+            </Button>
+          ))}
+        </>
+      )}
+    </Stack>
   );
 };
 

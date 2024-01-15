@@ -6,86 +6,36 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  useDisclosure,
-  Input,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Task } from "../../../../../types/types";
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import "react-day-picker/dist/style.css";
 import PriorityForm from "../../PriorityForm/PriorityForm";
-import TaskDetails from "./TaskDetails";
 import DatePicker from "./DatePicker/DatePicker";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useDebounce } from "use-debounce";
 import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
+import { EditNameInput } from "../EditNameInput";
 
 type TaskRowProps = {
-  actuallyDeletingTasks: string[];
+  onChangePriority: (task: Task) => void;
+  onChangeDate: (task: Task) => void;
   onDeleteTask: (taskId: string) => void;
   task: Task;
   onEditTask: (task: Task) => void;
   onDuplicateTask: (task: Task) => void;
+  onOpenTaskDetails: (taskId: string) => void;
 };
 
-const createTaskFormSchema = z.object({
-  newTaskName: z
-    .string()
-    .min(1, { message: "Name must contain at least 2 character(s)" }),
-});
-
 const TaskRow: FC<TaskRowProps> = ({
-  actuallyDeletingTasks,
   onDeleteTask,
   task,
   onEditTask,
-  onDuplicateTask,
+  onOpenTaskDetails,
+  onChangeDate,
+  onChangePriority,
 }) => {
   const [selectedDate, setSelectedDate] = useState(task.date);
-  const [isLoadingDate, setIsLoadingDate] = useState(false);
-  const [isLoadingPriority, setIsLoadingPriority] = useState(false);
-  const [taskName, setTaskName] = useState(task.name);
-  const taskDetailsDrawer = useDisclosure();
-  const [debouncedValue] = useDebounce(taskName, 200);
-  useEffect(() => {
-    onEditTask({
-      name: debouncedValue,
-      id: task.id,
-      date: task.date,
-      priority: task.priority,
-      description: task.description,
-    });
-  }, [debouncedValue]);
-
-  useEffect(() => {
-    return () => {
-      setIsLoadingDate(false);
-      setIsLoadingPriority(false);
-    };
-  }, [task]);
-
-  const { register, handleSubmit } = useForm<
-    z.infer<typeof createTaskFormSchema>
-  >({
-    resolver: zodResolver(createTaskFormSchema),
-  });
-
-  const handleChangeTask = (editedTask: Task) => {
-    if (editedTask.date === task.date) {
-      onEditTask(editedTask);
-      return;
-    }
-
-    setSelectedDate(editedTask.date);
-    onEditTask(editedTask);
-  };
-  const handleCheckDeletingTaskStatus = () => {
-    const deletingTaskStatus = actuallyDeletingTasks.includes(task.id);
-    return deletingTaskStatus;
-  };
 
   return (
     <>
@@ -102,30 +52,15 @@ const TaskRow: FC<TaskRowProps> = ({
           alignItems="center"
           justifyContent="space-between"
         >
-          <form
-            onSubmit={handleSubmit((data) => {
-              onEditTask({
-                name: data.newTaskName,
-                id: task.id,
-                date: task.date,
-                priority: task.priority,
-                description: task.description,
-              });
-            })}
-          >
-            <Input
-              {...register("newTaskName")}
-              onChange={(e) => setTaskName(e.target.value)}
-              border="none"
-              value={taskName}
-            ></Input>
-          </form>
+          <EditNameInput
+            task={task}
+            onEditTask={onEditTask}
+          />
           <Menu>
             <MenuButton
               ml={2.5}
               as={IconButton}
               icon={<EllipsisHorizontal />}
-              isLoading={handleCheckDeletingTaskStatus()}
               variant="ghost"
             />
             <MenuList>
@@ -136,7 +71,7 @@ const TaskRow: FC<TaskRowProps> = ({
                 Delete Task
               </MenuItem>
               <MenuItem
-                onClick={taskDetailsDrawer.onOpen}
+                onClick={() => onOpenTaskDetails(task.id)}
                 icon={<ChevronRightIcon />}
               >
                 Task Details
@@ -151,12 +86,11 @@ const TaskRow: FC<TaskRowProps> = ({
           justifyContent="center"
         >
           <DatePicker
-            isLoadingDate={isLoadingDate}
             taskDate={task.date}
             selectedDate={selectedDate}
             onSelect={(date) => {
-              setIsLoadingDate(true);
-              handleChangeTask({
+              setSelectedDate(date);
+              onChangeDate({
                 name: task.name,
                 id: task.id,
                 date: date,
@@ -175,8 +109,7 @@ const TaskRow: FC<TaskRowProps> = ({
         >
           <PriorityForm
             onChangePriority={(priority) => {
-              setIsLoadingPriority(true);
-              handleChangeTask({
+              onChangePriority({
                 name: task.name,
                 id: task.id,
                 date: task.date,
@@ -185,52 +118,9 @@ const TaskRow: FC<TaskRowProps> = ({
               });
             }}
             selectedPriority={task.priority}
-            isLoadingPriority={isLoadingPriority}
           />
         </GridItem>
       </Grid>
-      <TaskDetails
-        isLoadingPriority={isLoadingPriority}
-        onClose={taskDetailsDrawer.onClose}
-        isOpenMenu={taskDetailsDrawer.isOpen}
-        isDeletingTask={handleCheckDeletingTaskStatus()}
-        isLoadingDate={isLoadingDate}
-        taskDate={task.date}
-        selectedDate={selectedDate}
-        onDuplicateTask={(task) => onDuplicateTask(task)}
-        onChangeDate={(date) => {
-          setIsLoadingDate(true);
-          handleChangeTask({
-            name: task.name,
-            id: task.id,
-            date: date,
-            priority: task.priority,
-            description: task.description,
-          });
-        }}
-        onChangePriority={(priority) => {
-          setIsLoadingPriority(true);
-          handleChangeTask({
-            name: task.name,
-            id: task.id,
-            date: task.date,
-            priority: priority,
-            description: task.description,
-          });
-        }}
-        onChangeDescription={(description) =>
-          handleChangeTask({
-            name: task.name,
-            id: task.id,
-            date: task.date,
-            priority: task.priority,
-            description: description,
-          })
-        }
-        onDeleteTask={(taskId) => onDeleteTask(taskId)}
-        selectedPriority={task.priority}
-        task={task}
-      />
     </>
   );
 };

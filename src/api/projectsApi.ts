@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { Project } from "../types/types";
 import { delay } from "../utils/asyns";
 import * as z from "zod";
@@ -12,17 +11,15 @@ export type CreateProjectData = {
 export type CreateProjectSectionData = {
   projectId: string;
   newSection: string;
+  newSectionId:string;
 };
 
 export type CreateTaskData = {
-  projectId: string;
   sectionId: string;
   task: Task;
 };
 
 export type DeleteTaskData = {
-  projectId: string;
-  sectionId: string;
   taskId: string;
 };
 
@@ -36,8 +33,6 @@ export type DeleteProjectData = {
 };
 
 export type EditTask = {
-  projectId: string;
-  sectionId: string;
   task: Task;
 };
 
@@ -76,7 +71,7 @@ const saveProjects = async (projects: Project[]) => {
 };
 
 export const getProjects = async (): Promise<Project[]> => {
-  await delay(200);
+  await delay(2000);
 
   const rawProjects = localStorage.getItem(PROJECTS_KEY);
   if (!rawProjects) {
@@ -94,7 +89,7 @@ export const getProjects = async (): Promise<Project[]> => {
 };
 
 export const getProjectById = async (projectId: string) => {
-  await delay(1110);
+  
 
   const projects = await getProjects();
 
@@ -114,68 +109,88 @@ export const createProjectSection = async (data: CreateProjectSectionData) => {
     return;
   }
 
-  project.sections.push({ name: data.newSection, id: uuidv4(), tasks: [] });
+  project.sections.push({ name: data.newSection, id: data.newSectionId, tasks: [] });
   await saveProjects(projects);
 };
 
 export const createTask = async (data: CreateTaskData) => {
   const projects = await getProjects();
-  const project = projects.find((project) => project.id === data.projectId);
+  const project = projects.find((project) =>
+    project.sections.find((section) => section.id == data.sectionId)
+  );
   if (!project) {
     return;
   }
-
   const section = project.sections.find(
     (section) => section.id === data.sectionId
   );
   if (!section) {
     return;
   }
-
   section.tasks.push(data.task);
-
   await saveProjects(projects);
 };
 
-export const editTask = async (data: EditTask) => {
+export const getTaskById = async (taskId: string) => {
   const projects = await getProjects();
-  const project = projects.find((project) => project.id === data.projectId);
+  const project = projects.find((project) =>
+    project.sections.find((section) =>
+      section.tasks.find((task) => taskId == task.id)
+    )
+  );
   if (!project) {
     return;
   }
-
-  const section = project.sections.find(
-    (section) => section.id === data.sectionId
+  const section = project.sections.find((section) =>
+    section.tasks.find((task) => taskId == task.id)
   );
   if (!section) {
     return;
   }
 
-  const taskIndex = section.tasks.findIndex((task) => task.id === data.task.id);
-  const task = section.tasks[taskIndex];
-  if (!task) {
-    return;
-  }
-
-  section.tasks.splice(taskIndex, 1, data.task);
-  await saveProjects(projects);
+  return section.tasks.find((task) => taskId == task.id);
 };
 
-export const deleteTask = async (data: DeleteTaskData) => {
+export const editTask = async (editedTask: Task) => {
   const projects = await getProjects();
-  const project = projects.find((project) => project.id === data.projectId);
+  const project = projects.find((project) =>
+    project.sections.find((section) =>
+      section.tasks.find((task) => task.id === editedTask.id)
+    )
+  );
   if (!project) {
     return;
   }
-
-  const section = project.sections.find(
-    (section) => section.id === data.sectionId
+  const section = project.sections.find((section) =>
+    section.tasks.find((task) => task.id === editedTask.id)
   );
   if (!section) {
     return;
   }
+  const taskIndex = section.tasks.findIndex(
+    (task) => task.id === editedTask.id
+  );
+  section.tasks.splice(taskIndex, 1, editedTask);
+  await saveProjects(projects);
+};
 
-  const taskIndex = section.tasks.findIndex((task) => task.id === data.taskId);
+export const deleteTask = async (taskId: string) => {
+  const projects = await getProjects();
+  const project = projects.find((project) =>
+    project.sections.find((section) =>
+      section.tasks.find((task) => task.id === taskId)
+    )
+  );
+  if (!project) {
+    return;
+  }
+  const section = project.sections.find((section) =>
+    section.tasks.find((task) => task.id === taskId)
+  );
+  if (!section) {
+    return;
+  }
+  const taskIndex = section.tasks.findIndex((task) => task.id === taskId);
   section.tasks.splice(taskIndex, 1);
   await saveProjects(projects);
 };
