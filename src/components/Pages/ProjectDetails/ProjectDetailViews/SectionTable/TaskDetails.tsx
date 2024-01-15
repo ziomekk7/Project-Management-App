@@ -25,7 +25,7 @@ import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import DuplicateTaskModal from "./DuplicateTaskModal";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { EllipsisHorizontal } from "../../../../UI/icons";
+import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 
 type TaskDetailsProps = {
   task: Task;

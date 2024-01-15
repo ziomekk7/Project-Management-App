@@ -20,8 +20,8 @@ import { ChevronRightIcon } from "@chakra-ui/icons";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useDebounce} from "use-debounce";
-import { EllipsisHorizontal } from "../../../../UI/icons";
+import { useDebounce } from "use-debounce";
+import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 
 type TaskRowProps = {
   actuallyDeletingTasks: string[];

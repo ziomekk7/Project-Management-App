@@ -15,6 +15,7 @@ const CreateTaskRow: FC<CreateTaskRowProps> = ({
   return (
     <Flex p={5} w="100%">
       <CreateTaskForm
+        setAutoFocus={false}
         onCreateTask={(task) => onCreateTask(task)}
         isCreatingTask={isCreatingTask}
       />
