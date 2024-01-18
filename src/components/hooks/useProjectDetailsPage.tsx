@@ -1,9 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState,
-  //  useReducer 
-  } from "react";
+import {
+  useEffect,
+  useState,
+  //  useReducer
+} from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Project, Task} from "../../types/types";
+import { Project, Task } from "../../types/types";
 import {
   getProjectById,
   getTaskById,
@@ -16,12 +18,13 @@ import {
   CreateTaskData,
   CreateProjectSectionData,
   DeleteSectionData,
+  ChangeSectionLocation,
+  changeSectionLocation,
 } from "../../api/projectsApi";
 import { queryKeys } from "../../queryKeys";
 import { useDisclosure } from "@chakra-ui/react";
 import { routes } from "../../routes";
 import { v4 as uuidv4 } from "uuid";
-
 
 export const useProjectDetailsPage = () => {
   const [hiddenSections, setHiddenSection] = useState<string[]>([]);
@@ -221,6 +224,47 @@ export const useProjectDetailsPage = () => {
     },
   });
 
+  const changeSectionLocationMutation = useMutation({
+    mutationFn: changeSectionLocation,
+    onMutate: async ({
+      projectId,
+      sourceIndex,
+      destinationIndex,
+    }: ChangeSectionLocation) => {
+      const queryKey = queryKeys.projects.details({ projectId });
+      await queryClient.cancelQueries({ queryKey });
+      const previousProject = queryClient.getQueryData(queryKey);
+      if (!projectQuery.data) {
+        return;
+      }
+      const movedSection = projectQuery.data.sections[sourceIndex];
+      const project = projectQuery.data;
+      project.sections.splice(sourceIndex, 1),
+        project.sections.splice(destinationIndex, 0, movedSection);
+      if (!movedSection) {
+        return;
+      }
+      queryClient.setQueryData(
+        queryKey,
+        (prevProject: Project): Project => ({
+          ...prevProject,
+          sections: project.sections,
+        })
+      );
+
+      return { previousProject };
+    },
+    onError: (_, __, context) => {
+      queryClient.setQueryData(
+        queryKeys.projects.details({ projectId }),
+        context?.previousProject
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() });
+    },
+  });
+
   const handleCreateSection = (newSection: string) => {
     setIsCreatingSection(true);
     const newSectionId = uuidv4();
@@ -290,17 +334,6 @@ export const useProjectDetailsPage = () => {
     handleEditTask({ ...editedTask, description: description });
   };
 
-  // const handleChangeDate = (task:Task) => {
-   
-  //   handleEditTask(task);
-  // };
-
-  // const handleChangePriority = async (
-  //   task:Task
-  // ) => {
-  //   handleEditTask(task);
-  // };
-
   const handleChangeView = (view: string) => {
     setSelectedView(view);
   };
@@ -320,10 +353,19 @@ export const useProjectDetailsPage = () => {
   const handleCloseCreateSectionForm = () => {
     setIsCreateSectionFormVisible(false);
   };
+  const handleChangeSectionLocation = ({
+    projectId,
+    sourceIndex,
+    destinationIndex,
+  }: ChangeSectionLocation) => {
+    changeSectionLocationMutation.mutate({
+      projectId,
+      sourceIndex,
+      destinationIndex,
+    });
+  };
 
   return {
-    // handleChangePriority,
-    // handleChangeDate,
     handleDeleteTask,
     handleCreateTask,
     handleHideSection,
@@ -333,10 +375,11 @@ export const useProjectDetailsPage = () => {
       deleteProjectMutation.mutate({ projectId }),
     handleChangeView,
     handleSetOpenTaskDetailLocation,
-    handleEditTask:(task:Task)=> editTaskMutation.mutate(task),
+    handleEditTask: (task: Task) => editTaskMutation.mutate(task),
     handleOpenCreateSectionForm,
     handleCloseCreateSectionForm,
     handleEditDescription,
+    handleChangeSectionLocation,
     selectedView: selectedView,
     selectedDate: selectedDate,
     isCreateSectionFormVisible: isCreateSectionFormVisible,

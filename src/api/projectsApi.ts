@@ -11,7 +11,7 @@ export type CreateProjectData = {
 export type CreateProjectSectionData = {
   projectId: string;
   newSection: string;
-  newSectionId:string;
+  newSectionId: string;
 };
 
 export type CreateTaskData = {
@@ -34,6 +34,12 @@ export type DeleteProjectData = {
 
 export type EditTask = {
   task: Task;
+};
+
+export type ChangeSectionLocation = {
+  projectId: string;
+  sourceIndex: number;
+  destinationIndex: number;
 };
 
 const projectsSchema = z.array(
@@ -89,8 +95,6 @@ export const getProjects = async (): Promise<Project[]> => {
 };
 
 export const getProjectById = async (projectId: string) => {
-  
-
   const projects = await getProjects();
 
   return projects.find((project) => project.id === projectId) || null;
@@ -109,7 +113,11 @@ export const createProjectSection = async (data: CreateProjectSectionData) => {
     return;
   }
 
-  project.sections.push({ name: data.newSection, id: data.newSectionId, tasks: [] });
+  project.sections.push({
+    name: data.newSection,
+    id: data.newSectionId,
+    tasks: [],
+  });
   await saveProjects(projects);
 };
 
@@ -214,5 +222,16 @@ export const deleteProject = async (data: DeleteProjectData) => {
     (project) => project.id === data.projectId
   );
   projects.splice(projectIndex, 1);
+  await saveProjects(projects);
+};
+
+export const changeSectionLocation = async (data:ChangeSectionLocation) => {
+  const projects = await getProjects();
+  const projectIndex = projects.findIndex(
+    (project) => project.id === data.projectId
+  );
+  const section = projects[projectIndex].sections[data.sourceIndex];
+  projects[projectIndex].sections.splice(data.sourceIndex, 1)
+  projects[projectIndex].sections.splice(data.destinationIndex, 0, section);
   await saveProjects(projects);
 };

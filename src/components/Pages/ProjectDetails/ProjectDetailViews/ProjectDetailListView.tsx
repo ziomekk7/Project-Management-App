@@ -6,6 +6,9 @@ import ExampleTaskRow from "./SectionTable/ExampleTaskRow";
 import TaskRow from "./SectionTable/TaskRow";
 import CreateTaskRow from "./SectionTable/CreateTaskRow";
 import { AddIcon } from "@chakra-ui/icons";
+import { DragDropContext, Draggable, DropResult } from "react-beautiful-dnd";
+import { StrictModeDroppable } from "../StrictModrDroppable";
+import { ChangeSectionLocation } from "../../../../api/projectsApi";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
@@ -22,6 +25,7 @@ type ProjectDetailListViewProps = {
   hiddenSections: string[];
   onHideSectionId: (sectionId: string) => void;
   onDuplicateTask: (task: Task, sectionId: string) => void;
+  onChangeSectionLocation: (data: ChangeSectionLocation) => void;
 };
 
 const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
@@ -38,48 +42,95 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   isCreatingSection,
   onCloseCreateSectionForm,
   onCreateSection,
-  onOpenCreateSectionForm
+  onOpenCreateSectionForm,
+  onChangeSectionLocation,
 }) => {
+  const handleDragAndDrop = (results: DropResult) => {
+    if (
+      results.source.droppableId === results.destination?.droppableId &&
+      results.source.index === results.destination.index
+    ) {
+      return;
+    }
+    if (!project) {
+      return;
+    }
+    if (!results.destination) {
+      return;
+    }
+    onChangeSectionLocation({
+      projectId: project.id,
+      sourceIndex: results.source.index,
+      destinationIndex: results.destination.index,
+    });
+  };
   return (
     <Stack overflow="auto" h="85%">
       <ExampleTaskRow />
-      {project &&
-        project.sections.map((section) => (
-          <div key={section.id}>
-            <SectionHeader
-              section={section}
-              onDeleteSection={() => onDeleteSection(section.id)}
-              onToggleHideSection={() => onHideSectionId(section.id)}
-              hiddenSections={hiddenSections}
-            />
+      <DragDropContext onDragEnd={handleDragAndDrop}>
+        {project ? (
+          <StrictModeDroppable droppableId={project.id}>
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef}>
+                {project.sections.map((section, index) => (
+                  <Draggable
+                    index={index}
+                    key={section.id}
+                    draggableId={section.id}
+                  >
+                    {(provided) => (
+                      <div
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        ref={provided.innerRef}
+                      >
+                        <SectionHeader
+                          section={section}
+                          onDeleteSection={() => onDeleteSection(section.id)}
+                          onToggleHideSection={() =>
+                            onHideSectionId(section.id)
+                          }
+                          hiddenSections={hiddenSections}
+                        />
 
-            {!hiddenSections.some((sectionId) => sectionId === section.id) && (
-              <div>
-                {section.tasks.map((task) => (
-                  <TaskRow
-                    onChangeDate={(task) => onEditTask(task)}
-                    onChangePriority={(task) => onEditTask(task)}
-                    onOpenTaskDetails={(task) =>
-                      onOpenTaskDetails(task, section.id)
-                    }
-                    onDuplicateTask={(task) =>
-                      onDuplicateTask(task, section.id)
-                    }
-                    key={task.id}
-                    task={task}
-                    onDeleteTask={onDeleteTask}
-                    onEditTask={onEditTask}
-                  />
+                        {!hiddenSections.some(
+                          (sectionId) => sectionId === section.id
+                        ) && (
+                          <div>
+                            {section.tasks.map((task) => (
+                              <TaskRow
+                                onChangeDate={(task) => onEditTask(task)}
+                                onChangePriority={(task) => onEditTask(task)}
+                                onOpenTaskDetails={(task) =>
+                                  onOpenTaskDetails(task, section.id)
+                                }
+                                onDuplicateTask={(task) =>
+                                  onDuplicateTask(task, section.id)
+                                }
+                                key={task.id}
+                                task={task}
+                                onDeleteTask={onDeleteTask}
+                                onEditTask={onEditTask}
+                              />
+                            ))}
+                            <CreateTaskRow
+                              onCreateTask={(task) => {
+                                onCreateTask(task, section.id);
+                              }}
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </Draggable>
                 ))}
-                <CreateTaskRow
-                  onCreateTask={(task) => {
-                    onCreateTask(task, section.id);
-                  }}
-                />
+                {provided.placeholder}
               </div>
             )}
-          </div>
-        ))}
+          </StrictModeDroppable>
+        ) : null}
+      </DragDropContext>
+
       <Stack p={4} w="md">
         {isCreateSectionFormVisible ? (
           <CreateSectionForm
@@ -89,7 +140,11 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
           />
         ) : !isCreatingSection ? (
           <Box>
-            <Button leftIcon={<AddIcon />} variant="outline" onClick={() => onOpenCreateSectionForm()}>
+            <Button
+              leftIcon={<AddIcon />}
+              variant="outline"
+              onClick={() => onOpenCreateSectionForm()}
+            >
               Create Section
             </Button>
           </Box>
