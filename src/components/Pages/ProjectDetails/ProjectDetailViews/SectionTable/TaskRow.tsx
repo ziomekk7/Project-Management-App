@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Task } from "../../../../../types/types";
-import { FC, useState } from "react";
+import { useState } from "react";
 import "react-day-picker/dist/style.css";
 import PriorityForm from "../../PriorityForm/PriorityForm";
 import DatePicker from "./DatePicker/DatePicker";
@@ -22,12 +22,13 @@ type TaskRowProps = {
   onChangeDate: (task: Task) => void;
   onDeleteTask: (taskId: string) => void;
   task: Task;
+  sectionId: string;
   onEditTask: (task: Task) => void;
   onDuplicateTask: (task: Task) => void;
   onOpenTaskDetails: (taskId: string) => void;
 };
 
-const TaskRow: FC<TaskRowProps> = ({
+const TaskRow: React.FC<TaskRowProps> = ({
   onDeleteTask,
   task,
   onEditTask,
@@ -38,90 +39,81 @@ const TaskRow: FC<TaskRowProps> = ({
   const [selectedDate, setSelectedDate] = useState(task.date);
 
   return (
-    <>
-      <Grid
-        h={16}
-        templateColumns="2fr 1fr 1fr "
-        borderBottom="1px solid black"
+    <Grid h={16} templateColumns="2fr 1fr 1fr " borderBottom="1px solid black">
+      <GridItem
+        p={2}
+        ml={10}
+        borderRight="1px solid black"
+        display="flex"
+        alignItems="center"
+        justifyContent="space-between"
       >
-        <GridItem
-          p={2}
-          ml={10}
-          borderRight="1px solid black"
-          display="flex"
-          alignItems="center"
-          justifyContent="space-between"
-        >
-          <EditNameInput
-            task={task}
-            onEditTask={onEditTask}
+        <EditNameInput task={task} onEditTask={onEditTask} />
+        <Menu>
+          <MenuButton
+            ml={2.5}
+            as={IconButton}
+            icon={<EllipsisHorizontal />}
+            variant="ghost"
           />
-          <Menu>
-            <MenuButton
-              ml={2.5}
-              as={IconButton}
-              icon={<EllipsisHorizontal />}
-              variant="ghost"
-            />
-            <MenuList>
-              <MenuItem
-                onClick={() => onDeleteTask(task.id)}
-                icon={<DeleteIcon />}
-              >
-                Delete Task
-              </MenuItem>
-              <MenuItem
-                onClick={() => onOpenTaskDetails(task.id)}
-                icon={<ChevronRightIcon />}
-              >
-                Task Details
-              </MenuItem>
-            </MenuList>
-          </Menu>
-        </GridItem>
-        <GridItem
-          borderRight="1px solid black"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <DatePicker
-            taskDate={task.date}
-            selectedDate={selectedDate}
-            onSelect={(date) => {
-              setSelectedDate(date);
-              onChangeDate({
-                name: task.name,
-                id: task.id,
-                date: date,
-                priority: task.priority,
-                description: task.description,
-              });
-            }}
-          />
-        </GridItem>
-        <GridItem
-          borderRight="1px solid black"
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-start"
-          ml={5}
-        >
-          <PriorityForm
-            onChangePriority={(priority) => {
-              onChangePriority({
-                name: task.name,
-                id: task.id,
-                date: task.date,
-                priority: priority,
-                description: task.description,
-              });
-            }}
-            selectedPriority={task.priority}
-          />
-        </GridItem>
-      </Grid>
-    </>
+          <MenuList>
+            <MenuItem
+              onClick={() => onDeleteTask(task.id)}
+              icon={<DeleteIcon />}
+            >
+              Delete Task
+            </MenuItem>
+            <MenuItem
+              onClick={() => onOpenTaskDetails(task.id)}
+              icon={<ChevronRightIcon />}
+            >
+              Task Details
+            </MenuItem>
+          </MenuList>
+        </Menu>
+      </GridItem>
+      <GridItem
+        borderRight="1px solid black"
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <DatePicker
+          taskDate={task.date}
+          selectedDate={selectedDate}
+          onSelect={(date) => {
+            setSelectedDate(date);
+            onChangeDate({
+              name: task.name,
+              id: task.id,
+              date: date,
+              priority: task.priority,
+              description: task.description,
+            });
+          }}
+        />
+      </GridItem>
+      <GridItem
+        borderRight="1px solid black"
+        display="flex"
+        alignItems="center"
+        justifyContent="flex-start"
+        ml={5}
+      >
+        <PriorityForm
+          onChangePriority={(priority) => {
+            onChangePriority({
+              name: task.name,
+              id: task.id,
+              date: task.date,
+              priority: priority,
+              description: task.description,
+            });
+          }}
+          selectedPriority={task.priority}
+        />
+      </GridItem>
+    </Grid>
   );
 };
 

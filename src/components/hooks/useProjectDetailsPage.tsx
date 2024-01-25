@@ -1,9 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  useEffect,
-  useState,
-  //  useReducer
-} from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Project, Task } from "../../types/types";
 import {
@@ -18,13 +14,14 @@ import {
   CreateTaskData,
   CreateProjectSectionData,
   DeleteSectionData,
-  ChangeSectionLocation,
   changeSectionLocation,
+  changeTaskLocation,
 } from "../../api/projectsApi";
 import { queryKeys } from "../../queryKeys";
 import { useDisclosure } from "@chakra-ui/react";
 import { routes } from "../../routes";
 import { v4 as uuidv4 } from "uuid";
+import { DropResult } from "react-beautiful-dnd";
 
 export const useProjectDetailsPage = () => {
   const [hiddenSections, setHiddenSection] = useState<string[]>([]);
@@ -226,24 +223,62 @@ export const useProjectDetailsPage = () => {
 
   const changeSectionLocationMutation = useMutation({
     mutationFn: changeSectionLocation,
-    onMutate: async ({
-      projectId,
-      sourceIndex,
-      destinationIndex,
-    }: ChangeSectionLocation) => {
+    onMutate: async (data: DropResult) => {
       const queryKey = queryKeys.projects.details({ projectId });
       await queryClient.cancelQueries({ queryKey });
       const previousProject = queryClient.getQueryData(queryKey);
       if (!projectQuery.data) {
         return;
       }
-      const movedSection = projectQuery.data.sections[sourceIndex];
+      const movedSection = projectQuery.data.sections[data.source.index];
       const project = projectQuery.data;
-      project.sections.splice(sourceIndex, 1),
-        project.sections.splice(destinationIndex, 0, movedSection);
+      project.sections.splice(data.source.index, 1)
+      if(!data.destination){
+        return
+      }
+      console.log('useMutate')
+      project.sections.splice(data.destination.index, 0, movedSection);
       if (!movedSection) {
         return;
       }
+      queryClient.setQueryData(
+        queryKey,
+        (prevProject: Project): Project => ({
+          ...prevProject,
+          sections: project.sections,
+        })
+      );
+
+      return { previousProject };
+    },
+    onError: (_, __, context) => {
+      queryClient.setQueryData(
+        queryKeys.projects.details({ projectId }),
+        context?.previousProject
+      );
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.projects.all() });
+    },
+  });
+
+  const changeTaskLocationMutation = useMutation({
+    mutationFn: changeTaskLocation,
+    onMutate: async (data: DropResult) => {
+      const queryKey = queryKeys.projects.details({ projectId });
+      await queryClient.cancelQueries({ queryKey });
+      const previousProject = queryClient.getQueryData(queryKey);
+      if (!projectQuery.data || !data.destination) {
+        return;
+      }
+      const project = projectQuery.data;
+      const sectionIndex = project.sections.findIndex(
+        (section) => section.id === data.source.droppableId
+      );
+      const sectionDestinationIndex = project.sections.findIndex((section)=> section.id === data.destination?.droppableId)
+      const task = project.sections[sectionIndex].tasks[data.source.index];
+      project.sections[sectionIndex].tasks.splice(data.source.index, 1);
+      project.sections[sectionDestinationIndex].tasks.splice(data.destination.index, 0, task);
       queryClient.setQueryData(
         queryKey,
         (prevProject: Project): Project => ({
@@ -353,16 +388,13 @@ export const useProjectDetailsPage = () => {
   const handleCloseCreateSectionForm = () => {
     setIsCreateSectionFormVisible(false);
   };
-  const handleChangeSectionLocation = ({
-    projectId,
-    sourceIndex,
-    destinationIndex,
-  }: ChangeSectionLocation) => {
-    changeSectionLocationMutation.mutate({
-      projectId,
-      sourceIndex,
-      destinationIndex,
-    });
+  const handleChangeObjectLocation = (results: DropResult) => {
+    if (results.type === "section") {
+      console.log('useProject section')
+      changeSectionLocationMutation.mutate(results);
+      return;
+    }
+    changeTaskLocationMutation.mutate(results);
   };
 
   return {
@@ -379,7 +411,7 @@ export const useProjectDetailsPage = () => {
     handleOpenCreateSectionForm,
     handleCloseCreateSectionForm,
     handleEditDescription,
-    handleChangeSectionLocation,
+    handleChangeObjectLocation,
     selectedView: selectedView,
     selectedDate: selectedDate,
     isCreateSectionFormVisible: isCreateSectionFormVisible,

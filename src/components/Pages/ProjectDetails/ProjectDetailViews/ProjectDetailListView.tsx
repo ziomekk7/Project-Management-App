@@ -8,7 +8,6 @@ import CreateTaskRow from "./SectionTable/CreateTaskRow";
 import { AddIcon } from "@chakra-ui/icons";
 import { DragDropContext, Draggable, DropResult } from "react-beautiful-dnd";
 import { StrictModeDroppable } from "../StrictModrDroppable";
-import { ChangeSectionLocation } from "../../../../api/projectsApi";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
@@ -25,7 +24,7 @@ type ProjectDetailListViewProps = {
   hiddenSections: string[];
   onHideSectionId: (sectionId: string) => void;
   onDuplicateTask: (task: Task, sectionId: string) => void;
-  onChangeSectionLocation: (data: ChangeSectionLocation) => void;
+  onChangeObjectLocation: (results:DropResult) => void;
 };
 
 const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
@@ -43,33 +42,14 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   onCloseCreateSectionForm,
   onCreateSection,
   onOpenCreateSectionForm,
-  onChangeSectionLocation,
+  onChangeObjectLocation,
 }) => {
-  const handleDragAndDrop = (results: DropResult) => {
-    if (
-      results.source.droppableId === results.destination?.droppableId &&
-      results.source.index === results.destination.index
-    ) {
-      return;
-    }
-    if (!project) {
-      return;
-    }
-    if (!results.destination) {
-      return;
-    }
-    onChangeSectionLocation({
-      projectId: project.id,
-      sourceIndex: results.source.index,
-      destinationIndex: results.destination.index,
-    });
-  };
   return (
     <Stack overflow="auto" h="85%">
       <ExampleTaskRow />
-      <DragDropContext onDragEnd={handleDragAndDrop}>
+      <DragDropContext onDragEnd={(results)=> onChangeObjectLocation(results)}>
         {project ? (
-          <StrictModeDroppable droppableId={project.id}>
+          <StrictModeDroppable droppableId={project.id} type="section">
             {(provided) => (
               <div {...provided.droppableProps} ref={provided.innerRef}>
                 {project.sections.map((section, index) => (
@@ -97,22 +77,57 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
                           (sectionId) => sectionId === section.id
                         ) && (
                           <div>
-                            {section.tasks.map((task) => (
-                              <TaskRow
-                                onChangeDate={(task) => onEditTask(task)}
-                                onChangePriority={(task) => onEditTask(task)}
-                                onOpenTaskDetails={(task) =>
-                                  onOpenTaskDetails(task, section.id)
-                                }
-                                onDuplicateTask={(task) =>
-                                  onDuplicateTask(task, section.id)
-                                }
-                                key={task.id}
-                                task={task}
-                                onDeleteTask={onDeleteTask}
-                                onEditTask={onEditTask}
-                              />
-                            ))}
+                            <StrictModeDroppable
+                              droppableId={section.id}
+                              type="task"
+                            >
+                              {(provided) => (
+                                <div
+                                  {...provided.droppableProps}
+                                  ref={provided.innerRef}
+                                >
+                                  {section.tasks.map((task, index) => (
+                                    <Draggable
+                                      index={index}
+                                      key={task.id}
+                                      draggableId={task.id}
+                                    >
+                                      {(provided) => (
+                                        <div
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          ref={provided.innerRef}
+                                        >
+                                          <TaskRow
+                                            onChangeDate={(task) =>
+                                              onEditTask(task)
+                                            }
+                                            onChangePriority={(task) =>
+                                              onEditTask(task)
+                                            }
+                                            onOpenTaskDetails={(task) =>
+                                              onOpenTaskDetails(
+                                                task,
+                                                section.id
+                                              )
+                                            }
+                                            onDuplicateTask={(task) =>
+                                              onDuplicateTask(task, section.id)
+                                            }
+                                            key={task.id}
+                                            task={task}
+                                            onDeleteTask={onDeleteTask}
+                                            onEditTask={onEditTask}
+                                            sectionId={section.id}
+                                          />
+                                        </div>
+                                      )}
+                                    </Draggable>
+                                  ))}
+                                  {provided.placeholder}
+                                </div>
+                              )}
+                            </StrictModeDroppable>
                             <CreateTaskRow
                               onCreateTask={(task) => {
                                 onCreateTask(task, section.id);

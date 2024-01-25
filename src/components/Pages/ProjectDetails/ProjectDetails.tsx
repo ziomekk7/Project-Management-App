@@ -18,7 +18,7 @@ const ProjectDetails = () => {
     onOpenCreateSectionForm: projectDetailsPage.handleOpenCreateSectionForm,
     onCloseCreateSectionForm: projectDetailsPage.handleCloseCreateSectionForm,
     onEditTask: projectDetailsPage.handleEditTask,
-    onChangeSectionLocation: projectDetailsPage.handleChangeSectionLocation,
+    onChangeObjectLocation: projectDetailsPage.handleChangeObjectLocation,
   };
 
   if (!projectDetailsPage.project) {
