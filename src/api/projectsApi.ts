@@ -2,6 +2,7 @@ import { Project } from "../types/types";
 import { delay } from "../utils/asyns";
 import * as z from "zod";
 import { Task, TaskPriority } from "../types/types";
+import { DropResult } from "react-beautiful-dnd";
 
 export type CreateProjectData = {
   newProject: string;
@@ -11,7 +12,7 @@ export type CreateProjectData = {
 export type CreateProjectSectionData = {
   projectId: string;
   newSection: string;
-  newSectionId:string;
+  newSectionId: string;
 };
 
 export type CreateTaskData = {
@@ -89,8 +90,6 @@ export const getProjects = async (): Promise<Project[]> => {
 };
 
 export const getProjectById = async (projectId: string) => {
-  
-
   const projects = await getProjects();
 
   return projects.find((project) => project.id === projectId) || null;
@@ -109,7 +108,11 @@ export const createProjectSection = async (data: CreateProjectSectionData) => {
     return;
   }
 
-  project.sections.push({ name: data.newSection, id: data.newSectionId, tasks: [] });
+  project.sections.push({
+    name: data.newSection,
+    id: data.newSectionId,
+    tasks: [],
+  });
   await saveProjects(projects);
 };
 
@@ -214,5 +217,49 @@ export const deleteProject = async (data: DeleteProjectData) => {
     (project) => project.id === data.projectId
   );
   projects.splice(projectIndex, 1);
+  await saveProjects(projects);
+};
+
+export const changeSectionLocation = async (data: DropResult) => {
+  const projects = await getProjects();
+  const projectIndex = projects.findIndex((project) =>
+    project.sections.find((section) => section.id === data.draggableId)
+  );
+  const section = projects[projectIndex].sections[data.source.index];
+  if (!data.destination) {
+    return;
+  }
+  projects[projectIndex].sections.splice(data.source.index, 1);
+  projects[projectIndex].sections.splice(data.destination.index, 0, section);
+  await saveProjects(projects);
+};
+
+export const changeTaskLocation = async (data: DropResult) => {
+  if (!data.destination) {
+    return;
+  }
+  const projects = await getProjects();
+  const projectIndex = projects.findIndex((project) =>
+    project.sections.find((section) => section.id === data.source.droppableId)
+  );
+  const sectionSourceIndex = projects[projectIndex].sections.findIndex(
+    (section) => section.id === data.source.droppableId
+  );
+  const sectionDestinationIndex = projects[projectIndex].sections.findIndex(
+    (section) => section.id === data.destination?.droppableId
+  );
+  const task =
+    projects[projectIndex].sections[sectionSourceIndex].tasks[
+      data.source.index
+    ];
+  projects[projectIndex].sections[sectionSourceIndex].tasks.splice(
+    data.source.index,
+    1
+  );
+  projects[projectIndex].sections[sectionDestinationIndex].tasks.splice(
+    data.destination.index,
+    0,
+    task
+  );
   await saveProjects(projects);
 };
