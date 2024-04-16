@@ -1,6 +1,6 @@
 import { Card, Button, useOutsideClick } from "@chakra-ui/react";
-import CreateTaskForm from "../../CreateTaskForm/CreateTaskForm";
-import { Task } from "../../../../../types/types";
+import CreateTaskForm from "../../../CreateTaskForm/CreateTaskForm";
+import { Task } from "../../../../../../types/types";
 import { useState, useRef } from "react";
 
 type CreateTaskCardProps = {

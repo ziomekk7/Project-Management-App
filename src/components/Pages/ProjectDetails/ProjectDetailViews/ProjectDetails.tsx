@@ -1,9 +1,9 @@
-import ProjectDetailListView from "./ProjectDetailViews/ProjectDetailListView";
-import RootLayout from "../../Roots/RootLayout";
-import ProjectDetailBoardView from "./ProjectDetailViews/ProjectDetailBoardView";
-import ProjectHeader from "./ProjectDetailViews/ProjectHeader/ProjectHeader";
-import TaskDetails from "./ProjectDetailViews/SectionTable/TaskDetails";
-import { useProjectDetailsPage } from "../../hooks/useProjectDetailsPage";
+import ProjectDetailListView from "./ProjectDetailListView";
+import RootLayout from "../../../Roots/RootLayout";
+import { useProjectDetailsPage } from "../../../hooks/useProjectDetailsPage"; 
+import TaskDetails from "../SectionTable/TaskDetails";
+import ProjectHeader from "./ProjectHeader/ProjectHeader";
+import ProjectDetailBoardView from "./ProjectBoardViewComponents/ProjectDetailBoardView";
 
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
@@ -18,7 +18,9 @@ const ProjectDetails = () => {
     onOpenCreateSectionForm: projectDetailsPage.handleOpenCreateSectionForm,
     onCloseCreateSectionForm: projectDetailsPage.handleCloseCreateSectionForm,
     onEditTask: projectDetailsPage.handleEditTask,
-    onChangeObjectLocation: projectDetailsPage.handleChangeObjectLocation,
+    onChangeObjectLocation:projectDetailsPage.handleDragEnd,
+    onChangeSectionLocation: projectDetailsPage.handleChangeSectionLocation,
+    onChangeTaskLocation: projectDetailsPage.handleChangeTaskLocation,
   };
 
   if (!projectDetailsPage.project) {

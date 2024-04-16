@@ -16,12 +16,15 @@ import {
   DeleteSectionData,
   changeSectionLocation,
   changeTaskLocation,
+  ChangeSectionLocationData,
+  ChangeTaskLocationData,
+  // testChangeSectionLocation,
 } from "../../api/projectsApi";
 import { queryKeys } from "../../queryKeys";
 import { useDisclosure } from "@chakra-ui/react";
 import { routes } from "../../routes";
 import { v4 as uuidv4 } from "uuid";
-import { DropResult } from "react-beautiful-dnd";
+import { DragEndEvent } from "@dnd-kit/core";
 
 export const useProjectDetailsPage = () => {
   const [hiddenSections, setHiddenSection] = useState<string[]>([]);
@@ -223,29 +226,26 @@ export const useProjectDetailsPage = () => {
 
   const changeSectionLocationMutation = useMutation({
     mutationFn: changeSectionLocation,
-    onMutate: async (data: DropResult) => {
+    onMutate: async (data: ChangeSectionLocationData) => {
       const queryKey = queryKeys.projects.details({ projectId });
       await queryClient.cancelQueries({ queryKey });
-      const previousProject = queryClient.getQueryData(queryKey);
+      
       if (!projectQuery.data) {
         return;
       }
-      const movedSection = projectQuery.data.sections[data.source.index];
-      const project = projectQuery.data;
-      project.sections.splice(data.source.index, 1)
-      if(!data.destination){
-        return
-      }
-      console.log('useMutate')
-      project.sections.splice(data.destination.index, 0, movedSection);
-      if (!movedSection) {
-        return;
-      }
+      const previousProject: Project = projectQuery.data;
+      const movedSectionIndex = previousProject.sections.findIndex(
+        (section) => section.id === data.sectionId
+      );
+      const movedSection = previousProject.sections[movedSectionIndex];
+      const editedSections = projectQuery.data.sections;
+      editedSections.splice(movedSectionIndex, 1);
+      editedSections.splice(data.destination, 0, movedSection);
       queryClient.setQueryData(
         queryKey,
         (prevProject: Project): Project => ({
           ...prevProject,
-          sections: project.sections,
+          sections: editedSections,
         })
       );
 
@@ -264,21 +264,31 @@ export const useProjectDetailsPage = () => {
 
   const changeTaskLocationMutation = useMutation({
     mutationFn: changeTaskLocation,
-    onMutate: async (data: DropResult) => {
+    onMutate: async (data: ChangeTaskLocationData) => {
       const queryKey = queryKeys.projects.details({ projectId });
       await queryClient.cancelQueries({ queryKey });
+
       const previousProject = queryClient.getQueryData(queryKey);
-      if (!projectQuery.data || !data.destination) {
+      if (!projectQuery.data) {
         return;
       }
-      const project = projectQuery.data;
-      const sectionIndex = project.sections.findIndex(
-        (section) => section.id === data.source.droppableId
+      const project: Project = projectQuery.data
+      const sectionIndex = project.sections.findIndex((section) =>
+        section.tasks.find((task) => task.id === data.taskId)
       );
-      const sectionDestinationIndex = project.sections.findIndex((section)=> section.id === data.destination?.droppableId)
-      const task = project.sections[sectionIndex].tasks[data.source.index];
-      project.sections[sectionIndex].tasks.splice(data.source.index, 1);
-      project.sections[sectionDestinationIndex].tasks.splice(data.destination.index, 0, task);
+      const sectionDestinationIndex = project.sections.findIndex(
+        (section) => section.id === data.destinationSectionId
+      );
+      const taskIndex = project.sections[sectionIndex].tasks.findIndex(
+        (task) => task.id === data.taskId
+      );
+      const task = project.sections[sectionIndex].tasks[taskIndex];
+      project.sections[sectionIndex].tasks.splice(taskIndex, 1);
+      project.sections[sectionDestinationIndex].tasks.splice(
+        data.destinationIndex,
+        0,
+        task
+      );
       queryClient.setQueryData(
         queryKey,
         (prevProject: Project): Project => ({
@@ -388,13 +398,75 @@ export const useProjectDetailsPage = () => {
   const handleCloseCreateSectionForm = () => {
     setIsCreateSectionFormVisible(false);
   };
-  const handleChangeObjectLocation = (results: DropResult) => {
-    if (results.type === "section") {
-      console.log('useProject section')
-      changeSectionLocationMutation.mutate(results);
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const project = projectQuery.data;
+    const source = event.active;
+    const destination = event.over;
+
+    if (!project) {
       return;
     }
-    changeTaskLocationMutation.mutate(results);
+
+    if (!destination) {
+      return;
+    }
+
+    if (source.id === destination.id) {
+      return;
+    }
+
+    const sourceType = source.data.current?.type;
+    const destinationType = destination.data.current?.type;
+
+    if (sourceType === "section") {
+      const sourceSectionId = source.id;
+      if (destinationType === "task") {
+        const destinationSectionIndex = project.sections.findIndex((section) =>
+          section.tasks.find((task) => task.id === destination.id)
+        );
+        const data = {
+          sectionId: sourceSectionId.toLocaleString(),
+          destination: destinationSectionIndex,
+          type: "section",
+        };
+        changeSectionLocationMutation.mutate(data);
+      } else {
+        const destinationSectionIndex = project.sections.findIndex(
+          (section) => destination.id === section.id
+        );
+        const data = {
+          sectionId: sourceSectionId.toLocaleString(),
+          destination: destinationSectionIndex,
+          type: "section",
+        };
+        changeSectionLocationMutation.mutate(data);
+      }
+    } else {
+      const sourceTaskId = source.id.toLocaleString();
+      const destinationTaskId = destination.id;
+      const destinationSectionIndex = project?.sections.findIndex((section) =>
+        section.tasks.find((task) => task.id === destinationTaskId)
+      );
+      const destinationTaskIndex = project?.sections[
+        destinationSectionIndex
+      ].tasks.findIndex((task) => task.id === destinationTaskId);
+
+      const destinationSection = project?.sections[destinationSectionIndex];
+      const data = {
+        taskId: sourceTaskId,
+        destinationSectionId: destinationSection.id,
+        destinationIndex: destinationTaskIndex,
+      };
+      changeTaskLocationMutation.mutate(data);
+    }
+  };
+
+  const handleChangeSectionLocation = (data: ChangeSectionLocationData) => {
+    changeSectionLocationMutation.mutate(data);
+  };
+  const handleChangeTaskLocation = (data: ChangeTaskLocationData) => {
+    changeTaskLocationMutation.mutate(data);
   };
 
   return {
@@ -411,7 +483,7 @@ export const useProjectDetailsPage = () => {
     handleOpenCreateSectionForm,
     handleCloseCreateSectionForm,
     handleEditDescription,
-    handleChangeObjectLocation,
+    handleChangeSectionLocation,
     selectedView: selectedView,
     selectedDate: selectedDate,
     isCreateSectionFormVisible: isCreateSectionFormVisible,
@@ -423,5 +495,7 @@ export const useProjectDetailsPage = () => {
     openTaskDetailLocation: openTaskDetailLocation,
     project: projectQuery.data,
     openTask: openTask,
+    handleChangeTaskLocation,
+    handleDragEnd,
   };
 };

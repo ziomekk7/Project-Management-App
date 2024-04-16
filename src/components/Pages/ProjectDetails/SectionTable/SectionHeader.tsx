@@ -12,9 +12,11 @@ import {
   DeleteIcon,
   ChevronRightIcon,
 } from "@chakra-ui/icons";
-import { Section } from "../../../../../types/types";
+import { Section } from "../../../../types/types";
 import { FC } from "react";
-import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
+import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
+// import { useSortable } from "@dnd-kit/sortable";
+// import { CSS } from "@dnd-kit/utilities";
 
 type SectionHeaderProps = {
   section: Section;
@@ -29,6 +31,30 @@ const SectionHeader: FC<SectionHeaderProps> = ({
   onToggleHideSection,
   hiddenSections,
 }) => {
+  // const {
+  //   attributes,
+  //   listeners,
+  //   setNodeRef,
+  //   transform,
+  //   transition,
+  //   // isDragging
+  // } = useSortable({
+  //   id: section.id,
+  //   data: {
+  //     type: "section",
+  //     section,
+  //   },
+  // });
+
+  // const style = {
+  //   transition,
+  //   transform: CSS.Translate.toString(transform),
+  // };
+  
+  // const tasksId = useMemo(
+  //   () => section.tasks.map((item) => item.id),
+  //   [section]
+  // );
   return (
     <Stack
       h={20}
@@ -37,6 +63,12 @@ const SectionHeader: FC<SectionHeaderProps> = ({
       spacing={4}
       alignItems="center"
       borderBottom="1px solid black"
+      mt={3}
+      // ref={setNodeRef}
+      // style={style}
+      // {...attributes}
+      // {...listeners}
+
     >
       <IconButton
         aria-label="Toggle section"

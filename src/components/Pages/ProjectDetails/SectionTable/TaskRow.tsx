@@ -8,14 +8,16 @@ import {
   IconButton,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { Task } from "../../../../../types/types";
+import { Task } from "../../../../types/types";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
-import PriorityForm from "../../PriorityForm/PriorityForm";
+import PriorityForm from "../PriorityForm/PriorityForm";
 import DatePicker from "./DatePicker/DatePicker";
 import { ChevronRightIcon } from "@chakra-ui/icons";
-import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
-import { EditNameInput } from "../EditNameInput";
+import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
+import { EditNameInput } from "../ProjectDetailViews/EditNameInput";
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 type TaskRowProps = {
   onChangePriority: (task: Task) => void;
@@ -38,8 +40,35 @@ const TaskRow: React.FC<TaskRowProps> = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState(task.date);
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    // isDragging
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: "task",
+      task,
+    },
+  });
+  const style = {
+    transition,
+    transform: CSS.Translate.toString(transform),
+  };
+
   return (
-    <Grid h={16} templateColumns="2fr 1fr 1fr " borderBottom="1px solid black">
+    <Grid
+      h={16}
+      templateColumns="2fr 1fr 1fr "
+      borderBottom="1px solid black"
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+    >
       <GridItem
         p={2}
         ml={10}

@@ -17,15 +17,14 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
-import { Task } from "../../../../../types/types";
-import PriorityForm from "../../PriorityForm/PriorityForm";
-import { TaskPriority } from "../../../../../types/types";
-import DatePicker from "./DatePicker/DatePicker";
 import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
-import DuplicateTaskModal from "./DuplicateTaskModal";
+import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
 import { DeleteIcon } from "@chakra-ui/icons";
-import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
+import DatePicker from "./DatePicker/DatePicker";
+import { Task, TaskPriority } from "../../../../types/types";
+import PriorityForm from "../PriorityForm/PriorityForm";
+import DuplicateTaskModal from "./DuplicateTaskModal";
 
 type TaskDetailsProps = {
   task: Task;

@@ -1,7 +1,7 @@
 import { Flex } from "@chakra-ui/react";
-import CreateTaskForm from "../../CreateTaskForm/CreateTaskForm";
+import CreateTaskForm from "../CreateTaskForm/CreateTaskForm";
 import { FC } from "react";
-import { Task } from "../../../../../types/types";
+import { Task } from "../../../../types/types";
 
 type CreateTaskRowProps = {
   onCreateTask: (task: Task) => void;

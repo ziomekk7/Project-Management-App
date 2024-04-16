@@ -2,7 +2,6 @@ import { Project } from "../types/types";
 import { delay } from "../utils/asyns";
 import * as z from "zod";
 import { Task, TaskPriority } from "../types/types";
-import { DropResult } from "react-beautiful-dnd";
 
 export type CreateProjectData = {
   newProject: string;
@@ -37,6 +36,18 @@ export type EditTask = {
   task: Task;
 };
 
+export type ChangeSectionLocationData = {
+  sectionId: string;
+  destination: number;
+  type: string;
+};
+
+export type ChangeTaskLocationData = {
+  taskId: string;
+  destinationSectionId: string;
+  destinationIndex: number;
+};
+
 const projectsSchema = z.array(
   z.object({
     name: z.string(),
@@ -62,8 +73,7 @@ const projectsSchema = z.array(
 const PROJECTS_KEY = "projects";
 
 const saveProjects = async (projects: Project[]) => {
-  await delay(200);
-
+  await delay(2000);
   try {
     localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
   } catch (error) {
@@ -73,7 +83,6 @@ const saveProjects = async (projects: Project[]) => {
 
 export const getProjects = async (): Promise<Project[]> => {
   await delay(2000);
-
   const rawProjects = localStorage.getItem(PROJECTS_KEY);
   if (!rawProjects) {
     return [];
@@ -220,44 +229,46 @@ export const deleteProject = async (data: DeleteProjectData) => {
   await saveProjects(projects);
 };
 
-export const changeSectionLocation = async (data: DropResult) => {
+export const changeSectionLocation = async (
+  data: ChangeSectionLocationData
+) => {
   const projects = await getProjects();
   const projectIndex = projects.findIndex((project) =>
-    project.sections.find((section) => section.id === data.draggableId)
+    project.sections.find((section) => section.id === data.sectionId)
   );
-  const section = projects[projectIndex].sections[data.source.index];
-  if (!data.destination) {
-    return;
-  }
-  projects[projectIndex].sections.splice(data.source.index, 1);
-  projects[projectIndex].sections.splice(data.destination.index, 0, section);
+  const sectionIndex = projects[projectIndex].sections.findIndex(
+    (section) => section.id === data.sectionId
+  );
+  const section = projects[projectIndex].sections[sectionIndex];
+  projects[projectIndex].sections.splice(sectionIndex, 1);
+  projects[projectIndex].sections.splice(data.destination, 0, section);
   await saveProjects(projects);
 };
 
-export const changeTaskLocation = async (data: DropResult) => {
-  if (!data.destination) {
-    return;
-  }
+export const changeTaskLocation = async (data: ChangeTaskLocationData) => {
   const projects = await getProjects();
   const projectIndex = projects.findIndex((project) =>
-    project.sections.find((section) => section.id === data.source.droppableId)
+    project.sections.find((section) =>
+      section.tasks.find((task) => task.id === data.taskId)
+    )
   );
-  const sectionSourceIndex = projects[projectIndex].sections.findIndex(
-    (section) => section.id === data.source.droppableId
+  const courseSectionIndex = projects[projectIndex].sections.findIndex(
+    (section) => section.tasks.find((task) => task.id === data.taskId)
   );
-  const sectionDestinationIndex = projects[projectIndex].sections.findIndex(
-    (section) => section.id === data.destination?.droppableId
+  const destinationSectionIndex = projects[projectIndex].sections.findIndex(
+    (section) => section.id === data.destinationSectionId
   );
+  const taskSourceIndex = projects[projectIndex].sections[
+    courseSectionIndex
+  ].tasks.findIndex((task) => task.id === data.taskId);
   const task =
-    projects[projectIndex].sections[sectionSourceIndex].tasks[
-      data.source.index
-    ];
-  projects[projectIndex].sections[sectionSourceIndex].tasks.splice(
-    data.source.index,
+    projects[projectIndex].sections[courseSectionIndex].tasks[taskSourceIndex];
+  projects[projectIndex].sections[courseSectionIndex].tasks.splice(
+    taskSourceIndex,
     1
   );
-  projects[projectIndex].sections[sectionDestinationIndex].tasks.splice(
-    data.destination.index,
+  projects[projectIndex].sections[destinationSectionIndex].tasks.splice(
+    data.destinationIndex,
     0,
     task
   );
