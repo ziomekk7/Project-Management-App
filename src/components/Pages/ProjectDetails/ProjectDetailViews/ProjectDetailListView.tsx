@@ -1,85 +1,105 @@
 import { Box, Button, Stack } from "@chakra-ui/react";
 import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
 import { Project, Task } from "../../../../types/types";
-import SectionHeader from "./SectionTable/SectionHeader";
-import SectionBody from "./SectionTable/SectionBody";
-import ExampleTaskRow from "./SectionTable/ExampleTaskRow";
-import ProjectHeader from "./ProjectHeader/ProjectHeader";
+import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
+import { AddIcon } from "@chakra-ui/icons";
+import {
+  ChangeSectionLocationData,
+  ChangeTaskLocationData,
+} from "../../../../api/projectsApi";
+import {
+  DndContext,
+  DragEndEvent,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  rectSortingStrategy,
+} from "@dnd-kit/sortable";
+import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
 
 type ProjectDetailListViewProps = {
+  onEditTask: (task: Task) => void;
+  isCreatingSection: boolean;
   project: Project;
-  actuallyDeletingTasks: string[];
-  isCreateTaskPending: boolean;
+  onOpenTaskDetails: (taskId: string, sectionId: string) => void;
   isCreateSectionFormVisible: boolean;
-  hiddenSections: string[];
-  isCreatingTask: boolean;
-  onDeleteProject: (projectId: string) => void;
   onCreateSection: (name: string) => void;
   onDeleteSection: (sectionId: string) => void;
-  onEditTask: (task: Task, sectionId: string) => void;
-  onDeleteTask: (sectionId: string, taskId: string) => void;
-  onCreateTask: (sectionId: string, task: Task) => void;
-  onHideSectionId: (sectionId: string) => void;
+  onCreateTask: (task: Task, sectionId: string) => void;
   onOpenCreateSectionForm: () => void;
   onCloseCreateSectionForm: () => void;
-  actuallyDeletingSections: string[];
-  onDuplicateTask: (sectionId: string, task: Task) => void;
-  isCreatingSection: boolean;
+  onDeleteTask: (taskId: string) => void;
+  hiddenSections: string[];
+  onHideSectionId: (sectionId: string) => void;
+  onDuplicateTask: (task: Task, sectionId: string) => void;
+  onChangeSectionLocation: (data: ChangeSectionLocationData) => void;
+  onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
+  onChangeObjectLocation: (data: DragEndEvent) => void;
 };
 
 const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
-  project,
-  isCreateTaskPending,
-  isCreateSectionFormVisible,
   hiddenSections,
-  actuallyDeletingTasks,
-  onCreateSection,
-  onDeleteSection,
   onDeleteTask,
-  onCreateTask,
-  onEditTask,
   onHideSectionId,
-  onOpenCreateSectionForm,
-  onCloseCreateSectionForm,
-  isCreatingTask,
-  actuallyDeletingSections,
   onDuplicateTask,
+  project,
+  onDeleteSection,
+  onOpenTaskDetails,
+  onEditTask,
+  isCreateSectionFormVisible,
+  onCreateTask,
   isCreatingSection,
-  onDeleteProject,
+  onCloseCreateSectionForm,
+  onCreateSection,
+  onOpenCreateSectionForm,
+  onChangeObjectLocation,
+  
 }) => {
-  return (
-    <Stack w="100%">
-      <ProjectHeader
-        project={project}
-        onDeleteProject={() => onDeleteProject(project.id)}
-      />
-      <ExampleTaskRow />
-      {project.sections.map((section) => (
-        <div key={section.id}>
-          <SectionHeader
-            actuallyDeletingSections={actuallyDeletingSections}
-            section={section}
-            onDeleteSection={() => onDeleteSection(section.id)}
-            onToggleHideSection={() => onHideSectionId(section.id)}
-            hiddenSections={hiddenSections}
-          />
+  const sensor = useSensor(PointerSensor, {
+    activationConstraint: {
+      distance: 1,
+    },
+  });
+  const sensors = useSensors(sensor);
+  if (!project) {
+    return;
+  }
 
-          {!hiddenSections.some((sectionId) => sectionId === section.id) && (
-            <SectionBody
-              onDuplicateTask={(task) => onDuplicateTask(section.id, task)}
+  const sectionsId = project.sections.map((section) => section.id);
+  if (!sectionsId) {
+    return;
+  }
+
+
+  return (
+    <Stack overflow="auto" h="85%">
+      <ExampleTaskRow />
+      <DndContext
+        sensors={sensors}
+        onDragEnd={(event: DragEndEvent) => onChangeObjectLocation(event)}
+        collisionDetection={closestCenter}
+      >
+        <SortableContext strategy={rectSortingStrategy} items={sectionsId}>
+          {project.sections.map((section) => (
+            <ProjectListBox
+              key={section.id}
               section={section}
-              onDeleteTask={(taskId) => onDeleteTask(section.id, taskId)}
-              actuallyDeletingTasks={actuallyDeletingTasks}
-              onEditTask={(task) => onEditTask(task, section.id)}
-              onCreateTask={(task) => {
-                onCreateTask(section.id, task);
-              }}
-              isCreateTaskPending={isCreateTaskPending}
-              isCreatingTask={isCreatingTask}
+              onCreateTask={onCreateTask}
+              onDeleteSection={onDeleteSection}
+              hiddenSections={hiddenSections}
+              onEditTask={onEditTask}
+              onDeleteTask={onDeleteTask}
+              onDuplicateTask={onDuplicateTask}
+              onOpenTaskDetails={onOpenTaskDetails}
+              onHideSectionId={onHideSectionId}
             />
-          )}
-        </div>
-      ))}
+          ))}
+        </SortableContext>
+      </DndContext>
       <Stack p={4} w="md">
         {isCreateSectionFormVisible ? (
           <CreateSectionForm
@@ -89,7 +109,11 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
           />
         ) : !isCreatingSection ? (
           <Box>
-            <Button variant="outline" onClick={() => onOpenCreateSectionForm()}>
+            <Button
+              leftIcon={<AddIcon />}
+              variant="outline"
+              onClick={() => onOpenCreateSectionForm()}
+            >
               Create Section
             </Button>
           </Box>

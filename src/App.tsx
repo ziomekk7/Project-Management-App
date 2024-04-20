@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import CreatingProject from "./components/Pages/CreatingProject/CreatingProject";
 import RootLayout from "./components/Roots/RootLayout";
-import ProjectDetails from "./components/Pages/ProjectDetails/ProjectDetails";
+import ProjectDetails from "./components/Pages/ProjectDetails/ProjectDetailViews/ProjectDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routes } from "./routes";
 

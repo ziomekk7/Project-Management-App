@@ -1,24 +1,20 @@
-import {
-  Button,
-  useDisclosure,
-  Text,
-} from "@chakra-ui/react";
-import { format } from "date-fns";
+import { Button, useDisclosure, Text } from "@chakra-ui/react";
+import { format} from "date-fns";
+// import enGB from "date-fns/locale/en";
+// import  { registerLocale } from "react-datepicker";
 import "react-day-picker/dist/style.css";
 import DatePickerModal from "./DatePickerModal";
 type DatePickerProps = {
-  isLoadingDate: boolean;
   taskDate: Date | null;
   selectedDate: Date | null;
   onSelect: (selectedDate: Date) => void;
 };
 const DatePicker: React.FC<DatePickerProps> = ({
-  isLoadingDate,
   taskDate,
   selectedDate,
   onSelect,
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const datePickerModal = useDisclosure();
 
   const handleSelect = (newDate: Date | undefined) => {
     if (!newDate) {
@@ -27,14 +23,22 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
     onSelect(newDate);
   };
+  if (!taskDate) {
+    return;
+  }
+  // console.log(taskDate)
+  // console.log(typeof(taskDate))
+  // const test2 = taskDate.toDateString()
+  // const test = parse(test2,  "d/L/yyyy",  new Date() )
 
   return (
     <>
       <Button
-        isLoading={isLoadingDate}
         w={120}
         variant="ghost"
-        onClick={onOpen}
+        onClick={(e) => {
+          datePickerModal.onOpen(), e.stopPropagation();
+        }}
       >
         {taskDate ? (
           <Text>{format(taskDate, "d/L/yyyy")}</Text>
@@ -43,9 +47,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
         )}
       </Button>
       <DatePickerModal
-        isOpen={isOpen}
-        onClose={onClose}
-        onSelect={handleSelect}
+        isOpen={datePickerModal.isOpen}
+        onClose={datePickerModal.onClose}
+        onSelect={(date) => {
+          handleSelect(date), datePickerModal.onClose();
+        }}
         selectedDate={selectedDate}
       />
     </>

@@ -12,12 +12,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import { FC, useState } from "react";
-import { Task } from "../../../../../types/types";
 import { v4 as uuidv4 } from "uuid";
-import { TaskPriority } from "../../../../../types/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { Task, TaskPriority } from "../../../../types/types";
 
 const duplicateTaskFormSchema = z.object({
   name: z

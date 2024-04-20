@@ -17,16 +17,15 @@ const Menu = () => {
   }
 
   return (
-    <Stack direction="column" alignItems="center" pt={8}>
-      <Button
-        variant="ghost"
-        background="red.400"
-        maxW={36}
-        leftIcon={<AddIcon />}
-      >
-        <Link key="test" to={routes.projects.create()}>
-          Create Project
-        </Link>
+    <Stack
+      direction="column"
+      alignItems="center"
+      bg="gray.700"
+      h="100%"
+      w="100%"
+    >
+      <Button variant="outline" maxW={36} p={1} leftIcon={<AddIcon />}>
+        <Link to={routes.projects.create()}>Create Project</Link>
       </Button>
       {projectsQuery.data && projectsQuery.data.length === 0 && (
         <Text>No Projects</Text>
