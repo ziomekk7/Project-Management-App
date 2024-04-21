@@ -38,6 +38,7 @@ export const useProjectDetailsPage = () => {
     taskId: string;
     sectionId: string;
   }>(null);
+
   const taskDetailsDrawer = useDisclosure();
   const navigate = useNavigate();
   const params = useParams();
@@ -229,11 +230,14 @@ export const useProjectDetailsPage = () => {
     onMutate: async (data: ChangeSectionLocationData) => {
       const queryKey = queryKeys.projects.details({ projectId });
       await queryClient.cancelQueries({ queryKey });
-      
+
       if (!projectQuery.data) {
         return;
       }
-      const previousProject: Project = projectQuery.data;
+      const previousProject: Project = {
+        ...projectQuery.data,
+        sections: projectQuery.data.sections,
+      };
       const movedSectionIndex = previousProject.sections.findIndex(
         (section) => section.id === data.sectionId
       );
@@ -272,7 +276,7 @@ export const useProjectDetailsPage = () => {
       if (!projectQuery.data) {
         return;
       }
-      const project: Project = projectQuery.data
+      const project: Project = projectQuery.data;
       const sectionIndex = project.sections.findIndex((section) =>
         section.tasks.find((task) => task.id === data.taskId)
       );
@@ -468,6 +472,15 @@ export const useProjectDetailsPage = () => {
   const handleChangeTaskLocation = (data: ChangeTaskLocationData) => {
     changeTaskLocationMutation.mutate(data);
   };
+  const checkProject = () => {
+    if (projectQuery.data == undefined) {
+      return;
+    }
+    if (projectQuery.data) {
+      return projectQuery.data;
+    }
+    return;
+  };
 
   return {
     handleDeleteTask,
@@ -493,7 +506,7 @@ export const useProjectDetailsPage = () => {
     hiddenSections: hiddenSections,
     createTaskMutation: createTaskMutation.isPending,
     openTaskDetailLocation: openTaskDetailLocation,
-    project: projectQuery.data,
+    project: checkProject(),
     openTask: openTask,
     handleChangeTaskLocation,
     handleDragEnd,

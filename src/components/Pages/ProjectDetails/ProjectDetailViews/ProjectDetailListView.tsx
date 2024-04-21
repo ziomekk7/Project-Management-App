@@ -15,16 +15,13 @@ import {
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
-import {
-  SortableContext,
-  rectSortingStrategy,
-} from "@dnd-kit/sortable";
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
   isCreatingSection: boolean;
-  project: Project;
+  project: Project | undefined;
   onOpenTaskDetails: (taskId: string, sectionId: string) => void;
   isCreateSectionFormVisible: boolean;
   onCreateSection: (name: string) => void;
@@ -57,7 +54,6 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   onCreateSection,
   onOpenCreateSectionForm,
   onChangeObjectLocation,
-  
 }) => {
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
@@ -73,7 +69,6 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   if (!sectionsId) {
     return;
   }
-
 
   return (
     <Stack overflow="auto" h="85%">

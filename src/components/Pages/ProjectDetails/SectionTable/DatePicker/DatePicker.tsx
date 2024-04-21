@@ -1,7 +1,5 @@
 import { Button, useDisclosure, Text } from "@chakra-ui/react";
-import { format} from "date-fns";
-// import enGB from "date-fns/locale/en";
-// import  { registerLocale } from "react-datepicker";
+import { format } from "date-fns";
 import "react-day-picker/dist/style.css";
 import DatePickerModal from "./DatePickerModal";
 type DatePickerProps = {
@@ -23,13 +21,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
     onSelect(newDate);
   };
-  if (!taskDate) {
-    return;
-  }
-  // console.log(taskDate)
-  // console.log(typeof(taskDate))
-  // const test2 = taskDate.toDateString()
-  // const test = parse(test2,  "d/L/yyyy",  new Date() )
 
   return (
     <>
@@ -37,7 +28,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         w={120}
         variant="ghost"
         onClick={(e) => {
-          datePickerModal.onOpen(), e.stopPropagation();
+          datePickerModal.onOpen(), e.stopPropagation(), console.log("first");
         }}
       >
         {taskDate ? (
