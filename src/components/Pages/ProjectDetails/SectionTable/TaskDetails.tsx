@@ -11,7 +11,6 @@ import {
   Stack,
   MenuButton,
   IconButton,
-  Textarea,
   Menu,
   MenuList,
   Flex,
@@ -25,6 +24,8 @@ import DatePicker from "./DatePicker/DatePicker";
 import { Task, TaskPriority } from "../../../../types/types";
 import PriorityForm from "../PriorityForm/PriorityForm";
 import DuplicateTaskModal from "./DuplicateTaskModal";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 type TaskDetailsProps = {
   task: Task;
@@ -54,10 +55,6 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   useEffect(() => {
     onEditTask({ ...task, description: debouncedValue });
   }, [debouncedValue]);
-
-  const handleChangeDescription = (description: string) => {
-    setInputValue(description);
-  };
 
   return (
     <>
@@ -119,11 +116,9 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               />
             </Stack>
             <Stack mt={1.5}>
-              <Text>Description</Text>
-              <Textarea
+              <ReactQuill
                 value={inputValue || ""}
-                onChange={(e) => handleChangeDescription(e.target.value)}
-                placeholder="Here is a example description"
+                onChange={setInputValue}
               />
             </Stack>
           </DrawerBody>

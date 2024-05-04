@@ -135,3 +135,12 @@ table {
 #root {
   height: 100%;
 }
+.ql-editor strong {
+  font-weight: bold;
+}
+.ql-editor em {
+  font-style: italic;
+}
+.ql-toolbar {
+  background-color: white;
+}
