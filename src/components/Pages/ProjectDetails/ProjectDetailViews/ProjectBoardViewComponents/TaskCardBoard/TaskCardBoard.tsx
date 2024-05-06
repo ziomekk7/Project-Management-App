@@ -35,7 +35,6 @@ const TaskCardBoard: React.FC<TaskCardBoardProps> = ({
     setNodeRef,
     transform,
     transition,
-    // isDragging,
   } = useSortable({
     id: task.id,
     data: {
@@ -62,7 +61,6 @@ const TaskCardBoard: React.FC<TaskCardBoardProps> = ({
         border="1px"
         mb={2}
         borderColor="gray.600"
-        // zIndex={isDragging ? 5 : 0}
       >
         <CardBody>
           <EditNameInput task={task} onEditTask={onEditTask} />

@@ -4,9 +4,11 @@ import { useProjectDetailsPage } from "../../../hooks/useProjectDetailsPage";
 import TaskDetails from "../SectionTable/TaskDetails";
 import ProjectHeader from "./ProjectHeader/ProjectHeader";
 import ProjectDetailBoardView from "./ProjectBoardViewComponents/ProjectDetailBoardView";
+import { useDisclosure } from "@chakra-ui/react";
 
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
+  const deleteTaskModal = useDisclosure();
   const commonProps = {
     isCreatingSection: projectDetailsPage.isCreatingSection,
     project: projectDetailsPage.project,
@@ -29,7 +31,7 @@ const ProjectDetails = () => {
         <div>No projects</div>
       </RootLayout>
     );
-  } else if (projectDetailsPage.project ) {
+  } else if (projectDetailsPage.project || projectDetailsPage.openTask) {
     return (
       <RootLayout>
         <ProjectHeader
@@ -37,7 +39,7 @@ const ProjectDetails = () => {
           onDeleteProject={projectDetailsPage.handleDeleteProject}
           project={projectDetailsPage.project}
         />
-        {projectDetailsPage.selectedView === "list"  ? (
+        {projectDetailsPage.selectedView === "list" ? (
           <ProjectDetailListView
             {...commonProps}
             onDuplicateTask={projectDetailsPage.handleCreateTask}
@@ -57,6 +59,7 @@ const ProjectDetails = () => {
               selectedDate={projectDetailsPage.selectedDate}
               onDuplicateTask={projectDetailsPage.handleCreateTask}
               onEditTask={projectDetailsPage.handleEditTask}
+              onOpenDeleteModal={deleteTaskModal.onOpen}
               onDeleteTask={projectDetailsPage.handleDeleteTask}
               selectedPriority={projectDetailsPage.openTask.priority}
               task={projectDetailsPage.openTask}

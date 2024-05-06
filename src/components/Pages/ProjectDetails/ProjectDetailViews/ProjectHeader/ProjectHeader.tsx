@@ -10,12 +10,14 @@ import {
   Stack,
   Box,
   Button,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
+import { DeleteModal } from "../../DeleteModal/DeleteModal";
 
 type ProjectHeaderProps = {
   project: Project;
-  onDeleteProject: (projectId:string) => void;
+  onDeleteProject: (projectId: string) => void;
   onChangeView: (view: string) => void;
 };
 
@@ -24,6 +26,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onDeleteProject,
   onChangeView,
 }) => {
+  const deleteTaskModal = useDisclosure();
   return (
     <Box h="15%">
       <Stack p={5} direction="row" spacing={8} w="100%">
@@ -37,7 +40,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
             variant="ghost"
           />
           <MenuList>
-            <MenuItem onClick={() => onDeleteProject(project.id)} icon={<DeleteIcon />}>
+            <MenuItem onClick={deleteTaskModal.onOpen} icon={<DeleteIcon />}>
               Delete project
             </MenuItem>
           </MenuList>
@@ -51,6 +54,11 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           Board View
         </Button>
       </Box>
+      <DeleteModal
+        isOpen={deleteTaskModal.isOpen}
+        onClose={deleteTaskModal.onClose}
+        onAccept={() => onDeleteProject(project.id)}
+      />
     </Box>
   );
 };

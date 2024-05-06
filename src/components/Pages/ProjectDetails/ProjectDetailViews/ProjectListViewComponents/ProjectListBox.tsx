@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+import { Box, useDisclosure } from "@chakra-ui/react";
 import React from "react";
 import SectionHeader from "../../SectionTable/SectionHeader";
 import TaskRow from "../../SectionTable/TaskRow";
@@ -10,6 +10,7 @@ import {
   useSortable,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { DeleteModal } from "../../DeleteModal/DeleteModal";
 
 type ProjectListBoxProps = {
   section: Section;
@@ -34,21 +35,16 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
   onDeleteTask,
   onCreateTask,
 }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({
-    id: section.id,
-    data: {
-      type: "section",
-      section,
-    },
-  });
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: section.id,
+      data: {
+        type: "section",
+        section,
+      },
+    });
 
-
+  const deleteTaskModal = useDisclosure();
 
   const tasksId = section.tasks.map((task) => task.id);
   const style = {
@@ -59,7 +55,7 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
     <Box ref={setNodeRef} style={style} {...attributes} {...listeners}>
       <SectionHeader
         section={section}
-        onDeleteSection={() => onDeleteSection(section.id)}
+        onDeleteSection={deleteTaskModal.onOpen}
         onToggleHideSection={() => onHideSectionId(section.id)}
         hiddenSections={hiddenSections}
       />
@@ -90,6 +86,12 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
           />
         </div>
       )}
+      
+      <DeleteModal
+        isOpen={deleteTaskModal.isOpen}
+        onClose={deleteTaskModal.onClose}
+        onAccept={() => onDeleteSection(section.id)}
+      />
     </Box>
   );
 };

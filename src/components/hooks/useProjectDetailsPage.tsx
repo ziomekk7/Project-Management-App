@@ -18,7 +18,6 @@ import {
   changeTaskLocation,
   ChangeSectionLocationData,
   ChangeTaskLocationData,
-  // testChangeSectionLocation,
 } from "../../api/projectsApi";
 import { queryKeys } from "../../queryKeys";
 import { useDisclosure } from "@chakra-ui/react";

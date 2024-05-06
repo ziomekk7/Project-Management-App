@@ -9,6 +9,7 @@ import {
   MenuList,
   MenuItem,
   IconButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { CreateTaskCard } from "../CreateTaskCard/CreateTaskCard";
 import { EllipsisHorizontal } from "../../../../../UI/Icons/EllipsisHorizontal";
@@ -18,6 +19,7 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import TaskCardBoard from "../TaskCardBoard/TaskCardBoard";
 import { useMemo } from "react";
+import { DeleteModal } from "../../../DeleteModal/DeleteModal";
 
 type SectionCardBoardProps = {
   section: Section;
@@ -70,15 +72,16 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
     },
   });
 
-  const style = {
-    transition,
-    transform: CSS.Translate.toString(transform),
-  };
-
   const tasksId = useMemo(
     () => section.tasks.map((item) => item.id),
     [section]
   );
+  const deleteTaskModal = useDisclosure();
+
+  const style = {
+    transition,
+    transform: CSS.Translate.toString(transform),
+  };
 
   return (
     <Stack mr={1} ml={1} maxW={72} minW={60}>
@@ -97,7 +100,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
           <Heading size="md" p={3}>
             {section.name}
           </Heading>
-          <SectionMenu onDeleteSection={() => onDeleteSection(section.id)} />
+          <SectionMenu onDeleteSection={deleteTaskModal.onOpen} />
         </Stack>
         {section.tasks.length === 0 ? (
           <Card
@@ -136,6 +139,13 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
           </Box>
         )}
       </Card>
+
+     
+      <DeleteModal
+        isOpen={deleteTaskModal.isOpen}
+        onClose={deleteTaskModal.onClose}
+        onAccept={() => onDeleteSection(section.id)}
+      />
     </Stack>
   );
 };
