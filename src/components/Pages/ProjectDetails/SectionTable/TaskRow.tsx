@@ -8,13 +8,12 @@ import {
   IconButton,
   useDisclosure,
 } from "@chakra-ui/react";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, Search2Icon } from "@chakra-ui/icons";
 import { Task } from "../../../../types/types";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
 import PriorityForm from "../PriorityForm/PriorityForm";
 import DatePicker from "./DatePicker/DatePicker";
-import { ChevronRightIcon } from "@chakra-ui/icons";
 import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
 import { EditNameInput } from "../ProjectDetailViews/EditNameInput";
 import { useSortable } from "@dnd-kit/sortable";
@@ -96,7 +95,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
             </MenuItem>
             <MenuItem
               onClick={() => onOpenTaskDetails(task.id)}
-              icon={<ChevronRightIcon />}
+              icon={<Search2Icon/>}
             >
               Task Details
             </MenuItem>

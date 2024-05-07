@@ -19,7 +19,7 @@ import {
 import { useState, useEffect } from "react";
 import { useDebounce } from "use-debounce";
 import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
 import DatePicker from "./DatePicker/DatePicker";
 import { Task, TaskPriority } from "../../../../types/types";
 import PriorityForm from "../PriorityForm/PriorityForm";
@@ -88,7 +88,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                     Delete
                   </MenuItem>
                   <MenuItem
-                    icon={<i className="fa-solid fa-copy" />}
+                    icon={<CopyIcon />}
                     onClick={duplicateTaskModal.onOpen}
                   >
                     Duplicate Task
