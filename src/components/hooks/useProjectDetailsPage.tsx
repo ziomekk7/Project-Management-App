@@ -343,7 +343,13 @@ export const useProjectDetailsPage = () => {
     }
   };
 
-  const handleCreateTask = (task: Task) => {
+  const handleCreateTask = (task: Task, sectionId?: string) => {
+    if (sectionId) {
+      createTaskMutation.mutate({
+        sectionId: sectionId,
+        task: task,
+      });
+    }
     if (openTask) {
       if (!projectQuery.data) {
         return;
