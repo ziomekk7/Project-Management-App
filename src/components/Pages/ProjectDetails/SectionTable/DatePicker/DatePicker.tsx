@@ -28,7 +28,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         w={120}
         variant="ghost"
         onClick={(e) => {
-          datePickerModal.onOpen(), e.stopPropagation(), console.log("first");
+          datePickerModal.onOpen(), e.stopPropagation()
         }}
       >
         {taskDate ? (

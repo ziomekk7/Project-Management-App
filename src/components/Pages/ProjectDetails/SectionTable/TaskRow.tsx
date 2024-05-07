@@ -6,6 +6,7 @@ import {
   MenuList,
   MenuItem,
   IconButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { Task } from "../../../../types/types";
@@ -18,6 +19,7 @@ import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
 import { EditNameInput } from "../ProjectDetailViews/EditNameInput";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { DeleteModal } from "../DeleteModal/DeleteModal";
 
 type TaskRowProps = {
   onChangePriority: (task: Task) => void;
@@ -46,7 +48,6 @@ const TaskRow: React.FC<TaskRowProps> = ({
     setNodeRef,
     transform,
     transition,
-    // isDragging
   } = useSortable({
     id: task.id,
     data: {
@@ -54,6 +55,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
       task,
     },
   });
+  const deleteTaskModal = useDisclosure()
   const style = {
     transition,
     transform: CSS.Translate.toString(transform),
@@ -87,7 +89,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
           />
           <MenuList>
             <MenuItem
-              onClick={() => onDeleteTask(task.id)}
+              onClick={deleteTaskModal.onOpen}
               icon={<DeleteIcon />}
             >
               Delete Task
@@ -142,6 +144,12 @@ const TaskRow: React.FC<TaskRowProps> = ({
           selectedPriority={task.priority}
         />
       </GridItem>
+         {/* const deleteTaskModal = useDisclosure(); */}
+         <DeleteModal
+        isOpen={deleteTaskModal.isOpen}
+        onClose={deleteTaskModal.onClose}
+        onAccept={() => onDeleteTask(task.id)}
+      />
     </Grid>
   );
 };

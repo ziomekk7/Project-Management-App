@@ -26,6 +26,7 @@ import PriorityForm from "../PriorityForm/PriorityForm";
 import DuplicateTaskModal from "./DuplicateTaskModal";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { DeleteModal } from "../DeleteModal/DeleteModal";
 
 type TaskDetailsProps = {
   task: Task;
@@ -37,6 +38,7 @@ type TaskDetailsProps = {
   isOpenMenu: boolean;
   onClose: () => void;
   onDuplicateTask: (task: Task) => void;
+  onOpenDeleteModal: (taskId: string) => void;
 };
 const TaskDetails: React.FC<TaskDetailsProps> = ({
   task,
@@ -55,6 +57,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   useEffect(() => {
     onEditTask({ ...task, description: debouncedValue });
   }, [debouncedValue]);
+  const deleteTaskModal = useDisclosure();
 
   return (
     <>
@@ -80,9 +83,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 <MenuList>
                   <MenuItem
                     icon={<DeleteIcon />}
-                    onClick={() => {
-                      onDeleteTask(task.id), onClose();
-                    }}
+                    onClick={deleteTaskModal.onOpen}
                   >
                     Delete
                   </MenuItem>
@@ -116,10 +117,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
               />
             </Stack>
             <Stack mt={1.5}>
-              <ReactQuill
-                value={inputValue || ""}
-                onChange={setInputValue}
-              />
+              <ReactQuill value={inputValue || ""} onChange={setInputValue} />
             </Stack>
           </DrawerBody>
         </DrawerContent>
@@ -130,6 +128,15 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
         task={task}
         isOpen={duplicateTaskModal.isOpen}
         onClose={duplicateTaskModal.onClose}
+      />
+      <DeleteModal
+        isOpen={deleteTaskModal.isOpen}
+        onClose={deleteTaskModal.onClose}
+        onAccept={() => {
+            deleteTaskModal.onClose,
+            onClose(),
+            onDeleteTask(task.id);
+        }}
       />
     </>
   );

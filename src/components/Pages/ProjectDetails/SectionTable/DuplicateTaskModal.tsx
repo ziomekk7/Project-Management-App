@@ -54,14 +54,6 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
   });
 
   const handleInnerSubmit = (data: z.infer<typeof duplicateTaskFormSchema>) => {
-    handleDuplicateTask(data);
-    onClose();
-    resetField("name");
-  };
-
-  const handleDuplicateTask = (
-    data: z.infer<typeof duplicateTaskFormSchema>
-  ) => {
     onDuplicateTask({
       name: data.name,
       date: checkedFields.date ? task.date : null,
@@ -69,6 +61,8 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
       description: checkedFields.description ? task.description : null,
       id: uuidv4(),
     });
+    onClose();
+    resetField("name");
   };
 
   return (

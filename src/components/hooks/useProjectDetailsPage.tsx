@@ -18,7 +18,6 @@ import {
   changeTaskLocation,
   ChangeSectionLocationData,
   ChangeTaskLocationData,
-  // testChangeSectionLocation,
 } from "../../api/projectsApi";
 import { queryKeys } from "../../queryKeys";
 import { useDisclosure } from "@chakra-ui/react";
@@ -344,24 +343,22 @@ export const useProjectDetailsPage = () => {
     }
   };
 
-  const handleCreateTask = (task: Task, sectionId?: string) => {
-    if (sectionId) {
+  const handleCreateTask = (task: Task) => {
+    if (openTask) {
+      if (!projectQuery.data) {
+        return;
+      }
+      const section = projectQuery.data.sections.find((section) =>
+        section.tasks.find((lookingTask) => lookingTask.id === openTask.id)
+      );
+      if (!section) {
+        return;
+      }
       createTaskMutation.mutate({
-        sectionId: sectionId,
+        sectionId: section.id,
         task: task,
       });
     }
-
-    const section = projectQuery.data?.sections.find((section) =>
-      section.tasks.find((lookingTask) => lookingTask.id === task.id)
-    );
-    if (!section) {
-      return;
-    }
-    createTaskMutation.mutate({
-      sectionId: section.id,
-      task: task,
-    });
   };
 
   const handleDeleteTask = (taskId: string) => {
