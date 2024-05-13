@@ -1,5 +1,5 @@
 import { Project } from "../../../../../types/types";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   Menu,
   MenuButton,
@@ -11,9 +11,12 @@ import {
   Box,
   Button,
   useDisclosure,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 import { DeleteModal } from "../../DeleteModal/DeleteModal";
+import { hideMd } from "../../../../UI/RespoStyles";
+import MenuDrawer from "../../../MenuDrawer";
 
 type ProjectHeaderProps = {
   project: Project;
@@ -27,9 +30,18 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   onChangeView,
 }) => {
   const deleteTaskModal = useDisclosure();
+  const burgerMenuDrafter = useDisclosure();
+  const burgerButtonStyle = useBreakpointValue(hideMd);
+
   return (
     <Box h="15%">
       <Stack p={5} direction="row" spacing={8} w="100%">
+        <IconButton
+          display={burgerButtonStyle}
+          aria-label="Open burger menu"
+          icon={<HamburgerIcon />}
+          onClick={burgerMenuDrafter.onOpen}
+        />
         <Heading as="h1" size="xl">
           {project.name}
         </Heading>
@@ -58,6 +70,10 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         isOpen={deleteTaskModal.isOpen}
         onClose={deleteTaskModal.onClose}
         onAccept={() => onDeleteProject(project.id)}
+      />
+      <MenuDrawer
+        onClose={burgerMenuDrafter.onClose}
+        isOpen={burgerMenuDrafter.isOpen}
       />
     </Box>
   );
