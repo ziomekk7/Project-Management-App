@@ -7,6 +7,7 @@ import {
   MenuItem,
   IconButton,
   useDisclosure,
+  useBreakpointValue,
 } from "@chakra-ui/react";
 import { DeleteIcon, Search2Icon } from "@chakra-ui/icons";
 import { Task } from "../../../../types/types";
@@ -41,20 +42,20 @@ const TaskRow: React.FC<TaskRowProps> = ({
 }) => {
   const [selectedDate, setSelectedDate] = useState(task.date);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-  } = useSortable({
-    id: task.id,
-    data: {
-      type: "task",
-      task,
-    },
+  const { attributes, listeners, setNodeRef, transform, transition } =
+    useSortable({
+      id: task.id,
+      data: {
+        type: "task",
+        task,
+      },
+    });
+  const deleteTaskModal = useDisclosure();
+  const hideOnSmallResolutions = useBreakpointValue({
+    base: { display: "none", templateColumns: "1fr" },
+    md: { display: "flex", templateColumns: "2fr 1fr 1fr" },
+    lg: { display: "flex", templateColumns: "2fr 1fr 1fr" },
   });
-  const deleteTaskModal = useDisclosure()
   const style = {
     transition,
     transform: CSS.Translate.toString(transform),
@@ -63,7 +64,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
   return (
     <Grid
       h={16}
-      templateColumns="2fr 1fr 1fr "
+      templateColumns={hideOnSmallResolutions?.templateColumns}
       borderBottom="1px solid black"
       ref={setNodeRef}
       style={style}
@@ -87,15 +88,12 @@ const TaskRow: React.FC<TaskRowProps> = ({
             variant="ghost"
           />
           <MenuList>
-            <MenuItem
-              onClick={deleteTaskModal.onOpen}
-              icon={<DeleteIcon />}
-            >
+            <MenuItem onClick={deleteTaskModal.onOpen} icon={<DeleteIcon />}>
               Delete Task
             </MenuItem>
             <MenuItem
               onClick={() => onOpenTaskDetails(task.id)}
-              icon={<Search2Icon/>}
+              icon={<Search2Icon />}
             >
               Task Details
             </MenuItem>
@@ -104,7 +102,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
       </GridItem>
       <GridItem
         borderRight="1px solid black"
-        display="flex"
+        display={hideOnSmallResolutions?.display}
         alignItems="center"
         justifyContent="center"
       >
@@ -125,7 +123,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
       </GridItem>
       <GridItem
         borderRight="1px solid black"
-        display="flex"
+        display={hideOnSmallResolutions?.display}
         alignItems="center"
         justifyContent="flex-start"
         ml={5}
@@ -143,8 +141,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
           selectedPriority={task.priority}
         />
       </GridItem>
-         {/* const deleteTaskModal = useDisclosure(); */}
-         <DeleteModal
+      <DeleteModal
         isOpen={deleteTaskModal.isOpen}
         onClose={deleteTaskModal.onClose}
         onAccept={() => onDeleteTask(task.id)}

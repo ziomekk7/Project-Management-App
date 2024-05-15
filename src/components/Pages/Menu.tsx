@@ -1,4 +1,9 @@
-import { Stack, Button, Heading, Text,  } from "@chakra-ui/react";
+import {
+  Stack,
+  Button,
+  Heading,
+  Text,
+} from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../../queryKeys";
@@ -7,10 +12,10 @@ import { routes } from "../../routes";
 import { Link } from "react-router-dom";
 
 type MenuProps = {
-  onClose?: ()=>void
-}
+  onClose?: () => void;
+};
 
-const Menu: React.FC<MenuProps> = ({onClose}) => {
+const Menu: React.FC<MenuProps> = ({ onClose }) => {
   const projectsQuery = useQuery({
     queryKey: queryKeys.projects.all(),
     queryFn: getProjects,
@@ -28,7 +33,7 @@ const Menu: React.FC<MenuProps> = ({onClose}) => {
       h="100%"
       w="100%"
     >
-      <Button  variant="outline" maxW={36} p={1} leftIcon={<AddIcon />}>
+      <Button variant="outline" maxW={36} p={1} leftIcon={<AddIcon />}>
         <Link to={routes.projects.create()}>Create Project</Link>
       </Button>
       {projectsQuery.data && projectsQuery.data.length === 0 && (

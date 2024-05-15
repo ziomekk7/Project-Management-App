@@ -6,7 +6,6 @@ import {
 import Menu from "../Pages/Menu";
 import React from "react";
 import { showMd } from "../UI/RespoStyles";
-// import { SearchIcon } from "@chakra-ui/icons";
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
  
   const menuStyles = useBreakpointValue(showMd);
@@ -15,6 +14,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
     md: "2",
     lg: "2",
   });
+ 
   return (
     <Grid w="100%" h="100%" templateColumns="200px 1fr ">
       <GridItem

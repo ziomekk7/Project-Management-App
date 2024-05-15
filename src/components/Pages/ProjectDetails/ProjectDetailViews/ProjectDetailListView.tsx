@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from "@chakra-ui/react";
+import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
 import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
 import { Project, Task } from "../../../../types/types";
 import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
@@ -17,6 +17,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
+import { showMd } from "../../../UI/RespoStyles";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
@@ -55,6 +56,8 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   onOpenCreateSectionForm,
   onChangeObjectLocation,
 }) => {
+  const hideOnSmallResolutions = useBreakpointValue(showMd);
+
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 1,
@@ -72,7 +75,9 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
 
   return (
     <Stack overflow="auto" h="85%">
-      <ExampleTaskRow />
+      <Box display={hideOnSmallResolutions}>
+        <ExampleTaskRow />
+      </Box>
       <DndContext
         sensors={sensors}
         onDragEnd={(event: DragEndEvent) => onChangeObjectLocation(event)}

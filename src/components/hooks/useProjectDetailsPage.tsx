@@ -275,7 +275,7 @@ export const useProjectDetailsPage = () => {
       if (!projectQuery.data) {
         return;
       }
-      const project: Project = projectQuery.data;
+      const project: Project = projectQuery.data
       const sectionIndex = project.sections.findIndex((section) =>
         section.tasks.find((task) => task.id === data.taskId)
       );
