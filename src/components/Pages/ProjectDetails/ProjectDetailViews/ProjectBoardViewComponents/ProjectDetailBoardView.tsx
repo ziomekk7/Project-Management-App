@@ -40,7 +40,6 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
   onEditTask,
   onChangeObjectLocation,
 }) => {
-  // const [isDragging, setIsDragging] = useState(false)
 
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {

@@ -118,8 +118,6 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
         ) : (
           <Box
           overflowX="auto"
-          overflowY="visible"
-          // overflow="auto"
           >
             <SortableContext items={tasksId}>
               {section.tasks.map((task) => (

@@ -3,10 +3,7 @@ import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
 import { Project, Task } from "../../../../types/types";
 import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
 import { AddIcon } from "@chakra-ui/icons";
-import {
-  ChangeSectionLocationData,
-  ChangeTaskLocationData,
-} from "../../../../api/projectsApi";
+import { ChangeTaskLocationData } from "../../../../api/projectsApi";
 import {
   DndContext,
   DragEndEvent,
@@ -34,7 +31,6 @@ type ProjectDetailListViewProps = {
   hiddenSections: string[];
   onHideSectionId: (sectionId: string) => void;
   onDuplicateTask: (task: Task, sectionId: string) => void;
-  onChangeSectionLocation: (data: ChangeSectionLocationData) => void;
   onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
   onChangeObjectLocation: (data: DragEndEvent) => void;
 };
@@ -54,6 +50,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   onCloseCreateSectionForm,
   onCreateSection,
   onOpenCreateSectionForm,
+  onChangeTaskLocation,
   onChangeObjectLocation,
 }) => {
   const hideOnSmallResolutions = useBreakpointValue(showMd);
@@ -86,6 +83,8 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
         <SortableContext strategy={rectSortingStrategy} items={sectionsId}>
           {project.sections.map((section) => (
             <ProjectListBox
+              onChangeTaskLocation={onChangeTaskLocation}
+              sections={project.sections}
               key={section.id}
               section={section}
               onCreateTask={onCreateTask}
