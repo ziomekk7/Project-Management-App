@@ -13,7 +13,6 @@ import {
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import SectionCardBoard from "./SectionCardBoard/SectionCardBoard";
 
-
 type ProjectDetailBoardViewProps = {
   isCreatingSection: boolean;
   project: Project | null | undefined;
@@ -25,9 +24,7 @@ type ProjectDetailBoardViewProps = {
   onOpenCreateSectionForm: () => void;
   onCloseCreateSectionForm: () => void;
   onEditTask: (task: Task) => void;
-  // onChangeSectionLocation: (data: ChangeSectionLocationData) => void;
-  // onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
-  onChangeObjectLocation:(data: DragEndEvent) =>void
+  onChangeObjectLocation: (data: DragEndEvent) => void;
 };
 
 const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
@@ -41,9 +38,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
   onOpenCreateSectionForm,
   onCloseCreateSectionForm,
   onEditTask,
-  // onChangeSectionLocation,
-  // onChangeTaskLocation,
-  onChangeObjectLocation
+  onChangeObjectLocation,
 }) => {
 
   const sensor = useSensor(PointerSensor, {
@@ -59,7 +54,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
   if (!sectionsId) {
     return;
   }
- 
+
   return (
     <DndContext
       sensors={sensors}
@@ -68,10 +63,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
     >
       <Stack direction="row" overflow="auto" h="85%">
         {project && (
-          <SortableContext
-            strategy={rectSortingStrategy}
-            items={sectionsId}
-          >
+          <SortableContext strategy={rectSortingStrategy} items={sectionsId}>
             {project.sections.map((section) => (
               <SectionCardBoard
                 section={section}

@@ -86,7 +86,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
   return (
     <Stack mr={1} ml={1} maxW={72} minW={60}>
       <Card
-        zIndex={isDragging ? 5 : 0}
+        zIndex={isDragging ? 1000 : 0}
         variant="outline"
         h="100%"
         w={64}
@@ -116,7 +116,9 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
             </CardBody>
           </Card>
         ) : (
-          <Box overflow="auto">
+          <Box
+          overflowX="auto"
+          >
             <SortableContext items={tasksId}>
               {section.tasks.map((task) => (
                 <TaskCardBoard
@@ -140,7 +142,6 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
         )}
       </Card>
 
-     
       <DeleteModal
         isOpen={deleteTaskModal.isOpen}
         onClose={deleteTaskModal.onClose}

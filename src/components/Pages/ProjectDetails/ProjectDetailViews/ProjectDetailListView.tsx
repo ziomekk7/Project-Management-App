@@ -1,12 +1,9 @@
-import { Box, Button, Stack } from "@chakra-ui/react";
+import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
 import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
 import { Project, Task } from "../../../../types/types";
 import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
 import { AddIcon } from "@chakra-ui/icons";
-import {
-  ChangeSectionLocationData,
-  ChangeTaskLocationData,
-} from "../../../../api/projectsApi";
+import { ChangeTaskLocationData } from "../../../../api/projectsApi";
 import {
   DndContext,
   DragEndEvent,
@@ -17,6 +14,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
+import { showMd } from "../../../UI/RespoStyles";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
@@ -33,7 +31,6 @@ type ProjectDetailListViewProps = {
   hiddenSections: string[];
   onHideSectionId: (sectionId: string) => void;
   onDuplicateTask: (task: Task, sectionId: string) => void;
-  onChangeSectionLocation: (data: ChangeSectionLocationData) => void;
   onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
   onChangeObjectLocation: (data: DragEndEvent) => void;
 };
@@ -53,8 +50,11 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   onCloseCreateSectionForm,
   onCreateSection,
   onOpenCreateSectionForm,
+  onChangeTaskLocation,
   onChangeObjectLocation,
 }) => {
+  const hideOnSmallResolutions = useBreakpointValue(showMd);
+
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 1,
@@ -72,7 +72,9 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
 
   return (
     <Stack overflow="auto" h="85%">
-      <ExampleTaskRow />
+      <Box display={hideOnSmallResolutions}>
+        <ExampleTaskRow />
+      </Box>
       <DndContext
         sensors={sensors}
         onDragEnd={(event: DragEndEvent) => onChangeObjectLocation(event)}
@@ -81,6 +83,8 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
         <SortableContext strategy={rectSortingStrategy} items={sectionsId}>
           {project.sections.map((section) => (
             <ProjectListBox
+              onChangeTaskLocation={onChangeTaskLocation}
+              sections={project.sections}
               key={section.id}
               section={section}
               onCreateTask={onCreateTask}

@@ -4,13 +4,8 @@ import SectionHeader from "../../SectionTable/SectionHeader";
 import TaskRow from "../../SectionTable/TaskRow";
 import { Section, Task } from "../../../../../types/types";
 import CreateTaskRow from "../../SectionTable/CreateTaskRow";
-import {
-  SortableContext,
-  rectSortingStrategy,
-  useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
 import { DeleteModal } from "../../DeleteModal/DeleteModal";
+import { ChangeTaskLocationData } from "../../../../../api/projectsApi";
 
 type ProjectListBoxProps = {
   section: Section;
@@ -22,6 +17,8 @@ type ProjectListBoxProps = {
   onDuplicateTask: (task: Task, sectionId: string) => void;
   onDeleteTask: (taskId: string) => void;
   onCreateTask: (task: Task, sectionId: string) => void;
+  sections: Section[];
+  onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
 };
 
 export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
@@ -34,25 +31,13 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
   onDuplicateTask,
   onDeleteTask,
   onCreateTask,
+  sections,
+  onChangeTaskLocation,
 }) => {
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: section.id,
-      data: {
-        type: "section",
-        section,
-      },
-    });
-
   const deleteTaskModal = useDisclosure();
 
-  const tasksId = section.tasks.map((task) => task.id);
-  const style = {
-    transition,
-    transform: CSS.Translate.toString(transform),
-  };
   return (
-    <Box ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <Box>
       <SectionHeader
         section={section}
         onDeleteSection={deleteTaskModal.onOpen}
@@ -61,23 +46,21 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
       />
       {!hiddenSections.some((sectionId) => sectionId === section.id) && (
         <div>
-          <SortableContext strategy={rectSortingStrategy} items={tasksId}>
-            {section.tasks.map((task) => (
-              <TaskRow
-                onChangeDate={(task) => onEditTask(task)}
-                onChangePriority={(task) => onEditTask(task)}
-                onOpenTaskDetails={(task) =>
-                  onOpenTaskDetails(task, section.id)
-                }
-                onDuplicateTask={(task) => onDuplicateTask(task, section.id)}
-                key={task.id}
-                task={task}
-                onDeleteTask={onDeleteTask}
-                onEditTask={onEditTask}
-                sectionId={section.id}
-              />
-            ))}
-          </SortableContext>
+          {section.tasks.map((task) => (
+            <TaskRow
+              onChangeTaskLocation={onChangeTaskLocation}
+              onChangeDate={(task) => onEditTask(task)}
+              onChangePriority={(task) => onEditTask(task)}
+              onOpenTaskDetails={(task) => onOpenTaskDetails(task, section.id)}
+              onDuplicateTask={(task) => onDuplicateTask(task, section.id)}
+              key={task.id}
+              task={task}
+              onDeleteTask={onDeleteTask}
+              onEditTask={onEditTask}
+              sectionId={section.id}
+              sections={sections}
+            />
+          ))}
 
           <CreateTaskRow
             onCreateTask={(task) => {
@@ -86,7 +69,7 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
           />
         </div>
       )}
-      
+
       <DeleteModal
         isOpen={deleteTaskModal.isOpen}
         onClose={deleteTaskModal.onClose}

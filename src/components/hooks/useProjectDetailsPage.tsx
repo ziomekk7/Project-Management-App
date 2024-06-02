@@ -411,11 +411,12 @@ export const useProjectDetailsPage = () => {
     const source = event.active;
     const destination = event.over;
 
-    if (!project) {
-      return;
-    }
-
-    if (!destination) {
+    if (
+      !project ||
+      !source.data.current ||
+      !destination ||
+      !destination.data.current
+    ) {
       return;
     }
 
@@ -423,8 +424,8 @@ export const useProjectDetailsPage = () => {
       return;
     }
 
-    const sourceType = source.data.current?.type;
-    const destinationType = destination.data.current?.type;
+    const sourceType = source.data.current.type;
+    const destinationType = destination.data.current.type;
 
     if (sourceType === "section") {
       const sourceSectionId = source.id;
@@ -451,15 +452,29 @@ export const useProjectDetailsPage = () => {
       }
     } else {
       const sourceTaskId = source.id.toLocaleString();
+      if (destinationType == "section") {
+        const destinationSectionIndex = project.sections.findIndex(
+          (section) => section.id == destination.id
+        );
+        const destinationSectionId =
+          project.sections[destinationSectionIndex].id;
+        const data = {
+          taskId: sourceTaskId,
+          destinationSectionId: destinationSectionId,
+          destinationIndex: 0,
+        };
+        changeTaskLocationMutation.mutate(data);
+      }
+
       const destinationTaskId = destination.id;
-      const destinationSectionIndex = project?.sections.findIndex((section) =>
+      const destinationSectionIndex = project.sections.findIndex((section) =>
         section.tasks.find((task) => task.id === destinationTaskId)
       );
-      const destinationTaskIndex = project?.sections[
+      const destinationTaskIndex = project.sections[
         destinationSectionIndex
       ].tasks.findIndex((task) => task.id === destinationTaskId);
 
-      const destinationSection = project?.sections[destinationSectionIndex];
+      const destinationSection = project.sections[destinationSectionIndex];
       const data = {
         taskId: sourceTaskId,
         destinationSectionId: destinationSection.id,
