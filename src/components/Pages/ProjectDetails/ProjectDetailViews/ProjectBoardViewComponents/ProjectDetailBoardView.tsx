@@ -1,17 +1,26 @@
-import { Stack, Card, Button } from "@chakra-ui/react";
+import {
+  Stack,
+  Card,
+  Button,
+  // Text
+} from "@chakra-ui/react";
 import { Project, Task } from "../../../../../types/types";
 import { AddIcon } from "@chakra-ui/icons";
 import CreateSectionForm from "../../CreateSectionForm/CreateSectionForm";
 import {
   DndContext,
   DragEndEvent,
+  DragOverlay,
   PointerSensor,
-  closestCenter,
+  closestCorners,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import SectionCardBoard from "./SectionCardBoard/SectionCardBoard";
+import TaskCardBoard from "./TaskCardBoard/TaskCardBoard";
+import { createPortal } from "react-dom";
+import { useDndProject } from "../../../../hooks/useDndProject";
 
 type ProjectDetailBoardViewProps = {
   isCreatingSection: boolean;
@@ -40,31 +49,67 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
   onEditTask,
   onChangeObjectLocation,
 }) => {
-
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
       distance: 1,
     },
   });
   const sensors = useSensors(sensor);
-  if (!project) {
-    return;
-  }
-  const sectionsId = project.sections.map((section) => section.id);
-  if (!sectionsId) {
-    return;
-  }
+  const dndProject = useDndProject(project);
+  const projectToRender = dndProject.project || project;
+  const renderDragOverlay = () => {
+    if (dndProject.activeTask) {
+      if (!projectToRender) return;
+      const section = projectToRender.sections?.find((section) =>
+        section.tasks.find((task) => task.id === dndProject.activeTask?.id)
+      );
+      if (!section) return;
+      return (
+        <DragOverlay>
+          <TaskCardBoard
+            key={dndProject.activeTask.id}
+            task={dndProject.activeTask}
+            sectionId={section.id}
+            onCreateTask={onCreateTask}
+            onEditTask={onEditTask}
+            onOpenTaskDetails={onOpenTaskDetails}
+          />
+        </DragOverlay>
+      );
+    }
+    if (dndProject.activeSection) {
+      return (
+        <DragOverlay>
+          <SectionCardBoard
+            section={dndProject.activeSection}
+            onCreateTask={onCreateTask}
+            onDeleteSection={onDeleteSection}
+            onEditTask={onEditTask}
+            onOpenTaskDetails={onOpenTaskDetails}
+            key={dndProject.activeSection.id}
+          />
+        </DragOverlay>
+      );
+    }
+  };
 
   return (
     <DndContext
       sensors={sensors}
-      onDragEnd={(event: DragEndEvent) => onChangeObjectLocation(event)}
-      collisionDetection={closestCenter}
+      onDragOver={dndProject.handleDragOver}
+      onDragStart={dndProject.handleDragStart}
+      onDragEnd={(e) => {
+        dndProject.handleDragEnd(), onChangeObjectLocation(e);
+      }}
+      collisionDetection={closestCorners}
     >
       <Stack direction="row" overflow="auto" h="85%">
-        {project && (
-          <SortableContext strategy={rectSortingStrategy} items={sectionsId}>
-            {project.sections.map((section) => (
+        {projectToRender && (
+          <SortableContext
+            strategy={rectSortingStrategy}
+            items={projectToRender.sections.map((section) => section.id)}
+          >
+            {projectToRender.sections.map((section) => (
               <SectionCardBoard
                 section={section}
                 onCreateTask={onCreateTask}
@@ -102,6 +147,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
           ></Card>
         </Card>
       </Stack>
+      {createPortal(renderDragOverlay(), document.body)}
     </DndContext>
   );
 };

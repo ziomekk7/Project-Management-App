@@ -7,9 +7,7 @@ type CreateTaskRowProps = {
   onCreateTask: (task: Task) => void;
 };
 
-const CreateTaskRow: FC<CreateTaskRowProps> = ({
-  onCreateTask,
-}) => {
+const CreateTaskRow: FC<CreateTaskRowProps> = ({ onCreateTask}) => {
   return (
     <Flex p={5} w="100%">
       <CreateTaskForm

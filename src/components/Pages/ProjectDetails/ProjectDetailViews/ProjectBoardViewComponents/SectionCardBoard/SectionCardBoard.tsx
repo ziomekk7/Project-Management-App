@@ -18,7 +18,6 @@ import { Section, Task } from "../../../../../../types/types";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import TaskCardBoard from "../TaskCardBoard/TaskCardBoard";
-import { useMemo } from "react";
 import { DeleteModal } from "../../../DeleteModal/DeleteModal";
 
 type SectionCardBoardProps = {
@@ -57,36 +56,25 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
   onOpenTaskDetails,
   onEditTask,
 }) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
+  const { attributes, listeners, setNodeRef, transform } = useSortable({
     id: section.id,
     data: {
       type: "section",
       section,
     },
+    animateLayoutChanges: () => false, 
   });
 
-  const tasksId = useMemo(
-    () => section.tasks.map((item) => item.id),
-    [section]
-  );
   const deleteTaskModal = useDisclosure();
 
   const style = {
-    transition,
     transform: CSS.Translate.toString(transform),
+    transition: "transform 300ms ease",
   };
 
   return (
     <Stack mr={1} ml={1} maxW={72} minW={60}>
       <Card
-        zIndex={isDragging ? 1000 : 0}
         variant="outline"
         h="100%"
         w={64}
@@ -107,22 +95,24 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
             mb={2}
             h="100%"
             minH={80}
+            maxW={60}
             bgGradient="linear(to-b, gray.700, gray.800)"
           >
             <CardBody>
               <CreateTaskCard
+                sectionId={section.id}
                 onCreateTask={(task) => onCreateTask(task, section.id)}
               />
             </CardBody>
           </Card>
         ) : (
           <Box
-          overflowX="auto"
+            overflow="auto"
           >
-            <SortableContext items={tasksId}>
+            <SortableContext items={section.tasks.map((task) => task.id)}>
               {section.tasks.map((task) => (
                 <TaskCardBoard
-                  key={task.id}
+                  key={task.id.toString()}
                   task={task}
                   sectionId={section.id}
                   onCreateTask={onCreateTask}
@@ -134,6 +124,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
             <Card bg="transparent" mt={1} h={40}>
               <CardBody>
                 <CreateTaskCard
+                  sectionId={section.id}
                   onCreateTask={(task) => onCreateTask(task, section.id)}
                 />
               </CardBody>
@@ -141,7 +132,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
           </Box>
         )}
       </Card>
-
+      
       <DeleteModal
         isOpen={deleteTaskModal.isOpen}
         onClose={deleteTaskModal.onClose}

@@ -7,14 +7,19 @@ import { ChangeTaskLocationData } from "../../../../api/projectsApi";
 import {
   DndContext,
   DragEndEvent,
+  DragOverlay,
   PointerSensor,
-  closestCenter,
+  // closestCenter,
+  closestCorners,
   useSensor,
   useSensors,
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
 import { showMd } from "../../../UI/RespoStyles";
+import { useDndProject } from "../../../hooks/useDndProject";
+import { createPortal } from "react-dom";
+import TaskRow from "../SectionTable/TaskRow";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
@@ -61,12 +66,55 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
     },
   });
   const sensors = useSensors(sensor);
-  if (!project) {
-    return;
-  }
-
-  const sectionsId = project.sections.map((section) => section.id);
-  if (!sectionsId) {
+  const dndProject = useDndProject(project);
+  const projectToRender = dndProject.project || project;
+  const renderDragOverlay = () => {
+    if (!projectToRender) return;
+    const section = projectToRender.sections?.find((section) =>
+      section.tasks.find((task) => task.id === dndProject.activeTask?.id)
+    );
+    if (!section) return;
+    if (dndProject.activeTask) {
+      return (
+        <DragOverlay>
+          <TaskRow
+              onChangeTaskLocation={onChangeTaskLocation}
+              onChangeDate={(task) => onEditTask(task)}
+              onChangePriority={(task) => onEditTask(task)}
+              onOpenTaskDetails={(task) => onOpenTaskDetails(task, section.id)}
+              onDuplicateTask={(task) => onDuplicateTask(task, section.id)}
+              key={dndProject.activeTask.id}
+              task={dndProject.activeTask}
+              onDeleteTask={onDeleteTask}
+              onEditTask={onEditTask}
+              sectionId={section.id}
+              sections={projectToRender.sections}
+            />
+        </DragOverlay>
+      );
+    }
+    if (dndProject.activeSection) {
+      return (
+        <DragOverlay>
+          <ProjectListBox
+            onChangeTaskLocation={onChangeTaskLocation}
+            sections={projectToRender.sections}
+            key={section.id}
+            section={section}
+            onCreateTask={onCreateTask}
+            onDeleteSection={onDeleteSection}
+            hiddenSections={hiddenSections}
+            onEditTask={onEditTask}
+            onDeleteTask={onDeleteTask}
+            onDuplicateTask={onDuplicateTask}
+            onOpenTaskDetails={onOpenTaskDetails}
+            onHideSectionId={onHideSectionId}
+          />
+        </DragOverlay>
+      );
+    }
+  };
+  if (!projectToRender) {
     return;
   }
 
@@ -77,14 +125,21 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
       </Box>
       <DndContext
         sensors={sensors}
-        onDragEnd={(event: DragEndEvent) => onChangeObjectLocation(event)}
-        collisionDetection={closestCenter}
+        onDragOver={dndProject.handleDragOver}
+        onDragStart={dndProject.handleDragStart}
+        onDragEnd={(e) => {
+          dndProject.handleDragEnd(), onChangeObjectLocation(e);
+        }}
+        collisionDetection={closestCorners}
       >
-        <SortableContext strategy={rectSortingStrategy} items={sectionsId}>
-          {project.sections.map((section) => (
+        <SortableContext
+          strategy={rectSortingStrategy}
+          items={projectToRender.sections.map((section) => section.id)}
+        >
+          {projectToRender.sections.map((section) => (
             <ProjectListBox
               onChangeTaskLocation={onChangeTaskLocation}
-              sections={project.sections}
+              sections={projectToRender.sections}
               key={section.id}
               section={section}
               onCreateTask={onCreateTask}
@@ -98,6 +153,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
             />
           ))}
         </SortableContext>
+        {createPortal(renderDragOverlay(), document.body)}
       </DndContext>
       <Stack p={4} w="md">
         {isCreateSectionFormVisible ? (

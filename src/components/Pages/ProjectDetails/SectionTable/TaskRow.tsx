@@ -107,12 +107,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
         <EditNameInput task={task} onEditTask={onEditTask} />
         <Flex>
           <Menu>
-            <MenuButton
-              ml={2.5}
-              as={IconButton}
-              icon={<UpDownIcon />}
-              variant="ghost"
-            />
+            <MenuButton as={IconButton} icon={<UpDownIcon />} variant="ghost" />
             <MenuList>
               <MenuGroup title="Move task to section">
                 {sections.map((section) => (
@@ -135,7 +130,6 @@ const TaskRow: React.FC<TaskRowProps> = ({
           </Menu>
           <Menu>
             <MenuButton
-              ml={2.5}
               as={IconButton}
               icon={<EllipsisHorizontal />}
               variant="ghost"

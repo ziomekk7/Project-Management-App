@@ -9,6 +9,7 @@ import { useDisclosure } from "@chakra-ui/react";
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
   const deleteTaskModal = useDisclosure();
+  if (!projectDetailsPage) return;
   const commonProps = {
     isCreatingSection: projectDetailsPage.isCreatingSection,
     project: projectDetailsPage.project,
@@ -48,7 +49,9 @@ const ProjectDetails = () => {
             onHideSectionId={projectDetailsPage.handleHideSection}
           />
         ) : (
-          <ProjectDetailBoardView {...commonProps} />
+          <ProjectDetailBoardView
+            {...commonProps}
+          />
         )}
         {projectDetailsPage.openTask &&
           projectDetailsPage.openTaskDetailLocation && (
