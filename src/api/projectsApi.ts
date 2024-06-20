@@ -73,7 +73,6 @@ const projectsSchema = z.array(
 const PROJECTS_KEY = "projects";
 
 const saveProjects = async (projects: Project[]) => {
-  await delay(2000);
   try {
     localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
   } catch (error) {
@@ -82,7 +81,6 @@ const saveProjects = async (projects: Project[]) => {
 };
 
 export const getProjects = async (): Promise<Project[]> => {
-  await delay(2000);
   const rawProjects = localStorage.getItem(PROJECTS_KEY);
   if (!rawProjects) {
     return [];
