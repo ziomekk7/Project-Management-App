@@ -5,10 +5,11 @@ import { useState, useRef } from "react";
 
 type CreateTaskCardProps = {
   onCreateTask: (task: Task) => void;
+  sectionId:string
 };
 
 export const CreateTaskCard: React.FC<CreateTaskCardProps> = ({
-  onCreateTask,
+  onCreateTask
 }) => {
   const [isHideCreateTaskForm, setIsHideCreateTaskForm] = useState(false);
   const createTaskRef = useRef(null);

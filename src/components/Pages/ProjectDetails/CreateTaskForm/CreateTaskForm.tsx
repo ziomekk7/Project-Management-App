@@ -15,13 +15,13 @@ const createTaskFormSchema = z.object({
 
 type CreateTaskFormProps = {
   onCreateTask: (task: Task) => void;
-  setAutoFocus:boolean,
+  setAutoFocus: boolean;
   style?: CSSProperties;
 };
 
 const CreateTaskForm: FC<CreateTaskFormProps> = ({
   onCreateTask,
-  setAutoFocus
+  setAutoFocus,
 }) => {
   const {
     resetField,
@@ -47,15 +47,15 @@ const CreateTaskForm: FC<CreateTaskFormProps> = ({
         })}
       >
         <InputGroup>
-        {setAutoFocus? ( <Input
-            {...register("newTask")}
-            placeholder="My new task "
-            autoFocus
-          ></Input>):( <Input
-            {...register("newTask")}
-            placeholder="My new task "
-          ></Input>)}
-       
+          {setAutoFocus ? (
+            <Input
+              {...register("newTask")}
+              placeholder="My new task "
+              autoFocus
+            ></Input>
+          ) : (
+            <Input {...register("newTask")} placeholder="My new task "></Input>
+          )}
         </InputGroup>
         {errors.newTask?.message && <Text>{errors.newTask?.message}</Text>}
       </form>

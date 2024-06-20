@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Task } from "../../../../../../types/types";
-import { Card, CardBody, Stack } from "@chakra-ui/react";
+import { Box, Card, CardBody, Stack } from "@chakra-ui/react";
 import { EditNameInput } from "../../EditNameInput";
 import PriorityForm from "../../../PriorityForm/PriorityForm";
 import DatePicker from "../../../SectionTable/DatePicker/DatePicker";
@@ -34,35 +34,33 @@ const TaskCardBoard: React.FC<TaskCardBoardProps> = ({
     listeners,
     setNodeRef,
     transform,
-    transition,
-    isDragging,
   } = useSortable({
     id: task.id,
     data: {
       type: "task",
       task,
     },
+    animateLayoutChanges: () => false, 
   });
 
   const style = {
-    transition,
     transform: CSS.Translate.toString(transform),
+    transition: "transform 300ms ease",
   };
   const [selectedDate, setSelectedDate] = useState<Date | null>();
   return (
-    <div
+    <Box
       ref={setNodeRef}
       style={style}
       {...attributes}
       {...listeners}
-      key={task.id}
+      key={task.id.toString()}
       onClick={() => onOpenTaskDetails(task.id, sectionId)}
     >
       <Card
         border="1px"
         mb={2}
         borderColor="gray.600"
-        zIndex={isDragging ? 1000 : 0}
       >
         <CardBody>
           <EditNameInput task={task} onEditTask={onEditTask} />
@@ -91,7 +89,7 @@ const TaskCardBoard: React.FC<TaskCardBoardProps> = ({
           </Stack>
         </CardBody>
       </Card>
-    </div>
+    </Box>
   );
 };
 

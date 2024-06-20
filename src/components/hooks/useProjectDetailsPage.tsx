@@ -93,6 +93,7 @@ export const useProjectDetailsPage = () => {
         })
       );
       setIsCreateSectionFormVisible(false);
+      console.log(previousProject, "previousProject");
       return { previousProject };
     },
     onError: (_, __, context) => {
@@ -235,7 +236,7 @@ export const useProjectDetailsPage = () => {
       }
       const previousProject: Project = {
         ...projectQuery.data,
-        sections: projectQuery.data.sections,
+        sections: projectQuery.data.sections.map((section) => ({ ...section })),
       };
       const movedSectionIndex = previousProject.sections.findIndex(
         (section) => section.id === data.sectionId
@@ -275,7 +276,13 @@ export const useProjectDetailsPage = () => {
       if (!projectQuery.data) {
         return;
       }
-      const project: Project = projectQuery.data;
+      const project: Project = {
+        ...projectQuery.data,
+        sections: projectQuery.data.sections.map((section) => ({
+          ...section,
+          tasks: section.tasks.map((task) => ({ ...task })),
+        })),
+      };
       const sectionIndex = project.sections.findIndex((section) =>
         section.tasks.find((task) => task.id === data.taskId)
       );
@@ -313,7 +320,12 @@ export const useProjectDetailsPage = () => {
     },
   });
 
+  if (!projectQuery) {
+    return;
+  }
+
   const handleCreateSection = (newSection: string) => {
+    console.log("handleCreateSectionStart");
     setIsCreatingSection(true);
     const newSectionId = uuidv4();
     createProjectSectionMutation.mutate({
@@ -344,6 +356,7 @@ export const useProjectDetailsPage = () => {
   };
 
   const handleCreateTask = (task: Task, sectionId?: string) => {
+    console.log("handleCreateTask");
     if (sectionId) {
       createTaskMutation.mutate({
         sectionId: sectionId,
@@ -426,22 +439,35 @@ export const useProjectDetailsPage = () => {
 
     const sourceType = source.data.current.type;
     const destinationType = destination.data.current.type;
+    const findDestinationSectionIdexByTaskId = (destinationTaskId: string) => {
+      const destinationSectionIndex = project.sections.findIndex((section) =>
+        section.tasks.find((task) => task.id === destinationTaskId)
+      );
+      return destinationSectionIndex;
+    };
+    const findDestinationSectionIndexBySectionId = (
+      destinationSectionId: string
+    ) => {
+      const destinationSectionIndex = project.sections.findIndex(
+        (section) => destinationSectionId === section.id
+      );
+      return destinationSectionIndex;
+    };
 
     if (sourceType === "section") {
       const sourceSectionId = source.id;
       if (destinationType === "task") {
-        const destinationSectionIndex = project.sections.findIndex((section) =>
-          section.tasks.find((task) => task.id === destination.id)
-        );
         const data = {
           sectionId: sourceSectionId.toLocaleString(),
-          destination: destinationSectionIndex,
+          destination: findDestinationSectionIdexByTaskId(
+            destination.id.toLocaleString()
+          ),
           type: "section",
         };
         changeSectionLocationMutation.mutate(data);
-      } else {
-        const destinationSectionIndex = project.sections.findIndex(
-          (section) => destination.id === section.id
+      } else if (destinationType === "section") {
+        const destinationSectionIndex = findDestinationSectionIndexBySectionId(
+          destination.id.toLocaleString()
         );
         const data = {
           sectionId: sourceSectionId.toLocaleString(),
@@ -450,11 +476,11 @@ export const useProjectDetailsPage = () => {
         };
         changeSectionLocationMutation.mutate(data);
       }
-    } else {
+    } else if (sourceType === "task") {
       const sourceTaskId = source.id.toLocaleString();
       if (destinationType == "section") {
-        const destinationSectionIndex = project.sections.findIndex(
-          (section) => section.id == destination.id
+        const destinationSectionIndex = findDestinationSectionIndexBySectionId(
+          destination.id.toLocaleString()
         );
         const destinationSectionId =
           project.sections[destinationSectionIndex].id;
@@ -463,24 +489,25 @@ export const useProjectDetailsPage = () => {
           destinationSectionId: destinationSectionId,
           destinationIndex: 0,
         };
+
+        changeTaskLocationMutation.mutate(data);
+      } else if (destinationType == "task") {
+        const destinationTaskId = destination.id;
+        const destinationSectionIndex = findDestinationSectionIdexByTaskId(
+          destination.id.toLocaleString()
+        );
+        const destinationTaskIndex = project.sections[
+          destinationSectionIndex
+        ].tasks.findIndex((task) => task.id === destinationTaskId);
+
+        const destinationSection = project.sections[destinationSectionIndex];
+        const data = {
+          taskId: sourceTaskId,
+          destinationSectionId: destinationSection.id,
+          destinationIndex: destinationTaskIndex,
+        };
         changeTaskLocationMutation.mutate(data);
       }
-
-      const destinationTaskId = destination.id;
-      const destinationSectionIndex = project.sections.findIndex((section) =>
-        section.tasks.find((task) => task.id === destinationTaskId)
-      );
-      const destinationTaskIndex = project.sections[
-        destinationSectionIndex
-      ].tasks.findIndex((task) => task.id === destinationTaskId);
-
-      const destinationSection = project.sections[destinationSectionIndex];
-      const data = {
-        taskId: sourceTaskId,
-        destinationSectionId: destinationSection.id,
-        destinationIndex: destinationTaskIndex,
-      };
-      changeTaskLocationMutation.mutate(data);
     }
   };
 
