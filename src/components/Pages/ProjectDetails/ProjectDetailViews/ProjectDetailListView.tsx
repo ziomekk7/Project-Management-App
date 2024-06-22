@@ -1,8 +1,15 @@
-import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Stack,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
 import { Project, Section, Task } from "../../../../types/types";
 import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
-import { AddIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+} from "@chakra-ui/icons";
 import { ChangeTaskLocationData } from "../../../../api/projectsApi";
 import {
   DndContext,
@@ -88,6 +95,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
       return (
         <DragOverlay>
           <TaskRow
+            activeTask={activeTask}
             onChangeTaskLocation={onChangeTaskLocation}
             onChangeDate={(task) => onEditTask(task)}
             onChangePriority={(task) => onEditTask(task)}
@@ -107,6 +115,8 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
       return (
         <DragOverlay>
           <ProjectListBox
+            activeTask={activeTask}
+            activeSection={activeSection}
             onChangeTaskLocation={onChangeTaskLocation}
             sections={project.sections}
             key={activeSection.id}
@@ -148,6 +158,8 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
         >
           {project.sections.map((section) => (
             <ProjectListBox
+              activeTask={activeTask}
+              activeSection={activeSection}
               onChangeTaskLocation={onChangeTaskLocation}
               sections={project.sections}
               key={section.id}

@@ -96,7 +96,6 @@ export const useProjectDetailsPage = () => {
         })
       );
       setIsCreateSectionFormVisible(false);
-      console.log(previousProject, "previousProject");
       return { previousProject };
     },
     onError: (_, __, context) => {
@@ -276,9 +275,6 @@ export const useProjectDetailsPage = () => {
       const queryKey = queryKeys.projects.details({ projectId });
       await queryClient.cancelQueries({ queryKey });
 
-      console.log("test");
-
-      // const previousProject = queryClient.getQueryData(queryKey);
       if (!projectQuery.data) {
         return;
       }
@@ -305,6 +301,7 @@ export const useProjectDetailsPage = () => {
         0,
         task
       );
+      setActiveTask(null);
       queryClient.setQueryData(
         queryKey,
         (prevProject: Project): Project => ({
@@ -332,7 +329,6 @@ export const useProjectDetailsPage = () => {
   }
 
   const handleCreateSection = (newSection: string) => {
-    console.log("handleCreateSectionStart");
     setIsCreatingSection(true);
     const newSectionId = uuidv4();
     createProjectSectionMutation.mutate({
@@ -363,7 +359,6 @@ export const useProjectDetailsPage = () => {
   };
 
   const handleCreateTask = (task: Task, sectionId?: string) => {
-    console.log("handleCreateTask");
     if (sectionId) {
       createTaskMutation.mutate({
         sectionId: sectionId,
@@ -440,7 +435,7 @@ export const useProjectDetailsPage = () => {
     const project = projectQuery.data;
     const source = event.active;
     const destination = event.over;
-    
+
     if (
       !project ||
       !source.data.current ||
@@ -509,7 +504,6 @@ export const useProjectDetailsPage = () => {
 
         changeTaskLocationMutation.mutate(data);
       } else if (destinationType == "task") {
-        console.log("test 2");
         const destinationTaskId = destination.id;
         const destinationSectionIndex = findDestinationSectionIdexByTaskId(
           destination.id.toLocaleString()

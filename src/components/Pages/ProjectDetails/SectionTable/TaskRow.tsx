@@ -11,10 +11,12 @@ import {
   useBreakpointValue,
   MenuGroup,
   Flex,
+  Stack,
 } from "@chakra-ui/react";
 import {
   CheckIcon,
   DeleteIcon,
+  DragHandleIcon,
   Search2Icon,
   UpDownIcon,
 } from "@chakra-ui/icons";
@@ -41,6 +43,7 @@ type TaskRowProps = {
   onOpenTaskDetails: (taskId: string) => void;
   onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
   sections: Section[];
+  activeTask: Task | null;
 };
 
 const TaskRow: React.FC<TaskRowProps> = ({
@@ -53,17 +56,24 @@ const TaskRow: React.FC<TaskRowProps> = ({
   onChangeTaskLocation,
   sections,
   sectionId,
+  activeTask,
 }) => {
   const [selectedDate, setSelectedDate] = useState(task.date);
 
-  const { attributes, listeners, setNodeRef, transform, transition } =
-    useSortable({
-      id: task.id,
-      data: {
-        type: "task",
-        task,
-      },
-    });
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
+    id: task.id,
+    data: {
+      type: "task",
+      task,
+    },
+  });
   const deleteTaskModal = useDisclosure();
   const hideOnSmallResolutions = useBreakpointValue({
     base: { display: "none", templateColumns: "1fr" },
@@ -85,6 +95,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
       destinationIndex: 0,
     });
   };
+  if (activeTask?.id === task.id && !isDragging) return;
 
   return (
     <Grid
@@ -93,18 +104,22 @@ const TaskRow: React.FC<TaskRowProps> = ({
       borderBottom="1px solid black"
       ref={setNodeRef}
       style={style}
-      {...attributes}
-      {...listeners}
     >
       <GridItem
         p={2}
-        ml={10}
         borderRight="1px solid black"
         display="flex"
         alignItems="center"
         justifyContent="space-between"
       >
+        <Stack flexDir="row" {...attributes} {...listeners}>
+          <IconButton
+            aria-label="Search database"
+            icon={<DragHandleIcon />}
+            variant="ghost"
+          />
         <EditNameInput task={task} onEditTask={onEditTask} />
+        </Stack>
         <Flex>
           <Menu>
             <MenuButton as={IconButton} icon={<UpDownIcon />} variant="ghost" />
