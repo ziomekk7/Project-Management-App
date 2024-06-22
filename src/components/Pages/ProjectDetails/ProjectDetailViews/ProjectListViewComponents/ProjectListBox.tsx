@@ -9,7 +9,6 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
 import TaskRow from "../../SectionTable/TaskRow";
 import { Section, Task } from "../../../../../types/types";
 import CreateTaskRow from "../../SectionTable/CreateTaskRow";
