@@ -24,6 +24,11 @@ const ProjectDetails = () => {
     onChangeObjectLocation: projectDetailsPage.handleDragEnd,
     onChangeSectionLocation: projectDetailsPage.handleChangeSectionLocation,
     onChangeTaskLocation: projectDetailsPage.handleChangeTaskLocation,
+    onDragOver: projectDetailsPage.handleDragOver,
+    onDragStart: projectDetailsPage.handleDragStart,
+    onDragEnd: projectDetailsPage.handleDragEnd,
+    activeSection: projectDetailsPage.activeSection,
+    activeTask: projectDetailsPage.activeTask,
   };
 
   if (!projectDetailsPage.project) {
@@ -49,9 +54,7 @@ const ProjectDetails = () => {
             onHideSectionId={projectDetailsPage.handleHideSection}
           />
         ) : (
-          <ProjectDetailBoardView
-            {...commonProps}
-          />
+          <ProjectDetailBoardView {...commonProps} />
         )}
         {projectDetailsPage.openTask &&
           projectDetailsPage.openTaskDetailLocation && (

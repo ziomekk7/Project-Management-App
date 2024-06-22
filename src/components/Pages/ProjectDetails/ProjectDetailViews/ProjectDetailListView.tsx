@@ -1,15 +1,23 @@
-import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Stack,
+  useBreakpointValue,
+} from "@chakra-ui/react";
 import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
-import { Project, Task } from "../../../../types/types";
+import { Project, Section, Task } from "../../../../types/types";
 import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
-import { AddIcon } from "@chakra-ui/icons";
+import {
+  AddIcon,
+} from "@chakra-ui/icons";
 import { ChangeTaskLocationData } from "../../../../api/projectsApi";
 import {
   DndContext,
   DragEndEvent,
+  DragOverEvent,
   DragOverlay,
+  DragStartEvent,
   PointerSensor,
-  // closestCenter,
   closestCorners,
   useSensor,
   useSensors,
@@ -17,7 +25,6 @@ import {
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
 import { showMd } from "../../../UI/RespoStyles";
-import { useDndProject } from "../../../hooks/useDndProject";
 import { createPortal } from "react-dom";
 import TaskRow from "../SectionTable/TaskRow";
 
@@ -38,6 +45,11 @@ type ProjectDetailListViewProps = {
   onDuplicateTask: (task: Task, sectionId: string) => void;
   onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
   onChangeObjectLocation: (data: DragEndEvent) => void;
+  onDragOver: (data: DragOverEvent) => void;
+  onDragEnd: (event: DragEndEvent) => void;
+  onDragStart: (event: DragStartEvent) => void;
+  activeSection: Section | null;
+  activeTask: Task | null;
 };
 
 const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
@@ -57,6 +69,11 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   onOpenCreateSectionForm,
   onChangeTaskLocation,
   onChangeObjectLocation,
+  onDragOver,
+  onDragEnd,
+  onDragStart,
+  activeTask,
+  activeSection,
 }) => {
   const hideOnSmallResolutions = useBreakpointValue(showMd);
 
@@ -66,41 +83,44 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
     },
   });
   const sensors = useSensors(sensor);
-  const dndProject = useDndProject(project);
-  const projectToRender = dndProject.project || project;
+
   const renderDragOverlay = () => {
-    if (!projectToRender) return;
-    const section = projectToRender.sections?.find((section) =>
-      section.tasks.find((task) => task.id === dndProject.activeTask?.id)
-    );
-    if (!section) return;
-    if (dndProject.activeTask) {
+    if (!project) return;
+
+    if (activeTask) {
+      const section = project.sections?.find((section) =>
+        section.tasks.find((task) => task.id === activeTask?.id)
+      );
+      if (!section) return;
       return (
         <DragOverlay>
           <TaskRow
-              onChangeTaskLocation={onChangeTaskLocation}
-              onChangeDate={(task) => onEditTask(task)}
-              onChangePriority={(task) => onEditTask(task)}
-              onOpenTaskDetails={(task) => onOpenTaskDetails(task, section.id)}
-              onDuplicateTask={(task) => onDuplicateTask(task, section.id)}
-              key={dndProject.activeTask.id}
-              task={dndProject.activeTask}
-              onDeleteTask={onDeleteTask}
-              onEditTask={onEditTask}
-              sectionId={section.id}
-              sections={projectToRender.sections}
-            />
+            activeTask={activeTask}
+            onChangeTaskLocation={onChangeTaskLocation}
+            onChangeDate={(task) => onEditTask(task)}
+            onChangePriority={(task) => onEditTask(task)}
+            onOpenTaskDetails={(task) => onOpenTaskDetails(task, section.id)}
+            onDuplicateTask={(task) => onDuplicateTask(task, section.id)}
+            key={activeTask.id}
+            task={activeTask}
+            onDeleteTask={onDeleteTask}
+            onEditTask={onEditTask}
+            sectionId={section.id}
+            sections={project.sections}
+          />
         </DragOverlay>
       );
     }
-    if (dndProject.activeSection) {
+    if (activeSection) {
       return (
         <DragOverlay>
           <ProjectListBox
+            activeTask={activeTask}
+            activeSection={activeSection}
             onChangeTaskLocation={onChangeTaskLocation}
-            sections={projectToRender.sections}
-            key={section.id}
-            section={section}
+            sections={project.sections}
+            key={activeSection.id}
+            section={activeSection}
             onCreateTask={onCreateTask}
             onDeleteSection={onDeleteSection}
             hiddenSections={hiddenSections}
@@ -114,7 +134,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
       );
     }
   };
-  if (!projectToRender) {
+  if (!project) {
     return;
   }
 
@@ -125,21 +145,23 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
       </Box>
       <DndContext
         sensors={sensors}
-        onDragOver={dndProject.handleDragOver}
-        onDragStart={dndProject.handleDragStart}
+        onDragOver={onDragOver}
+        onDragStart={onDragStart}
         onDragEnd={(e) => {
-          dndProject.handleDragEnd(), onChangeObjectLocation(e);
+          onDragEnd(e), onChangeObjectLocation(e);
         }}
         collisionDetection={closestCorners}
       >
         <SortableContext
           strategy={rectSortingStrategy}
-          items={projectToRender.sections.map((section) => section.id)}
+          items={project.sections.map((section) => section.id)}
         >
-          {projectToRender.sections.map((section) => (
+          {project.sections.map((section) => (
             <ProjectListBox
+              activeTask={activeTask}
+              activeSection={activeSection}
               onChangeTaskLocation={onChangeTaskLocation}
-              sections={projectToRender.sections}
+              sections={project.sections}
               key={section.id}
               section={section}
               onCreateTask={onCreateTask}

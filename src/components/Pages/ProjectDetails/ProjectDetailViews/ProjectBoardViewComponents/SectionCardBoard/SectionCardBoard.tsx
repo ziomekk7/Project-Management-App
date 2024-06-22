@@ -62,7 +62,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
       type: "section",
       section,
     },
-    animateLayoutChanges: () => false, 
+    animateLayoutChanges: () => false,
   });
 
   const deleteTaskModal = useDisclosure();
@@ -73,7 +73,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
   };
 
   return (
-    <Stack mr={1} ml={1} maxW={72} minW={60}>
+    <Stack mr={1} ml={1} maxW={72} minW={72} h="100%">
       <Card
         variant="outline"
         h="100%"
@@ -106,9 +106,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
             </CardBody>
           </Card>
         ) : (
-          <Box
-            overflow="auto"
-          >
+          <Box overflow="auto">
             <SortableContext items={section.tasks.map((task) => task.id)}>
               {section.tasks.map((task) => (
                 <TaskCardBoard
@@ -132,7 +130,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
           </Box>
         )}
       </Card>
-      
+
       <DeleteModal
         isOpen={deleteTaskModal.isOpen}
         onClose={deleteTaskModal.onClose}

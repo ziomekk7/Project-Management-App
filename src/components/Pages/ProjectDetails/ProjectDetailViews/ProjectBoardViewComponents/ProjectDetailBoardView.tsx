@@ -4,13 +4,15 @@ import {
   Button,
   // Text
 } from "@chakra-ui/react";
-import { Project, Task } from "../../../../../types/types";
+import { Project, Section, Task } from "../../../../../types/types";
 import { AddIcon } from "@chakra-ui/icons";
 import CreateSectionForm from "../../CreateSectionForm/CreateSectionForm";
 import {
   DndContext,
   DragEndEvent,
+  DragOverEvent,
   DragOverlay,
+  DragStartEvent,
   PointerSensor,
   closestCorners,
   useSensor,
@@ -20,7 +22,6 @@ import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import SectionCardBoard from "./SectionCardBoard/SectionCardBoard";
 import TaskCardBoard from "./TaskCardBoard/TaskCardBoard";
 import { createPortal } from "react-dom";
-import { useDndProject } from "../../../../hooks/useDndProject";
 
 type ProjectDetailBoardViewProps = {
   isCreatingSection: boolean;
@@ -33,7 +34,11 @@ type ProjectDetailBoardViewProps = {
   onOpenCreateSectionForm: () => void;
   onCloseCreateSectionForm: () => void;
   onEditTask: (task: Task) => void;
-  onChangeObjectLocation: (data: DragEndEvent) => void;
+  onDragOver: (data: DragOverEvent) => void;
+  onDragEnd: (event: DragEndEvent) => void;
+  onDragStart: (event: DragStartEvent) => void;
+  activeSection: Section | null;
+  activeTask: Task | null;
 };
 
 const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
@@ -47,7 +52,11 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
   onOpenCreateSectionForm,
   onCloseCreateSectionForm,
   onEditTask,
-  onChangeObjectLocation,
+  onDragOver,
+  activeSection,
+  activeTask,
+  onDragEnd,
+  onDragStart,
 }) => {
   const sensor = useSensor(PointerSensor, {
     activationConstraint: {
@@ -55,20 +64,18 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
     },
   });
   const sensors = useSensors(sensor);
-  const dndProject = useDndProject(project);
-  const projectToRender = dndProject.project || project;
   const renderDragOverlay = () => {
-    if (dndProject.activeTask) {
-      if (!projectToRender) return;
-      const section = projectToRender.sections?.find((section) =>
-        section.tasks.find((task) => task.id === dndProject.activeTask?.id)
+    if (activeTask) {
+      if (!project) return;
+      const section = project.sections.find((section) =>
+        section.tasks.find((task) => task.id === activeTask.id)
       );
       if (!section) return;
       return (
         <DragOverlay>
           <TaskCardBoard
-            key={dndProject.activeTask.id}
-            task={dndProject.activeTask}
+            key={activeTask.id}
+            task={activeTask}
             sectionId={section.id}
             onCreateTask={onCreateTask}
             onEditTask={onEditTask}
@@ -77,16 +84,16 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
         </DragOverlay>
       );
     }
-    if (dndProject.activeSection) {
+    if (activeSection) {
       return (
         <DragOverlay>
           <SectionCardBoard
-            section={dndProject.activeSection}
+            section={activeSection}
             onCreateTask={onCreateTask}
             onDeleteSection={onDeleteSection}
             onEditTask={onEditTask}
             onOpenTaskDetails={onOpenTaskDetails}
-            key={dndProject.activeSection.id}
+            key={activeSection.id}
           />
         </DragOverlay>
       );
@@ -96,20 +103,20 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
   return (
     <DndContext
       sensors={sensors}
-      onDragOver={dndProject.handleDragOver}
-      onDragStart={dndProject.handleDragStart}
+      onDragOver={onDragOver}
+      onDragStart={onDragStart}
       onDragEnd={(e) => {
-        dndProject.handleDragEnd(), onChangeObjectLocation(e);
+        onDragEnd(e);
       }}
       collisionDetection={closestCorners}
     >
       <Stack direction="row" overflow="auto" h="85%">
-        {projectToRender && (
+        {project && (
           <SortableContext
             strategy={rectSortingStrategy}
-            items={projectToRender.sections.map((section) => section.id)}
+            items={project.sections.map((section) => section.id)}
           >
-            {projectToRender.sections.map((section) => (
+            {project.sections.map((section) => (
               <SectionCardBoard
                 section={section}
                 onCreateTask={onCreateTask}
