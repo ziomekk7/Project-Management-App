@@ -21,8 +21,8 @@ Project is created with:
 ### Project
 
 ![screen](./src//images/creatingProject.jpg)
-If you want create new project u have to click to "Create Project" (1) button on left side. In next step enter the project name and press "create" button (2) or press enter. The application will automatically redirect you to the new project. If u have more than one project you can switch between them. Just select project in menu on left side (3). To delete project click menu button near project name and press "delete project" button. You can use two views. To change view, you have to click on
-chosen view (4)
+If you want create new project u have to click to "Create Project" button (1) on left side. In next step enter the project name and press "create" button (2) or press enter. The application will automatically redirect you to the new project. If u have more than one project you can switch between them. Just select project in menu on left side (3). To delete project click menu button (4) near project name and press "delete project" button. You can use two views. To change view, you have to click on
+chosen view (5)
 
 - [Section](#section)
 - [Task](#task)
