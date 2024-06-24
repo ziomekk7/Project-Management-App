@@ -18,17 +18,14 @@ Project is created with:
 
 ## How to use
 
--[Project](#project)
-Creating a new project.
-Editing existing project. 
--[Section](#section)
-Creating a new section.
-Editing existing Section.
--[Task](#task)
-Creating new task.
-Editing existing task 
--[Views](views)
-Switching Views
+- [Project](#project)
+  ![screen](./src//images/creatingProject.jpg)
+- [Section](#section)
+- [Task](#task)
+  Creating new task.
+  Editing existing task
+- [Views](views)
+  Switching Views
 
 ## Project
 
