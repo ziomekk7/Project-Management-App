@@ -33,7 +33,7 @@ const Menu: React.FC<MenuProps> = ({ onClose }) => {
       h="100%"
       w="100%"
     >
-      <Button variant="outline" maxW={36} p={1} leftIcon={<AddIcon />}>
+      <Button mt={2} variant="outline" maxW={36} p={1} leftIcon={<AddIcon />}>
         <Link to={routes.projects.create()}>Create Project</Link>
       </Button>
       {projectsQuery.data && projectsQuery.data.length === 0 && (
