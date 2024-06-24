@@ -35,28 +35,30 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
 
   return (
     <Box h="15%">
-      <Stack p={5} direction="row" spacing={8} w="100%">
+      <Stack p={5} direction="row" spacing={8} w="100%" justifyContent="space-between">
+        <Stack direction="row">
+          <Heading as="h1" size="xl">
+            {project.name}
+          </Heading>
+          <Menu>
+            <MenuButton
+              as={IconButton}
+              icon={<EllipsisHorizontal />}
+              variant="ghost"
+            />
+            <MenuList>
+              <MenuItem onClick={deleteTaskModal.onOpen} icon={<DeleteIcon />}>
+                Delete project
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        </Stack>
         <IconButton
           display={burgerButtonStyle}
           aria-label="Open burger menu"
           icon={<HamburgerIcon />}
           onClick={burgerMenuDrafter.onOpen}
         />
-        <Heading as="h1" size="xl">
-          {project.name}
-        </Heading>
-        <Menu>
-          <MenuButton
-            as={IconButton}
-            icon={<EllipsisHorizontal />}
-            variant="ghost"
-          />
-          <MenuList>
-            <MenuItem onClick={deleteTaskModal.onOpen} icon={<DeleteIcon />}>
-              Delete project
-            </MenuItem>
-          </MenuList>
-        </Menu>
       </Stack>
       <Box>
         <Button onClick={() => onChangeView("list")} m={2} variant="link">

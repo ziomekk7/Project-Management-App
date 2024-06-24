@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { CreateTaskCard } from "../CreateTaskCard/CreateTaskCard";
 import { EllipsisHorizontal } from "../../../../../UI/Icons/EllipsisHorizontal";
-import { DeleteIcon } from "@chakra-ui/icons";
+import { DeleteIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { Section, Task } from "../../../../../../types/types";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -81,10 +81,15 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
         p={1}
         ref={setNodeRef}
         style={style}
-        {...attributes}
-        {...listeners}
       >
         <Stack direction="row" alignItems="center">
+          <div {...attributes} {...listeners}>
+            <IconButton
+              aria-label="Search database"
+              icon={<DragHandleIcon />}
+              variant="ghost"
+            />
+          </div>
           <Heading size="md" p={3}>
             {section.name}
           </Heading>
