@@ -3,7 +3,6 @@ import {
   Drawer,
   DrawerBody,
   DrawerFooter,
-  // DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerCloseButton,
@@ -18,20 +17,19 @@ type MenuDrafterProps = {
 
 const MenuDrawer: React.FC<MenuDrafterProps> = ({ isOpen, onClose }) => {
   return (
-    <Drawer placement="left" isOpen={isOpen} onClose={onClose} size="xs">
+    <Drawer placement="left" isOpen={isOpen} onClose={onClose} size="xs" >
       <DrawerOverlay />
-      <DrawerContent>
-        <DrawerCloseButton />
-
+      <DrawerContent maxW="220px" p={0}>
         <DrawerBody>
+          <DrawerCloseButton />
+
           <Menu onClose={onClose} />
         </DrawerBody>
 
         <DrawerFooter>
           <Button variant="outline" mr={3} onClick={onClose}>
-            Cancel
+            Close
           </Button>
-          <Button colorScheme="blue">Save</Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

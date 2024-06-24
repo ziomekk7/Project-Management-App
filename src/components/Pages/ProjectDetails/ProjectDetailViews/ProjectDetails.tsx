@@ -45,6 +45,7 @@ const ProjectDetails = () => {
           onDeleteProject={projectDetailsPage.handleDeleteProject}
           project={projectDetailsPage.project}
         />
+        
         {projectDetailsPage.selectedView === "list" ? (
           <ProjectDetailListView
             {...commonProps}

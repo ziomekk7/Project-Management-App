@@ -1,4 +1,4 @@
-# Titan - project management app
+# Atlas - project management app
 
 An application that helps you manage projects
 
@@ -18,6 +18,26 @@ Project is created with:
 
 ## How to use
 
+-[Project](#project)
+Creating a new project.
+Editing existing project. 
+-[Section](#section)
+Creating a new section.
+Editing existing Section.
+-[Task](#task)
+Creating new task.
+Editing existing task 
+-[Views](views)
+Switching Views
+
+## Project
+
+## Section
+
+## Task
+
+## Views
+
 This project is simple Lorem ipsum dolor generator.
 
-##Inspiration
+## Inspiration
