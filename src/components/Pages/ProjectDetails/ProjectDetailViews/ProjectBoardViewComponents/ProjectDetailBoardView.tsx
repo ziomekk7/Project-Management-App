@@ -88,6 +88,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
       return (
         <DragOverlay>
           <SectionCardBoard
+            activeSection={activeSection}
             section={activeSection}
             onCreateTask={onCreateTask}
             onDeleteSection={onDeleteSection}
@@ -118,6 +119,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
           >
             {project.sections.map((section) => (
               <SectionCardBoard
+                activeSection={activeSection}
                 section={section}
                 onCreateTask={onCreateTask}
                 onDeleteSection={onDeleteSection}

@@ -84,6 +84,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
     transition,
     transform: CSS.Translate.toString(transform),
     opacity: activeTask?.id === task.id && isDragging ? 0 : 1,
+    borderTop: activeTask?.id === task.id && !isDragging ? "solid black 1px" : "none",
   };
 
   const handleChangeTaskLocation = (movedSectionId: string) => {

@@ -432,6 +432,8 @@ export const useProjectDetailsPage = () => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    setActiveTask(null)
+    setActiveSection(null)
     const project = projectQuery.data;
     const source = event.active;
     const destination = event.over;
