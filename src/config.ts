@@ -11,5 +11,5 @@ export const PRIORITY_COLORS_HOVER: Record<TaskPriority, string> = {
   [TaskPriority.HIGH]: "red.600",
   [TaskPriority.MEDIUM]: "orange.600",
   [TaskPriority.LOW]: "yellow.600",
-  [TaskPriority.NONE]: "transparent",
+  [TaskPriority.NONE]: "gray.600",
 };
