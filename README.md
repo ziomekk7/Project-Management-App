@@ -54,10 +54,11 @@ To change the order of sections, grab the button (1), move the section to the de
 ### Task
 
 ![screen](./src/images/createEditTaskListView.jpg)
-###Table View
+
+### Table View
 Click on the input (1), enter the task name, and press Enter. To change an existing task name, just click on the task name (2) and edit it. To move a task to another section, click button (3), choose the section where the task should be sent (4), and click it. After clicking the button (5), you can delete the task (6) or open task details (7). To set the execution date, press button (8). In the execution date window (9), choose a date and click it. To set the priority, click button (10) and choose the priority in the priority menu (11).
 ![screen](./src/images/createEditTaskBoardView.jpg)
-###Board view
+### Board view
 Click on the input (1), enter the task name, and press Enter. To change an existing task name, just click on the task name (2) and edit it. To set the execution date, press button (3). In the execution date window (4), choose a date and click it. To set the priority, click button (5) and choose the priority in the priority menu (6). Click on the task card (7) to open task details.
 ![screen](./src/images/moveTask.jpg)
 To change the order of tasks, grab the button (1), move it to the desired place, and then drop it. You can also move a task to another section.
