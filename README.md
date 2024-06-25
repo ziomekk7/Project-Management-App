@@ -48,9 +48,11 @@ If you want to create a new project, you have to click the "Create Project" butt
 ![screen](./src/images/createSection.jpg)
 
 Click on the "Create Section" button (1) and enter the section name (2).
+
 ![screen](./src/images/editSection.jpg)
 
 To delete a section, press the button (1) and click "Delete Section." In list view, you can hide/show the tasks list by pressing button (2).
+
 ![screen](./src/images/moveSection.jpg)
 
 To change the order of sections, grab the button (1), move the section to the desired place, and then drop it.
