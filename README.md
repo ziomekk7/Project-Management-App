@@ -27,7 +27,7 @@ Project is created with:
 - formik: 2.4,
 - react-quill: 2.0,
 - uuid: 9.0,
-- zod: 3.22
+- zod: 3.22,
 - resolvers: 3.3,
 
 ## How to use
