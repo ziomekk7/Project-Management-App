@@ -4,6 +4,7 @@ import RootLayout from "./components/Roots/RootLayout";
 import ProjectDetails from "./components/Pages/ProjectDetails/ProjectDetailViews/ProjectDetails";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routes } from "./routes";
+import { MainPage } from "./components/Pages/MainPage/MainPage";
 
 function App() {
   const queryClient = new QueryClient();
@@ -14,7 +15,7 @@ function App() {
           path={routes.home()}
           element={
             <RootLayout>
-              <div>Main Page</div>
+              <MainPage />
             </RootLayout>
           }
         />

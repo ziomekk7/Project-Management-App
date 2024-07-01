@@ -55,16 +55,18 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
   onCreateTask,
   onOpenTaskDetails,
   onEditTask,
-  activeSection
+  activeSection,
 }) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useSortable({
-    id: section.id,
-    data: {
-      type: "section",
-      section,
-    },
-    animateLayoutChanges: () => false,
-  });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useSortable({
+      id: section.id,
+      data: {
+        type: "section",
+        // section.tasks.length == 0? "empty-section" : "section",
+        section,
+      },
+      animateLayoutChanges: () => false,
+    });
 
   const deleteTaskModal = useDisclosure();
 
@@ -75,7 +77,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
   };
 
   return (
-    <Stack mr={1} ml={1} maxW={80} minW={80} h="100%" >
+    <Stack mr={1} ml={1} maxW={80} minW={80} h="100%">
       <Card
         variant="outline"
         h="100%"
@@ -103,7 +105,12 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
           </Stack>
           <SectionMenu onDeleteSection={deleteTaskModal.onOpen} />
         </Stack>
-        <Stack overflow="auto" flexDirection="column" alignItems="center" h="100%">
+        <Stack
+          overflow="auto"
+          flexDirection="column"
+          alignItems="center"
+          h="100%"
+        >
           {section.tasks.length === 0 ? (
             <Card
               mb={2}
@@ -120,10 +127,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
               </CardBody>
             </Card>
           ) : (
-            <Stack
-              flexDirection="column"
-              justifyContent="center"
-            >
+            <Stack flexDirection="column" justifyContent="center">
               <SortableContext items={section.tasks.map((task) => task.id)}>
                 {section.tasks.map((task) => (
                   <TaskCardBoard
