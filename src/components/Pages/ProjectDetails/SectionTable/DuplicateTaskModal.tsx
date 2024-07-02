@@ -11,7 +11,7 @@ import {
   Stack,
   Text,
 } from "@chakra-ui/react";
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -42,16 +42,23 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
     priority: false,
     description: false,
   });
+  const [name, setName] = useState(task.name)
 
   const {
-    resetField,
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<z.infer<typeof duplicateTaskFormSchema>>({
     resolver: zodResolver(duplicateTaskFormSchema),
-    defaultValues: { name: `Duplicated ${task.name}` },
+    defaultValues: { name: `Duplicated ${name}` },
   });
+
+  useEffect(() => {
+    if (isOpen) {
+      reset({ name: `Duplicated ${task.name}` });
+    }
+  }, [isOpen]);
 
   const handleInnerSubmit = (data: z.infer<typeof duplicateTaskFormSchema>) => {
     onDuplicateTask({
@@ -62,7 +69,7 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
       id: uuidv4(),
     });
     onClose();
-    resetField("name");
+    setName("");
   };
 
   return (

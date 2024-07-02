@@ -594,15 +594,6 @@ export const useProjectDetailsPage = () => {
   const handleChangeTaskLocation = (data: ChangeTaskLocationData) => {
     changeTaskLocationMutation.mutate(data);
   };
-  const checkProject = () => {
-    if (projectQuery.data == undefined) {
-      return;
-    }
-    if (projectQuery.data) {
-      return projectQuery.data;
-    }
-    return;
-  };
 
   return {
     handleDeleteTask,
@@ -628,7 +619,7 @@ export const useProjectDetailsPage = () => {
     hiddenSections: hiddenSections,
     createTaskMutation: createTaskMutation.isPending,
     openTaskDetailLocation: openTaskDetailLocation,
-    project: checkProject(),
+    project: projectQuery.data,
     openTask: openTask,
     handleChangeTaskLocation,
     handleDragEnd,
