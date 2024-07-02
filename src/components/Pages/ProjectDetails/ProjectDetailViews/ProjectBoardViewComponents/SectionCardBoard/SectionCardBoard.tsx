@@ -62,7 +62,6 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
       id: section.id,
       data: {
         type: "section",
-        // section.tasks.length == 0? "empty-section" : "section",
         section,
       },
       animateLayoutChanges: () => false,
@@ -85,6 +84,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
         p={1}
         ref={setNodeRef}
         style={style}
+        backgroundColor="gray.600"
       >
         <Stack
           direction="row"
