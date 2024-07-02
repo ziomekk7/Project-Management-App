@@ -130,7 +130,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
             ))}
           </SortableContext>
         )}
-        <Card variant="outline" minH="100%" w={60} minW={60} p={1} ml={1}>
+        <Card variant="outline" minH="100%" w={60} minW={60} p={1} ml={1} bgGradient="linear(to-b, gray.700, gray.800)">
           <Stack direction="row" justify="center" mb={2}>
             {isCreateSectionFormVisible ? (
               <CreateSectionForm
@@ -149,11 +149,6 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
               </Button>
             ) : null}
           </Stack>
-          <Card
-            mb={2}
-            h="100%"
-            bgGradient="linear(to-b, gray.700, gray.800)"
-          ></Card>
         </Card>
       </Stack>
       {createPortal(renderDragOverlay(), document.body)}

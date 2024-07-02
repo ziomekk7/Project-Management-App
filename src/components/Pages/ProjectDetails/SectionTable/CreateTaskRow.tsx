@@ -5,12 +5,14 @@ import { Task } from "../../../../types/types";
 
 type CreateTaskRowProps = {
   onCreateTask: (task: Task) => void;
+  sectionId: string;
 };
 
-const CreateTaskRow: FC<CreateTaskRowProps> = ({ onCreateTask}) => {
+const CreateTaskRow: FC<CreateTaskRowProps> = ({ onCreateTask, sectionId }) => {
   return (
     <Flex p={5} w="100%">
       <CreateTaskForm
+        sectionId={sectionId}
         setAutoFocus={false}
         onCreateTask={(task) => onCreateTask(task)}
       />

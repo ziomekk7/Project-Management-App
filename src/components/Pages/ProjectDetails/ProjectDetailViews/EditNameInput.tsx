@@ -30,6 +30,7 @@ export const EditNameInput: FC<EditNameInputProps>= ({task, onEditTask}) => {
         {
           name: debouncedValue,
           id: task.id,
+          sectionId:task.sectionId,
           date: task.date,
           priority: task.priority,
           description: task.description,
@@ -49,6 +50,7 @@ export const EditNameInput: FC<EditNameInputProps>= ({task, onEditTask}) => {
         {
           name: data.newTaskName,
           id: task.id,
+          sectionId:task.sectionId,
           date: task.date,
           priority: task.priority,
           description: task.description,

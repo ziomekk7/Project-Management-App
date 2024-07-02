@@ -67,6 +67,7 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
       priority: checkedFields.priority ? task.priority : TaskPriority.NONE,
       description: checkedFields.description ? task.description : null,
       id: uuidv4(),
+      sectionId: task.sectionId,
     });
     onClose();
     setName("");
