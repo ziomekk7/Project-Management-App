@@ -31,7 +31,7 @@ import TaskRow from "../SectionTable/TaskRow";
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
   isCreatingSection: boolean;
-  project: Project | undefined;
+  project: Project | undefined | null;
   onOpenTaskDetails: (taskId: string, sectionId: string) => void;
   isCreateSectionFormVisible: boolean;
   onCreateSection: (name: string) => void;
