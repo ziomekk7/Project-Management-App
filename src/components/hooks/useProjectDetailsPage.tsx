@@ -294,14 +294,17 @@ export const useProjectDetailsPage = () => {
       const taskIndex = previousProject.sections[sectionIndex].tasks.findIndex(
         (task) => task.id === data.taskId
       );
-      const task = previousProject.sections[sectionIndex].tasks[taskIndex];
+      const task = {
+        ...previousProject.sections[sectionIndex].tasks[taskIndex],
+        sectionId: previousProject.sections[sectionDestinationIndex].id,
+      };
       previousProject.sections[sectionIndex].tasks.splice(taskIndex, 1);
       previousProject.sections[sectionDestinationIndex].tasks.splice(
         data.destinationIndex,
         0,
         task
       );
-      setActiveTask(null);
+
       queryClient.setQueryData(
         queryKey,
         (prevProject: Project): Project => ({
@@ -309,7 +312,6 @@ export const useProjectDetailsPage = () => {
           sections: previousProject.sections,
         })
       );
-      setActiveTask(null);
 
       return { previousProject };
     },
@@ -432,27 +434,54 @@ export const useProjectDetailsPage = () => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setActiveTask(null)
-    setActiveSection(null)
-    const project = projectQuery.data;
+    setActiveTask(null);
+    setActiveSection(null);
+    if (!projectQuery.data) return;
+    const project = {
+      ...projectQuery.data,
+      sections: projectQuery.data.sections.map((section) => ({
+        ...section,
+        tasks: section.tasks.map((task) => ({ ...task })),
+      })),
+    };
     const source = event.active;
     const destination = event.over;
 
-    if (
-      !project ||
-      !source.data.current ||
-      !destination ||
-      !destination.data.current
-    ) {
+    if (!project || !destination ) {
       return;
     }
 
     if (source.id === destination.id) {
+      if (project.sections.length === 0 || project.sections.length === 1)
+        return;
+
+      const sourceSectionIndex = project.sections.findIndex(
+        (section) => section.id === source.data.current?.task.sectionId
+      );
+
+      const destinationSectionIndex = project.sections.findIndex((section) =>
+        section.tasks.find((task) => task.id == destination.id)
+      );
+
+      if (sourceSectionIndex === destinationSectionIndex) return;
+
+      const destinationTaskId = destination.id;
+
+      const destinationTaskIndex = project.sections[
+        destinationSectionIndex
+      ].tasks.findIndex((task) => task.id === destinationTaskId);
+
+      const data = {
+        taskId: source.data.current?.task.id,
+        destinationSectionId: project.sections[destinationSectionIndex].id,
+        destinationIndex: destinationTaskIndex,
+      };
+      changeTaskLocationMutation.mutate(data);
       return;
     }
 
-    const sourceType = source.data.current.type;
-    const destinationType = destination.data.current.type;
+    const sourceType = source.data.current?.type;
+    const destinationType = destination.data.current?.type;
     const findDestinationSectionIdexByTaskId = (destinationTaskId: string) => {
       const destinationSectionIndex = project.sections.findIndex((section) =>
         section.tasks.find((task) => task.id === destinationTaskId)
@@ -478,6 +507,7 @@ export const useProjectDetailsPage = () => {
           ),
           type: "section",
         };
+
         changeSectionLocationMutation.mutate(data);
       } else if (destinationType === "section") {
         const destinationSectionIndex = findDestinationSectionIndexBySectionId(
@@ -546,8 +576,8 @@ export const useProjectDetailsPage = () => {
       const activeSectionIndex = project.sections.findIndex((section) =>
         section.tasks.some((task) => task.id === activeTask.id)
       );
-      const overSectionIndex = project.sections.findIndex((section) =>
-        section.tasks.some((task) => task.id === overTask.id)
+      const overSectionIndex = project.sections.findIndex(
+        (section) => section.id === over.data.current?.task.sectionId
       );
 
       if (activeSectionIndex === -1 || overSectionIndex === -1) return;
@@ -585,12 +615,23 @@ export const useProjectDetailsPage = () => {
       }
 
       return { ...project, sections: updatedSections };
+    } else if (activeType === "section" && overType === "section") {
+      const destinationSectionIndex = project.sections.findIndex((section) =>
+        section.tasks.find((task) => task.id === over.id)
+      );
+      const courseSectionIndex = project.sections.findIndex(
+        (section) => section.id === active.id
+      );
+
+      const updatedSections = arrayMove(
+        project.sections,
+        courseSectionIndex,
+        destinationSectionIndex
+      );
+      return { ...project, sections: updatedSections };
     }
   };
 
-  const handleChangeSectionLocation = (data: ChangeSectionLocationData) => {
-    changeSectionLocationMutation.mutate(data);
-  };
   const handleChangeTaskLocation = (data: ChangeTaskLocationData) => {
     changeTaskLocationMutation.mutate(data);
   };
@@ -609,7 +650,6 @@ export const useProjectDetailsPage = () => {
     handleOpenCreateSectionForm,
     handleCloseCreateSectionForm,
     handleEditDescription,
-    handleChangeSectionLocation,
     selectedView: selectedView,
     selectedDate: selectedDate,
     isCreateSectionFormVisible: isCreateSectionFormVisible,

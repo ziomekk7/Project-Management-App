@@ -38,7 +38,6 @@ export type EditTask = {
 export type ChangeSectionLocationData = {
   sectionId: string;
   destination: number;
-  type: string;
 };
 
 export type ChangeTaskLocationData = {
@@ -59,6 +58,7 @@ const projectsSchema = z.array(
           z.object({
             name: z.string(),
             id: z.string(),
+            sectionId: z.string(),
             date: z.coerce.date().nullable(),
             priority: z.nativeEnum(TaskPriority),
             description: z.string().nullable(),
@@ -258,8 +258,12 @@ export const changeTaskLocation = async (data: ChangeTaskLocationData) => {
   const taskSourceIndex = projects[projectIndex].sections[
     courseSectionIndex
   ].tasks.findIndex((task) => task.id === data.taskId);
-  const task =
-    projects[projectIndex].sections[courseSectionIndex].tasks[taskSourceIndex];
+  const task = {
+    ...projects[projectIndex].sections[courseSectionIndex].tasks[
+      taskSourceIndex
+    ],
+    sectionId: projects[projectIndex].sections[destinationSectionIndex].id,
+  };
   projects[projectIndex].sections[courseSectionIndex].tasks.splice(
     taskSourceIndex,
     1

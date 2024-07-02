@@ -44,7 +44,6 @@ type ProjectDetailListViewProps = {
   onHideSectionId: (sectionId: string) => void;
   onDuplicateTask: (task: Task, sectionId: string) => void;
   onChangeTaskLocation: (data: ChangeTaskLocationData) => void;
-  onChangeObjectLocation: (data: DragEndEvent) => void;
   onDragOver: (data: DragOverEvent) => void;
   onDragEnd: (event: DragEndEvent) => void;
   onDragStart: (event: DragStartEvent) => void;
@@ -68,7 +67,6 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   onCreateSection,
   onOpenCreateSectionForm,
   onChangeTaskLocation,
-  onChangeObjectLocation,
   onDragOver,
   onDragEnd,
   onDragStart,
@@ -147,9 +145,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
         sensors={sensors}
         onDragOver={onDragOver}
         onDragStart={onDragStart}
-        onDragEnd={(e) => {
-          onDragEnd(e), onChangeObjectLocation(e);
-        }}
+        onDragEnd={onDragEnd}
         collisionDetection={closestCorners}
       >
         <SortableContext

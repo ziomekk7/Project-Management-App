@@ -17,11 +17,13 @@ type CreateTaskFormProps = {
   onCreateTask: (task: Task) => void;
   setAutoFocus: boolean;
   style?: CSSProperties;
+  sectionId: string;
 };
 
 const CreateTaskForm: FC<CreateTaskFormProps> = ({
   onCreateTask,
   setAutoFocus,
+  sectionId,
 }) => {
   const {
     resetField,
@@ -42,6 +44,7 @@ const CreateTaskForm: FC<CreateTaskFormProps> = ({
             date: null,
             priority: TaskPriority.NONE,
             description: null,
+            sectionId: sectionId,
           }),
             resetField("newTask");
         })}

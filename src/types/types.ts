@@ -8,6 +8,7 @@ export enum TaskPriority {
 export type Task = {
   name: string;
   id: string;
+  sectionId:string
   date: Date | null;
   priority: TaskPriority;
   description: string | null;

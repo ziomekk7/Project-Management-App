@@ -21,8 +21,6 @@ const ProjectDetails = () => {
     onOpenCreateSectionForm: projectDetailsPage.handleOpenCreateSectionForm,
     onCloseCreateSectionForm: projectDetailsPage.handleCloseCreateSectionForm,
     onEditTask: projectDetailsPage.handleEditTask,
-    onChangeObjectLocation: projectDetailsPage.handleDragEnd,
-    onChangeSectionLocation: projectDetailsPage.handleChangeSectionLocation,
     onChangeTaskLocation: projectDetailsPage.handleChangeTaskLocation,
     onDragOver: projectDetailsPage.handleDragOver,
     onDragStart: projectDetailsPage.handleDragStart,

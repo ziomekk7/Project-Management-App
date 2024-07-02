@@ -145,6 +145,7 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
           </SortableContext>
 
           <CreateTaskRow
+            sectionId={section.id}
             onCreateTask={(task) => {
               onCreateTask(task, section.id);
             }}
