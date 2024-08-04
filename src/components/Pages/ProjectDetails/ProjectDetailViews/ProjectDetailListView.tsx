@@ -137,7 +137,6 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   if (!project) {
     return;
   }
-
   return (
     <Stack overflow="auto" h="85%" >
       <Box display={hideOnSmallResolutions}>
