@@ -40,7 +40,6 @@ const TaskCardBoard: React.FC<TaskCardBoardProps> = ({
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    transition: "transform 300ms ease",
   };
   const [selectedDate, setSelectedDate] = useState<Date | null>();
   return (

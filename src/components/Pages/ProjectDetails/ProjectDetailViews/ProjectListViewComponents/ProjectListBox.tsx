@@ -66,7 +66,6 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
     });
   const deleteTaskModal = useDisclosure();
   const style = {
-    transition: "transform 300ms ease",
     transform: CSS.Translate.toString(transform),
     opacity: activeSection?.id == section.id && isDragging ? 0 : 1,
   };

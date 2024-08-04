@@ -18,7 +18,7 @@ export const CreateTaskCard: React.FC<CreateTaskCardProps> = ({
     handler: () => setIsHideCreateTaskForm(false),
   });
   return (
-    <Card ref={createTaskRef}>
+    <Card ref={createTaskRef} >
       {isHideCreateTaskForm ? (
         <CreateTaskForm
           onCreateTask={(task) => {

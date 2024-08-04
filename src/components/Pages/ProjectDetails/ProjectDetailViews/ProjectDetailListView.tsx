@@ -139,7 +139,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   }
 
   return (
-    <Stack overflow="auto" h="85%">
+    <Stack overflow="auto" h="85%" >
       <Box display={hideOnSmallResolutions}>
         <ExampleTaskRow />
       </Box>

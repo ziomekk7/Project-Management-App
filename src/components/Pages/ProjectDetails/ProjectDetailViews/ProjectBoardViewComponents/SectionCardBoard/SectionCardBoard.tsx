@@ -71,7 +71,6 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
 
   const style = {
     transform: CSS.Translate.toString(transform),
-    transition: "transform 300ms ease",
     opacity: activeSection?.id == section.id && isDragging ? 0 : 1,
   };
 
