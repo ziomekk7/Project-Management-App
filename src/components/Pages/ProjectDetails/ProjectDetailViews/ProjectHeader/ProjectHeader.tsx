@@ -15,8 +15,8 @@ import {
 } from "@chakra-ui/react";
 import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 import { DeleteModal } from "../../DeleteModal/DeleteModal";
-import { hideMd } from "../../../../UI/RespoStyles";
 import MenuDrawer from "../../../MenuDrawer";
+import { hideMd } from "../../../../../config";
 
 type ProjectHeaderProps = {
   project: Project;
@@ -34,8 +34,14 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   const burgerButtonStyle = useBreakpointValue(hideMd);
 
   return (
-    <Box h="15%">
-      <Stack p={5} direction="row" spacing={8} w="100%" justifyContent="space-between">
+    <Box position="sticky" zIndex={1} top={0} background="gray.800">
+      <Stack
+        p={5}
+        direction="row"
+        spacing={8}
+        w="100%"
+        justifyContent="space-between"
+      >
         <Stack direction="row">
           <Heading as="h1" size="xl">
             {project.name}

@@ -1,6 +1,7 @@
 import { Project } from "../types/types";
 import * as z from "zod";
 import { Task, TaskPriority } from "../types/types";
+import { exampleProject } from "../components/UI/Icons/ExpampleProject";
 
 export type CreateProjectData = {
   newProject: string;
@@ -70,6 +71,22 @@ const projectsSchema = z.array(
 );
 
 const PROJECTS_KEY = "projects";
+const FIRST_LOG = "firstLogg";
+
+const checkFirstLogg = async () => {
+  try {
+    const isFirstLogg = localStorage.getItem(FIRST_LOG);
+    if (!isFirstLogg) {
+      localStorage.setItem(PROJECTS_KEY, JSON.stringify([exampleProject]));
+      localStorage.setItem(FIRST_LOG, JSON.stringify(true));
+      return;
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+checkFirstLogg();
 
 const saveProjects = async (projects: Project[]) => {
   try {

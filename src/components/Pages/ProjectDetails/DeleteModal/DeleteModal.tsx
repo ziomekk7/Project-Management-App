@@ -41,7 +41,13 @@ export const DeleteModal: FC<DeleteModalProps> = ({
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleAccept}>
+            <Button
+              bg="red.600"
+              _hover={{ bg: "red.700" }}
+              variant="solid"
+              mr={3}
+              onClick={handleAccept}
+            >
               Yes
             </Button>
             <Button variant="ghost" onClick={onClose}>
