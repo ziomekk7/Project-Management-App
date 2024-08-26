@@ -21,7 +21,7 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { hideMd } from "../../UI/RespoStyles";
+import { hideMd } from "../../../config";
 import MenuDrawer from "../MenuDrawer";
 import createProject from "../../../images/createProject.jpg";
 import createSection from "../../../images/createSection.jpg";
@@ -32,6 +32,9 @@ import createTaskListView from "../../../images/createEditTaskListView.jpg";
 import moveTask from "../../../images/moveTask.jpg";
 import taskDetails from "../../../images/taskDetails.jpg";
 import React from "react";
+import dnd from "../../../images/dnd.png";
+import chakraUi from "../../../images/chakraUi.png";
+import react from "../../../images/laptop.png";
 
 type InstructionCardProps = {
   src: string;
@@ -175,9 +178,24 @@ export const MainPage = () => {
               Technologies
             </Heading>
             <UnorderedList>
-              <ListItem>react-query: 5.0</ListItem>
-              <ListItem>chakra-ui: 2.8</ListItem>
-              <ListItem>dnd-kit/core: 6.1</ListItem>
+              <ListItem>
+                <Stack flexDirection="row" alignItems="center">
+                  <Image w={4} h={4} src={react} />
+                  <Text>react-query: 5</Text>
+                </Stack>
+              </ListItem>
+              <ListItem>
+                <Stack flexDirection="row" alignItems="center">
+                  <Image w={4} h={4} src={dnd} />
+                  <Text>dnd-kit/core: 6</Text>
+                </Stack>
+              </ListItem>
+              <ListItem>
+                <Stack flexDirection="row" alignItems="center">
+                  <Image w={4} h={4} src={chakraUi} />
+                  <Text>chakra-ui: 2</Text>
+                </Stack>
+              </ListItem>
               <ListItem>react-quill: 2.0</ListItem>
               <ListItem>uuid: 9.0</ListItem>
               <ListItem>zod: 3.22</ListItem>

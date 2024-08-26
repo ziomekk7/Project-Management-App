@@ -25,6 +25,7 @@ import { routes } from "../../routes";
 import { v4 as uuidv4 } from "uuid";
 import { DragEndEvent, DragOverEvent, DragStartEvent } from "@dnd-kit/core";
 import { arrayMove } from "@dnd-kit/sortable";
+import { throttle } from "lodash";
 
 export const useProjectDetailsPage = () => {
   const [hiddenSections, setHiddenSection] = useState<string[]>([]);
@@ -432,8 +433,8 @@ export const useProjectDetailsPage = () => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setActiveTask(null)
-    setActiveSection(null)
+    setActiveTask(null);
+    setActiveSection(null);
     const project = projectQuery.data;
     const source = event.active;
     const destination = event.over;
@@ -525,7 +526,7 @@ export const useProjectDetailsPage = () => {
     }
   };
 
-  const handleDragOver = (event: DragOverEvent) => {
+  const handleDragOver = throttle((event: DragOverEvent) => {
     const { over, active } = event;
     const project = projectQuery.data;
     if (!over || !project) return;
@@ -586,7 +587,7 @@ export const useProjectDetailsPage = () => {
 
       return { ...project, sections: updatedSections };
     }
-  };
+  }, 100);
 
   const handleChangeSectionLocation = (data: ChangeSectionLocationData) => {
     changeSectionLocationMutation.mutate(data);
@@ -619,7 +620,7 @@ export const useProjectDetailsPage = () => {
     hiddenSections: hiddenSections,
     createTaskMutation: createTaskMutation.isPending,
     openTaskDetailLocation: openTaskDetailLocation,
-    project: projectQuery.data,
+    project: projectQuery.data ,
     openTask: openTask,
     handleChangeTaskLocation,
     handleDragEnd,

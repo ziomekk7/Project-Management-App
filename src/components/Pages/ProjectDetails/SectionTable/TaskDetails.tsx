@@ -16,7 +16,7 @@ import {
   Flex,
   Heading,
 } from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDebounce } from "use-debounce";
 import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
 import { CopyIcon, DeleteIcon } from "@chakra-ui/icons";
@@ -40,6 +40,7 @@ type TaskDetailsProps = {
   onDuplicateTask: (task: Task) => void;
   onOpenDeleteModal: (taskId: string) => void;
 };
+
 const TaskDetails: React.FC<TaskDetailsProps> = ({
   task,
   selectedPriority,
@@ -52,23 +53,32 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   onDuplicateTask,
 }) => {
   const duplicateTaskModal = useDisclosure();
+  const deleteTaskModal = useDisclosure();
+
   const [inputValue, setInputValue] = useState(task.description);
   const [debouncedValue] = useDebounce(inputValue, 2000);
+
+  const prevDescriptionRef = useRef(task.description);
+
   useEffect(() => {
-    onEditTask({ ...task, description: debouncedValue });
-  }, [debouncedValue]);
-  const deleteTaskModal = useDisclosure();
+    setInputValue(task.description);
+  }, [task.description]);
+
+  useEffect(() => {
+    const prevDescription = prevDescriptionRef.current;
+    if (debouncedValue !== prevDescription) {
+      onEditTask({ ...task, description: debouncedValue });
+      prevDescriptionRef.current = debouncedValue;
+    }
+  }, [debouncedValue, task, onEditTask]);
 
   return (
     <>
       <Drawer size="sm" isOpen={isOpenMenu} placement="right" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent justifyContent="row-reverse">
+        <DrawerContent>
           <DrawerCloseButton />
-
-          <DrawerHeader></DrawerHeader>
-
-          <DrawerBody>
+          <DrawerHeader>
             <Flex alignItems="center">
               <Heading as="h3" size="md">
                 {task.name}
@@ -96,27 +106,27 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                 </MenuList>
               </Menu>
             </Flex>
+          </DrawerHeader>
 
-            <Stack display="flex" alignItems="center" direction="row" mt={1.5}>
-              <Text>Execution Date </Text>
-              <DatePicker
-                taskDate={taskDate}
-                selectedDate={selectedDate}
-                onSelect={(selectedDate) =>
-                  onEditTask({ ...task, date: selectedDate })
-                }
-              />
-            </Stack>
-            <Stack mt={1.5} direction="row" display="flex" alignItems="center">
-              <Text>Priority</Text>
-              <PriorityForm
-                onChangePriority={(priority) =>
-                  onEditTask({ ...task, priority: priority })
-                }
-                selectedPriority={selectedPriority}
-              />
-            </Stack>
-            <Stack mt={1.5}>
+          <DrawerBody>
+            <Stack spacing={4}>
+              <Flex alignItems="center">
+                <Text>Execution Date</Text>
+                <DatePicker
+                  taskDate={taskDate}
+                  selectedDate={selectedDate}
+                  onSelect={(date) => onEditTask({ ...task, date })}
+                />
+              </Flex>
+              <Flex alignItems="center">
+                <Text>Priority</Text>
+                <PriorityForm
+                  onChangePriority={(priority) =>
+                    onEditTask({ ...task, priority })
+                  }
+                  selectedPriority={selectedPriority}
+                />
+              </Flex>
               <ReactQuill value={inputValue || ""} onChange={setInputValue} />
             </Stack>
           </DrawerBody>
@@ -124,18 +134,19 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       </Drawer>
 
       <DuplicateTaskModal
-        onDuplicateTask={(task) => onDuplicateTask(task)}
+        onDuplicateTask={onDuplicateTask}
         task={task}
         isOpen={duplicateTaskModal.isOpen}
         onClose={duplicateTaskModal.onClose}
       />
+
       <DeleteModal
         isOpen={deleteTaskModal.isOpen}
         onClose={deleteTaskModal.onClose}
         onAccept={() => {
-            deleteTaskModal.onClose,
-            onClose(),
-            onDeleteTask(task.id);
+          deleteTaskModal.onClose();
+          onClose();
+          onDeleteTask(task.id);
         }}
       />
     </>

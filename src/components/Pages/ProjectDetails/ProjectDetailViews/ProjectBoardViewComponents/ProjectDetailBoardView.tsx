@@ -22,6 +22,7 @@ import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import SectionCardBoard from "./SectionCardBoard/SectionCardBoard";
 import TaskCardBoard from "./TaskCardBoard/TaskCardBoard";
 import { createPortal } from "react-dom";
+import { CustomScrollbar } from "../../../../../config";
 
 type ProjectDetailBoardViewProps = {
   isCreatingSection: boolean;
@@ -111,7 +112,7 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
       }}
       collisionDetection={closestCorners}
     >
-      <Stack direction="row" overflow="auto" h="85%">
+      <Stack direction="row" overflow="auto" h="100%" css={CustomScrollbar}>
         {project && (
           <SortableContext
             strategy={rectSortingStrategy}

@@ -21,7 +21,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
 import RootLayout from "../../Roots/RootLayout";
-import { hideMd } from "../../UI/RespoStyles";
+import { hideMd } from "../../../config";
 import MenuDrawer from "../MenuDrawer";
 import { HamburgerIcon } from "@chakra-ui/icons";
 

@@ -18,6 +18,7 @@ import { SortableContext, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import TaskCardBoard from "../TaskCardBoard/TaskCardBoard";
 import { DeleteModal } from "../../../DeleteModal/DeleteModal";
+import { CustomScrollbar } from "../../../../../../config";
 
 type SectionCardBoardProps = {
   section: Section;
@@ -106,6 +107,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
         </Stack>
         <Stack
           overflow="auto"
+          css={CustomScrollbar}
           flexDirection="column"
           alignItems="center"
           h="100%"

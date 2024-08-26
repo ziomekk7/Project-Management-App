@@ -1,15 +1,8 @@
-import {
-  Box,
-  Button,
-  Stack,
-  useBreakpointValue,
-} from "@chakra-ui/react";
+import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
 import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
 import { Project, Section, Task } from "../../../../types/types";
 import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
-import {
-  AddIcon,
-} from "@chakra-ui/icons";
+import { AddIcon } from "@chakra-ui/icons";
 import { ChangeTaskLocationData } from "../../../../api/projectsApi";
 import {
   DndContext,
@@ -24,9 +17,10 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
-import { showMd } from "../../../UI/RespoStyles";
+import { showMd } from "../../../../config";
 import { createPortal } from "react-dom";
 import TaskRow from "../SectionTable/TaskRow";
+import { CustomScrollbar } from "../../../../config";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
@@ -138,7 +132,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
     return;
   }
   return (
-    <Stack overflow="auto" h="85%" >
+    <Stack css={CustomScrollbar} overflow="auto">
       <Box display={hideOnSmallResolutions}>
         <ExampleTaskRow />
       </Box>

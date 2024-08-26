@@ -10,6 +10,7 @@ import {
   Checkbox,
   Stack,
   Text,
+  ModalBody,
 } from "@chakra-ui/react";
 import { FC, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
@@ -42,7 +43,6 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
     priority: false,
     description: false,
   });
-  const [name, setName] = useState(task.name)
 
   const {
     register,
@@ -51,14 +51,14 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
     formState: { errors },
   } = useForm<z.infer<typeof duplicateTaskFormSchema>>({
     resolver: zodResolver(duplicateTaskFormSchema),
-    defaultValues: { name: `Duplicated ${name}` },
+    defaultValues: { name: `Duplicated ${task.name}` },
   });
 
   useEffect(() => {
     if (isOpen) {
       reset({ name: `Duplicated ${task.name}` });
     }
-  }, [isOpen]);
+  }, [isOpen, reset, task.name]);
 
   const handleInnerSubmit = (data: z.infer<typeof duplicateTaskFormSchema>) => {
     onDuplicateTask({
@@ -69,69 +69,70 @@ const DuplicateTaskModal: FC<DuplicateTaskModalProps> = ({
       id: uuidv4(),
     });
     onClose();
-    setName("");
   };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>
-          <form onSubmit={handleSubmit(handleInnerSubmit)}>
-            <Input w="70%" {...register("name")}></Input>
-            {errors.name?.message && <Text>{errors.name?.message}</Text>}
-            <CheckboxGroup>
-              <Stack>
-                <Text>Include</Text>
-                <Checkbox
-                  isChecked={checkedFields.date}
-                  onChange={(e) =>
-                    setCheckedFields({
-                      date: e.target.checked,
-                      priority: checkedFields.priority,
-                      description: checkedFields.description,
-                    })
-                  }
-                >
-                  Execution Date
-                </Checkbox>
-                <Checkbox
-                  isChecked={checkedFields.priority}
-                  onChange={(e) =>
-                    setCheckedFields({
-                      date: checkedFields.date,
-                      priority: e.target.checked,
-                      description: checkedFields.description,
-                    })
-                  }
-                >
-                  Priority
-                </Checkbox>
-                <Checkbox
-                  isChecked={checkedFields.description}
-                  onChange={(e) =>
-                    setCheckedFields({
-                      date: checkedFields.date,
-                      priority: checkedFields.priority,
-                      description: e.target.checked,
-                    })
-                  }
-                >
-                  Description
-                </Checkbox>
-                <Stack direction="row" justifyContent="space-around">
-                  <Button type="submit" variant="outline">
-                    Create duplicate task
-                  </Button>
-                  <Button mr={3} onClick={onClose} variant="outline">
-                    Close
-                  </Button>
-                </Stack>
-              </Stack>
-            </CheckboxGroup>
-          </form>
-        </ModalHeader>
+        <ModalHeader>Duplicate Task</ModalHeader>
         <ModalCloseButton />
+        <ModalBody>
+          <form onSubmit={handleSubmit(handleInnerSubmit)}>
+            <Stack spacing={4}>
+              <Input w="70%" {...register("name")} placeholder="Task Name" />
+              {errors.name?.message && (
+                <Text color="red.500">{errors.name?.message}</Text>
+              )}
+              <CheckboxGroup>
+                <Stack spacing={3}>
+                  <Text>Include</Text>
+                  <Checkbox
+                    isChecked={checkedFields.date}
+                    onChange={(e) =>
+                      setCheckedFields({
+                        ...checkedFields,
+                        date: e.target.checked,
+                      })
+                    }
+                  >
+                    Execution Date
+                  </Checkbox>
+                  <Checkbox
+                    isChecked={checkedFields.priority}
+                    onChange={(e) =>
+                      setCheckedFields({
+                        ...checkedFields,
+                        priority: e.target.checked,
+                      })
+                    }
+                  >
+                    Priority
+                  </Checkbox>
+                  <Checkbox
+                    isChecked={checkedFields.description}
+                    onChange={(e) =>
+                      setCheckedFields({
+                        ...checkedFields,
+                        description: e.target.checked,
+                      })
+                    }
+                  >
+                    Description
+                  </Checkbox>
+                </Stack>
+              </CheckboxGroup>
+              <Stack direction="row" justifyContent="space-between">
+                <Button type="submit" colorScheme="blue">
+                  Create Duplicate Task
+                </Button>
+                <Button onClick={onClose} variant="outline">
+                  Close
+                </Button>
+              </Stack>
+            </Stack>
+          </form>
+        </ModalBody>
       </ModalContent>
     </Modal>
   );
