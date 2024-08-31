@@ -84,7 +84,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
         p={1}
         ref={setNodeRef}
         style={style}
-        backgroundColor="gray.600"
+        backgroundColor="transparent"
       >
         <Stack
           direction="row"

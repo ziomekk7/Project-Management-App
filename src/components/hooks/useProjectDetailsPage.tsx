@@ -588,6 +588,7 @@ export const useProjectDetailsPage = () => {
       return { ...project, sections: updatedSections };
     }
   }, 100);
+  
 
   const handleChangeSectionLocation = (data: ChangeSectionLocationData) => {
     changeSectionLocationMutation.mutate(data);
