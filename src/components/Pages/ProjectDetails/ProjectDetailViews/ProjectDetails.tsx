@@ -5,11 +5,21 @@ import TaskDetails from "../SectionTable/TaskDetails";
 import ProjectHeader from "./ProjectHeader/ProjectHeader";
 import ProjectDetailBoardView from "./ProjectBoardViewComponents/ProjectDetailBoardView";
 import { Box, Container, Flex, useDisclosure } from "@chakra-ui/react";
-import { CustomScrollbar } from "../../../../config"; 
+import { CustomScrollbar } from "../../../../config";
+import { useEffect } from "react";
 
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
   const deleteTaskModal = useDisclosure();
+
+  useEffect(() => {
+    document.title = projectDetailsPage?.project
+      ? `${projectDetailsPage.project.name} - Management`
+      : "Management";
+    return () => {
+      document.title = "Management";
+    };
+  }, [projectDetailsPage?.project]);
   if (!projectDetailsPage) return;
   const commonProps = {
     isCreatingSection: projectDetailsPage.isCreatingSection,
@@ -30,6 +40,7 @@ const ProjectDetails = () => {
     onDragEnd: projectDetailsPage.handleDragEnd,
     activeSection: projectDetailsPage.activeSection,
     activeTask: projectDetailsPage.activeTask,
+    onCloseTaskDetails: projectDetailsPage.handleCloseTaskDetails,
   };
 
   if (!projectDetailsPage.project) {
@@ -41,9 +52,7 @@ const ProjectDetails = () => {
   } else if (projectDetailsPage.project || projectDetailsPage.openTask) {
     return (
       <RootLayout>
-        <Container 
-        maxW="container.xl" 
-        height="100vh">
+        <Container maxW="container.xl" height="100vh">
           <Flex direction="column" height="100%">
             <Box flex="none">
               <ProjectHeader
@@ -69,7 +78,7 @@ const ProjectDetails = () => {
             {projectDetailsPage.openTask &&
               projectDetailsPage.openTaskDetailLocation && (
                 <TaskDetails
-                  onClose={projectDetailsPage.taskDetailsDrawer.onClose}
+                  onClose={projectDetailsPage.handleCloseTaskDetails}
                   isOpenMenu={projectDetailsPage.taskDetailsDrawer.isOpen}
                   taskDate={projectDetailsPage.openTask.date}
                   selectedDate={projectDetailsPage.selectedDate}
