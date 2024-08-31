@@ -405,6 +405,10 @@ export const useProjectDetailsPage = () => {
   const handleChangeView = (view: string) => {
     setSelectedView(view);
   };
+  const handleCloseTaskDetails = () =>{
+    setOpenTaskDetailLocation(null)
+    taskDetailsDrawer.onClose()
+  }
   const handleSetOpenTaskDetailLocation = (
     taskId: string,
     sectionId: string
@@ -607,6 +611,7 @@ export const useProjectDetailsPage = () => {
       deleteProjectMutation.mutate({ projectId }),
     handleChangeView,
     handleSetOpenTaskDetailLocation,
+    handleCloseTaskDetails,
     handleEditTask: (task: Task) => editTaskMutation.mutate(task),
     handleOpenCreateSectionForm,
     handleCloseCreateSectionForm,

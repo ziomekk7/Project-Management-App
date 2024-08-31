@@ -73,11 +73,15 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   }, [debouncedValue, task, onEditTask]);
 
   useEffect(() => {
-    document.title = task.name ? `${task.name}` : "Management";
+    const currentProjectName = document.title.replace("Management", "").trim();
+    document.title = task.name
+      ? `${currentProjectName} ${task.name}`
+      : "Management";
     return () => {
-      document.title = "Management";
+      document.title = `${currentProjectName} Management`;
     };
   }, [task]);
+  console.log(task);
 
   return (
     <>

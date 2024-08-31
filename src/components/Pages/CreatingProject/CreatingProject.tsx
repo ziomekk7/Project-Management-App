@@ -24,6 +24,7 @@ import RootLayout from "../../Roots/RootLayout";
 import { hideMd } from "../../../config";
 import MenuDrawer from "../MenuDrawer";
 import { HamburgerIcon } from "@chakra-ui/icons";
+import { useEffect } from "react";
 
 const createProjectFormSchema = z.object({
   newProject: z
@@ -53,6 +54,13 @@ const CreatingProject = () => {
 
   const burgerMenuDrafter = useDisclosure();
   const burgerButtonStyle = useBreakpointValue(hideMd);
+
+  useEffect(() => {
+    document.title = "Create Project - Management";
+    return () => {
+      document.title = "Management";
+    };
+  }, []);
 
   const handleCreateProject = (newProject: string) => {
     const projectId = uuidv4();

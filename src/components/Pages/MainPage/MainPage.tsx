@@ -31,7 +31,7 @@ import createTaskBoardView from "../../../images/createEditTaskBoardView.jpg";
 import createTaskListView from "../../../images/createEditTaskListView.jpg";
 import moveTask from "../../../images/moveTask.jpg";
 import taskDetails from "../../../images/taskDetails.jpg";
-import React from "react";
+import React, { useEffect } from "react";
 import dnd from "../../../images/dnd.png";
 import chakraUi from "../../../images/chakraUi.png";
 import react from "../../../images/laptop.png";
@@ -42,6 +42,12 @@ type InstructionCardProps = {
 };
 
 const InstructionCard: React.FC<InstructionCardProps> = ({ src, context }) => {
+  useEffect(() => {
+    document.title = "Management - Home";
+    return () => {
+      document.title = "Management";
+    };
+  }, []);
   return (
     <Card bgColor="gray.800">
       <CardBody>
