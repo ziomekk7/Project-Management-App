@@ -56,7 +56,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
   const deleteTaskModal = useDisclosure();
 
   const [inputValue, setInputValue] = useState(task.description);
-  const [debouncedValue] = useDebounce(inputValue, 2000);
+  const [debouncedValue] = useDebounce(inputValue, 800);
 
   const prevDescriptionRef = useRef(task.description);
 
@@ -71,6 +71,13 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       prevDescriptionRef.current = debouncedValue;
     }
   }, [debouncedValue, task, onEditTask]);
+
+  useEffect(() => {
+    document.title = task.name ? `${task.name}` : "Management";
+    return () => {
+      document.title = "Management";
+    };
+  }, [task]);
 
   return (
     <>
