@@ -12,7 +12,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   });
 
   return (
-    <Grid w="100%" h="100%" templateColumns="200px 1fr ">
+    <Grid w="100%" h="100%" templateColumns="200px 1fr " >
       <GridItem
         display={menuStyles}
         gridColumnStart={1}

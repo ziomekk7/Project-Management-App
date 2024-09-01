@@ -132,7 +132,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
     return;
   }
   return (
-    <Stack css={CustomScrollbar} overflow="auto">
+    <Stack css={CustomScrollbar} overflow="auto" gap={0}>
       <Box display={hideOnSmallResolutions}>
         <ExampleTaskRow />
       </Box>
