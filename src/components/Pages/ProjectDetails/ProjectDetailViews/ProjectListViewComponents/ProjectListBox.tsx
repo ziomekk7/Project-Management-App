@@ -92,6 +92,7 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
           </div>
           <IconButton
             aria-label="Toggle section"
+            mr={1}
             icon={
               !hiddenSections.find((sectionId) => sectionId === section.id) ? (
                 <ChevronDownIcon />
@@ -103,11 +104,12 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
             variant="ghost"
           />
 
-          <Heading as="h2" size="md">
+          <Heading as="h3" size="sm">
             {section.name}
           </Heading>
           <Menu>
             <MenuButton
+              ml={1}
               as={IconButton}
               icon={<EllipsisHorizontal />}
               variant="ghost"

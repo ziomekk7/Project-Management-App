@@ -18,10 +18,6 @@ const Menu: React.FC<MenuProps> = ({ onClose }) => {
     queryFn: getProjects,
   });
 
-  if (projectsQuery.isLoading) {
-    return <div>Loading....</div>;
-  }
-
   return (
     <Stack
       direction="column"

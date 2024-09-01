@@ -32,9 +32,10 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
         {PRIORITY_LABELS[selectedPriority]}
       </MenuButton>
 
-      <MenuList overflow="hidden" p={2} >
+      <MenuList overflow="hidden" p={2} maxW={36} minW={36}>
         {Object.values(TaskPriority).map((priority) => (
           <MenuItem
+            w={32}
             mb={2}
             key={priority}
             as={Button}

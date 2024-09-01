@@ -77,14 +77,15 @@ const TaskRow: React.FC<TaskRowProps> = ({
   const deleteTaskModal = useDisclosure();
   const hideOnSmallResolutions = useBreakpointValue({
     base: { display: "none", templateColumns: "1fr" },
-    md: { display: "flex", templateColumns: "2fr 1fr 1fr" },
-    lg: { display: "flex", templateColumns: "2fr 1fr 1fr" },
+    md: { display: "flex", templateColumns: "4fr 1fr 1fr" },
+    lg: { display: "flex", templateColumns: "4fr 1fr 1fr" },
   });
   const style = {
     transition,
     transform: CSS.Translate.toString(transform),
     opacity: activeTask?.id === task.id && isDragging ? 0 : 1,
-    borderTop: activeTask?.id === task.id && !isDragging ? "solid black 1px" : "none",
+    borderTop:
+      activeTask?.id === task.id && !isDragging ? "solid black 1px" : "none",
   };
 
   const handleChangeTaskLocation = (movedSectionId: string) => {
@@ -119,7 +120,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
             icon={<DragHandleIcon />}
             variant="ghost"
           />
-        <EditNameInput task={task} onEditTask={onEditTask} />
+          <EditNameInput task={task} onEditTask={onEditTask} />
         </Stack>
         <Flex>
           <Menu>

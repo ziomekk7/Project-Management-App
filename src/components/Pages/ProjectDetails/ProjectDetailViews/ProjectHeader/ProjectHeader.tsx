@@ -36,18 +36,20 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   return (
     <Box position="sticky" zIndex={1} top={0} background="gray.800">
       <Stack
-        p={5}
+        mt={2}
+        mb={2}
         direction="row"
         spacing={8}
         w="100%"
         justifyContent="space-between"
       >
         <Stack direction="row">
-          <Heading as="h1" size="xl">
+          <Heading as="h1" size="lg">
             {project.name}
           </Heading>
           <Menu>
             <MenuButton
+            ml={4}
               as={IconButton}
               icon={<EllipsisHorizontal />}
               variant="ghost"
