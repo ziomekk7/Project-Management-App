@@ -44,57 +44,52 @@ const ProjectDetails = () => {
   };
 
   if (!projectDetailsPage.project) {
-    return (
-      <RootLayout>
-        <div>Loading...</div>
-      </RootLayout>
-    );
-  } else if (projectDetailsPage.project || projectDetailsPage.openTask) {
-    return (
-      <RootLayout>
-        <Container maxW="container.xl" height="100vh">
-          <Flex direction="column" height="100%">
-            <Box flex="none">
-              <ProjectHeader
-                onChangeView={projectDetailsPage.handleChangeView}
-                onDeleteProject={projectDetailsPage.handleDeleteProject}
-                project={projectDetailsPage.project}
-              />
-            </Box>
-
-            <Box flex="1" overflow="auto" css={CustomScrollbar}>
-              {projectDetailsPage.selectedView === "list" ? (
-                <ProjectDetailListView
-                  {...commonProps}
-                  onDuplicateTask={projectDetailsPage.handleCreateTask}
-                  hiddenSections={projectDetailsPage.hiddenSections}
-                  onDeleteTask={projectDetailsPage.handleDeleteTask}
-                  onHideSectionId={projectDetailsPage.handleHideSection}
-                />
-              ) : (
-                <ProjectDetailBoardView {...commonProps} />
-              )}
-            </Box>
-            {projectDetailsPage.openTask &&
-              projectDetailsPage.openTaskDetailLocation && (
-                <TaskDetails
-                  onClose={projectDetailsPage.handleCloseTaskDetails}
-                  isOpenMenu={projectDetailsPage.taskDetailsDrawer.isOpen}
-                  taskDate={projectDetailsPage.openTask.date}
-                  selectedDate={projectDetailsPage.selectedDate}
-                  onDuplicateTask={projectDetailsPage.handleCreateTask}
-                  onEditTask={projectDetailsPage.handleEditTask}
-                  onOpenDeleteModal={deleteTaskModal.onOpen}
-                  onDeleteTask={projectDetailsPage.handleDeleteTask}
-                  selectedPriority={projectDetailsPage.openTask.priority}
-                  task={projectDetailsPage.openTask}
-                />
-              )}
-          </Flex>
-        </Container>
-      </RootLayout>
-    );
+    return;
   }
+  return (
+    <RootLayout>
+      <Container maxW="container.xl" height="100vh">
+        <Flex direction="column" height="100%">
+          <Box flex="none">
+            <ProjectHeader
+              onChangeView={projectDetailsPage.handleChangeView}
+              onDeleteProject={projectDetailsPage.handleDeleteProject}
+              project={projectDetailsPage.project}
+            />
+          </Box>
+
+          <Box flex="1" overflow="auto" css={CustomScrollbar}>
+            {projectDetailsPage.selectedView === "list" ? (
+              <ProjectDetailListView
+                {...commonProps}
+                onDuplicateTask={projectDetailsPage.handleCreateTask}
+                hiddenSections={projectDetailsPage.hiddenSections}
+                onDeleteTask={projectDetailsPage.handleDeleteTask}
+                onHideSectionId={projectDetailsPage.handleHideSection}
+              />
+            ) : (
+              <ProjectDetailBoardView {...commonProps} />
+            )}
+          </Box>
+          {projectDetailsPage.openTask &&
+            projectDetailsPage.openTaskDetailLocation && (
+              <TaskDetails
+                onClose={projectDetailsPage.handleCloseTaskDetails}
+                isOpenMenu={projectDetailsPage.taskDetailsDrawer.isOpen}
+                taskDate={projectDetailsPage.openTask.date}
+                selectedDate={projectDetailsPage.selectedDate}
+                onDuplicateTask={projectDetailsPage.handleCreateTask}
+                onEditTask={projectDetailsPage.handleEditTask}
+                onOpenDeleteModal={deleteTaskModal.onOpen}
+                onDeleteTask={projectDetailsPage.handleDeleteTask}
+                selectedPriority={projectDetailsPage.openTask.priority}
+                task={projectDetailsPage.openTask}
+              />
+            )}
+        </Flex>
+      </Container>
+    </RootLayout>
+  );
 };
 
 export default ProjectDetails;

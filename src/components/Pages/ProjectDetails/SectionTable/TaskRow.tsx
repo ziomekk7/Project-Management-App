@@ -77,14 +77,14 @@ const TaskRow: React.FC<TaskRowProps> = ({
   const deleteTaskModal = useDisclosure();
   const hideOnSmallResolutions = useBreakpointValue({
     base: { display: "none", templateColumns: "1fr" },
-    md: { display: "flex", templateColumns: "2fr 1fr 1fr" },
-    lg: { display: "flex", templateColumns: "2fr 1fr 1fr" },
+    md: { display: "flex", templateColumns: "4fr 1fr 1fr" },
+    lg: { display: "flex", templateColumns: "4fr 1fr 1fr" },
   });
+  const borderColor = "gray.700";
   const style = {
     transition,
     transform: CSS.Translate.toString(transform),
     opacity: activeTask?.id === task.id && isDragging ? 0 : 1,
-    borderTop: activeTask?.id === task.id && !isDragging ? "solid black 1px" : "none",
   };
 
   const handleChangeTaskLocation = (movedSectionId: string) => {
@@ -100,30 +100,41 @@ const TaskRow: React.FC<TaskRowProps> = ({
 
   return (
     <Grid
-      h={16}
+      h={14}
       templateColumns={hideOnSmallResolutions?.templateColumns}
-      borderBottom="1px solid black"
+      borderBottom="1px solid "
+      borderColor={borderColor}
       ref={setNodeRef}
       style={style}
     >
       <GridItem
         p={2}
-        borderRight="1px solid black"
+        borderRight="1px solid "
+        borderColor={borderColor}
         display="flex"
         alignItems="center"
         justifyContent="space-between"
+        _hover={{ ".hiddenButton": { opacity: 1 } }}
       >
         <Stack flexDir="row" {...attributes} {...listeners}>
           <IconButton
+            className="hiddenButton"
+            opacity={0}
             aria-label="Search database"
             icon={<DragHandleIcon />}
             variant="ghost"
           />
-        <EditNameInput task={task} onEditTask={onEditTask} />
+          <EditNameInput task={task} onEditTask={onEditTask} />
         </Stack>
         <Flex>
           <Menu>
-            <MenuButton as={IconButton} icon={<UpDownIcon />} variant="ghost" />
+            <MenuButton
+              className="hiddenButton"
+              opacity={0}
+              as={IconButton}
+              icon={<UpDownIcon />}
+              variant="ghost"
+            />
             <MenuList>
               <MenuGroup title="Move task to section">
                 {sections.map((section) => (
@@ -146,6 +157,8 @@ const TaskRow: React.FC<TaskRowProps> = ({
           </Menu>
           <Menu>
             <MenuButton
+              className="hiddenButton"
+              opacity={0}
               as={IconButton}
               icon={<EllipsisHorizontal />}
               variant="ghost"
@@ -165,7 +178,8 @@ const TaskRow: React.FC<TaskRowProps> = ({
         </Flex>
       </GridItem>
       <GridItem
-        borderRight="1px solid black"
+        borderRight="1px solid "
+        borderColor={borderColor}
         display={hideOnSmallResolutions?.display}
         alignItems="center"
         justifyContent="center"
@@ -186,7 +200,6 @@ const TaskRow: React.FC<TaskRowProps> = ({
         />
       </GridItem>
       <GridItem
-        borderRight="1px solid black"
         display={hideOnSmallResolutions?.display}
         alignItems="center"
         justifyContent="flex-start"

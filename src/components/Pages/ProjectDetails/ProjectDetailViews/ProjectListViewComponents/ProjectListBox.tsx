@@ -71,20 +71,24 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
   };
 
   return (
-    <Box ref={setNodeRef} style={style}>
+    <Box ref={setNodeRef} style={style} p={1}>
       <div>
         <Stack
           h={20}
-          mt={3}
-          borderBottom="1px solid black"
+          gap={0}
+          borderBottom="1px solid"
+          borderColor="gray.700"
           key={section.id}
           direction="row"
           spacing={4}
           alignItems="center"
           w="100%"
+          _hover={{ ".hiddenButton": { opacity: 1 } }}
         >
           <div {...attributes} {...listeners}>
             <IconButton
+              className="hiddenButton"
+              opacity={0}
               aria-label="Search database"
               icon={<DragHandleIcon />}
               variant="ghost"
@@ -92,6 +96,7 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
           </div>
           <IconButton
             aria-label="Toggle section"
+            mr={1}
             icon={
               !hiddenSections.find((sectionId) => sectionId === section.id) ? (
                 <ChevronDownIcon />
@@ -103,11 +108,14 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
             variant="ghost"
           />
 
-          <Heading as="h2" size="md">
+          <Heading as="h3" size="sm">
             {section.name}
           </Heading>
           <Menu>
             <MenuButton
+              className="hiddenButton"
+              opacity={0}
+              ml={1}
               as={IconButton}
               icon={<EllipsisHorizontal />}
               variant="ghost"
