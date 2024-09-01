@@ -86,7 +86,7 @@ const CreatingProject = () => {
               handleCreateProject(data.newProject);
             })}
           >
-            <Flex direction="column" maxW={80} ml={1} mb={1}>
+            <Flex direction="column" maxW={80} m={1}>
               <FormControl isInvalid={!!errors.newProject}>
                 <FormLabel htmlFor="newProject">
                   <Text fontSize="4xl">New Project</Text>
