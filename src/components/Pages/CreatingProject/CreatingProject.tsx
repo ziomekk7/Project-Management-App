@@ -10,8 +10,9 @@ import {
   useBreakpointValue,
   IconButton,
   Stack,
+  FormErrorMessage,
 } from "@chakra-ui/react";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { createProject } from "../../../api/projectsApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { routes } from "../../../routes";
@@ -85,38 +86,35 @@ const CreatingProject = () => {
               handleCreateProject(data.newProject);
             })}
           >
-            <FormControl>
-              <Flex direction="column" align="center">
-                <FormLabel htmlFor="newProject">New Project</FormLabel>
+            <FormControl isInvalid={!!errors.newProject}>
+              <Flex direction="column" maxW={80}>
+                <FormLabel htmlFor="newProject">
+                  <Text fontSize="4xl">New Project</Text>
+                </FormLabel>
                 <Input
+                  w="100%"
                   {...register("newProject")}
                   id="newProject"
                   placeholder="My first project"
                   autoFocus
                 />
-
-                <Flex direction="row" justify="space-between" m={2}>
-                  <Button
-                    isLoading={createProjectMutation.isPending}
-                    type="submit"
-                    m={1}
-                  >
-                    Create
-                  </Button>
-                  <Button
-                    isDisabled={createProjectMutation.isPending}
-                    as={Link}
-                    to={routes.home()}
-                    m={1}
-                  >
-                    Cancel
-                  </Button>
-                </Flex>
+                {errors.newProject && (
+                  <FormErrorMessage>
+                    {errors.newProject.message}
+                  </FormErrorMessage>
+                )}
               </Flex>
             </FormControl>
-            {errors.newProject?.message && (
-              <Text>{errors.newProject?.message}</Text>
-            )}
+            <Button
+              maxW={80}
+              w="100%"
+              variant="outline"
+              isLoading={createProjectMutation.isPending}
+              type="submit"
+              m={1}
+            >
+              Create
+            </Button>
           </form>
         </Stack>
         <MenuDrawer
