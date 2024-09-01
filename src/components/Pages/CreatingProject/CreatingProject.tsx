@@ -12,7 +12,7 @@ import {
   Stack,
   FormErrorMessage,
 } from "@chakra-ui/react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { createProject } from "../../../api/projectsApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { routes } from "../../../routes";
@@ -86,8 +86,8 @@ const CreatingProject = () => {
               handleCreateProject(data.newProject);
             })}
           >
-            <FormControl isInvalid={!!errors.newProject}>
-              <Flex direction="column" maxW={80}>
+            <Flex direction="column" maxW={80} ml={1} mb={1}>
+              <FormControl isInvalid={!!errors.newProject}>
                 <FormLabel htmlFor="newProject">
                   <Text fontSize="4xl">New Project</Text>
                 </FormLabel>
@@ -103,8 +103,8 @@ const CreatingProject = () => {
                     {errors.newProject.message}
                   </FormErrorMessage>
                 )}
-              </Flex>
-            </FormControl>
+              </FormControl>
+            </Flex>
             <Button
               maxW={80}
               w="100%"
