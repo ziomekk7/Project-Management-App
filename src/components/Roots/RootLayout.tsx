@@ -1,7 +1,7 @@
 import { Grid, GridItem, useBreakpointValue } from "@chakra-ui/react";
 import Menu from "../Pages/Menu";
 import React from "react";
-import { showMd } from "../../config";
+import { CustomScrollbar, showMd } from "../../config";
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   const menuStyles = useBreakpointValue(showMd);
@@ -12,7 +12,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   });
 
   return (
-    <Grid w="100%" h="100%" templateColumns="200px 1fr " >
+    <Grid w="100%" h="100%" templateColumns="200px 1fr ">
       <GridItem
         display={menuStyles}
         gridColumnStart={1}
@@ -24,6 +24,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       </GridItem>
       <GridItem
         overflow="auto"
+        css={CustomScrollbar}
         gridColumnStart={bodyStyles}
         gridColumnEnd={3}
         gridRowStart={1}

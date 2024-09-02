@@ -21,7 +21,8 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
   return (
     <Menu>
       <MenuButton
-        w={120}
+        size="sm"
+        w={24}
         bg={
           !selectedPriority ? "transparent" : PRIORITY_COLORS[selectedPriority]
         }
@@ -37,14 +38,20 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
           <MenuItem
             mb={2}
             key={priority}
-            as={Button}
-            bg={PRIORITY_COLORS[priority]}
-            _hover={{ bg: PRIORITY_COLORS_HOVER[priority] }}
-            onClick={(e) => {
-              onChangePriority(priority), e.stopPropagation();
-            }}
+            _hover={{ bg: "none" }}
+            // as={Button}
           >
-            {PRIORITY_LABELS[priority]}
+            <Button
+              size="sm"
+              w={24}
+              bg={PRIORITY_COLORS[priority]}
+              _hover={{ bg: PRIORITY_COLORS_HOVER[priority] }}
+              onClick={() => {
+                onChangePriority(priority);
+              }}
+            >
+              {PRIORITY_LABELS[priority]}
+            </Button>
           </MenuItem>
         ))}
       </MenuList>

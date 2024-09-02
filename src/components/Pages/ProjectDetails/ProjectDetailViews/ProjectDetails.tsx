@@ -4,9 +4,17 @@ import { useProjectDetailsPage } from "../../../hooks/useProjectDetailsPage";
 import TaskDetails from "../SectionTable/TaskDetails";
 import ProjectHeader from "./ProjectHeader/ProjectHeader";
 import ProjectDetailBoardView from "./ProjectBoardViewComponents/ProjectDetailBoardView";
-import { Box, Container, Flex, useDisclosure } from "@chakra-ui/react";
-import { CustomScrollbar } from "../../../../config";
+import {
+  Box,
+  Container,
+  Flex,
+  useBreakpointValue,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { CustomScrollbar, showMd } from "../../../../config";
 import { useEffect } from "react";
+import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
+// import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
 
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
@@ -20,6 +28,8 @@ const ProjectDetails = () => {
       document.title = "Management";
     };
   }, [projectDetailsPage?.project]);
+  const hideOnSmallResolutions = useBreakpointValue(showMd);
+
   if (!projectDetailsPage) return;
   const commonProps = {
     isCreatingSection: projectDetailsPage.isCreatingSection,
@@ -42,7 +52,6 @@ const ProjectDetails = () => {
     activeTask: projectDetailsPage.activeTask,
     onCloseTaskDetails: projectDetailsPage.handleCloseTaskDetails,
   };
-
   if (!projectDetailsPage.project) {
     return;
   }
@@ -50,15 +59,20 @@ const ProjectDetails = () => {
     <RootLayout>
       <Container maxW="container.xl" height="100vh">
         <Flex direction="column" height="100%">
-          <Box flex="none">
+          <Box flex="none" top={0} position="sticky" zIndex={1}>
             <ProjectHeader
               onChangeView={projectDetailsPage.handleChangeView}
               onDeleteProject={projectDetailsPage.handleDeleteProject}
               project={projectDetailsPage.project}
             />
+            {projectDetailsPage.selectedView === "list" && (
+              <Box display={hideOnSmallResolutions} >
+                <ExampleTaskRow />
+              </Box>
+            )}
           </Box>
 
-          <Box flex="1" overflow="auto" css={CustomScrollbar}>
+          <Box flex="1" css={CustomScrollbar}>
             {projectDetailsPage.selectedView === "list" ? (
               <ProjectDetailListView
                 {...commonProps}

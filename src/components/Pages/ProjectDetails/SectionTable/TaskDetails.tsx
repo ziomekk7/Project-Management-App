@@ -90,7 +90,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>
-            <Flex alignItems="center">
+            <Flex alignItems="center" pr={4}>
               <Heading as="h3" size="md">
                 {task.name}
               </Heading>
@@ -99,20 +99,24 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                   as={IconButton}
                   icon={<EllipsisHorizontal />}
                   variant="ghost"
-                  ml={2.5}
+                  ml={1}
+                  mr={2}
                 />
                 <MenuList>
                   <MenuItem
-                    icon={<DeleteIcon />}
-                    onClick={deleteTaskModal.onOpen}
-                  >
-                    Delete
-                  </MenuItem>
-                  <MenuItem
+                    fontSize="sm"
                     icon={<CopyIcon />}
                     onClick={duplicateTaskModal.onOpen}
                   >
                     Duplicate Task
+                  </MenuItem>
+                  <MenuItem
+                    color="red"
+                    fontSize="sm"
+                    icon={<DeleteIcon />}
+                    onClick={deleteTaskModal.onOpen}
+                  >
+                    Delete
                   </MenuItem>
                 </MenuList>
               </Menu>
@@ -123,20 +127,24 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
             <Stack spacing={4}>
               <Flex alignItems="center">
                 <Text>Execution Date</Text>
-                <DatePicker
-                  taskDate={taskDate}
-                  selectedDate={selectedDate}
-                  onSelect={(date) => onEditTask({ ...task, date })}
-                />
+                <Stack p={2}>
+                  <DatePicker
+                    taskDate={taskDate}
+                    selectedDate={selectedDate}
+                    onSelect={(date) => onEditTask({ ...task, date })}
+                  />
+                </Stack>
               </Flex>
               <Flex alignItems="center">
                 <Text>Priority</Text>
-                <PriorityForm
-                  onChangePriority={(priority) =>
-                    onEditTask({ ...task, priority })
-                  }
-                  selectedPriority={selectedPriority}
-                />
+                <Stack p={2}>
+                  <PriorityForm
+                    onChangePriority={(priority) =>
+                      onEditTask({ ...task, priority })
+                    }
+                    selectedPriority={selectedPriority}
+                  />
+                </Stack>
               </Flex>
               <ReactQuill value={inputValue || ""} onChange={setInputValue} />
             </Stack>

@@ -40,7 +40,7 @@ const CreateSectionForm: React.FC<CreateSectionFormProps> = (props) => {
         <Input
           {...register("newSection")}
           isDisabled={props.isCreatingSection}
-          placeholder="Create new section"
+          placeholder="My new section"
           autoFocus
         ></Input>
       </InputGroup>

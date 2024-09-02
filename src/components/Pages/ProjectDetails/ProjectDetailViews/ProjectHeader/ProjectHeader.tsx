@@ -1,10 +1,6 @@
 import { Project } from "../../../../../types/types";
 import { DeleteIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   IconButton,
   Heading,
   Stack,
@@ -12,8 +8,8 @@ import {
   Button,
   useDisclosure,
   useBreakpointValue,
+  Tooltip,
 } from "@chakra-ui/react";
-import { EllipsisHorizontal } from "../../../../UI/Icons/EllipsisHorizontal";
 import { DeleteModal } from "../../DeleteModal/DeleteModal";
 import MenuDrawer from "../../../MenuDrawer";
 import { hideMd } from "../../../../../config";
@@ -34,9 +30,16 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   const burgerButtonStyle = useBreakpointValue(hideMd);
 
   return (
-    <Box position="sticky" zIndex={1} top={0} background="gray.800">
+    <Box
+      position="sticky"
+      zIndex={1}
+      top={0}
+      background="gray.800"
+      _hover={{ ".hiddenButton": { opacity: 1 } }}
+      className="HeaderBox"
+    >
       <Stack
-        mt={2}
+        pt={2}
         mb={2}
         direction="row"
         spacing={8}
@@ -47,19 +50,17 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           <Heading as="h1" size="lg">
             {project.name}
           </Heading>
-          <Menu>
-            <MenuButton
-            ml={4}
-              as={IconButton}
-              icon={<EllipsisHorizontal />}
+          <Tooltip label="Delete Project">
+            <IconButton
+              onClick={deleteTaskModal.onOpen}
+              className="hiddenButton"
+              color="red"
+              opacity={0}
+              aria-label="Search database"
+              icon={<DeleteIcon />}
               variant="ghost"
             />
-            <MenuList>
-              <MenuItem onClick={deleteTaskModal.onOpen} icon={<DeleteIcon />}>
-                Delete project
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          </Tooltip>
         </Stack>
         <IconButton
           display={burgerButtonStyle}
@@ -68,7 +69,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           onClick={burgerMenuDrafter.onOpen}
         />
       </Stack>
-      <Box>
+      <Box >
         <Button onClick={() => onChangeView("list")} m={2} variant="link">
           Table View
         </Button>

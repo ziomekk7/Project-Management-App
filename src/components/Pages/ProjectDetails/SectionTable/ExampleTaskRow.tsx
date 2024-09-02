@@ -3,14 +3,16 @@ const ExampleTaskRow = () => {
   const borderColor = "gray.700";
   return (
     <Grid
-      templateColumns="2fr 1fr 1fr "
+      templateColumns="4fr minmax(120px, 1fr) minmax(120px, 1fr)"
       borderBottom="1px solid"
       borderTop="1px solid"
       borderColor={borderColor}
+      fontSize="xs"
+      backgroundColor="gray.800"
     >
       <GridItem
-        h={16}
-        ml={10}
+        h={10}
+        ml={20}
         borderRight="1px solid "
         display="flex"
         alignItems="center"
@@ -31,8 +33,8 @@ const ExampleTaskRow = () => {
       <GridItem
         display="flex"
         alignItems="center"
-        justifyContent="flex-start"
-        ml="20px"
+        justifyContent="center"
+        ml={5}
       >
         <Text>Priority</Text>
       </GridItem>
