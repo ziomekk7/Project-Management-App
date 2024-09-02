@@ -20,6 +20,8 @@ const Menu: React.FC<MenuProps> = ({ onClose }) => {
 
   return (
     <Stack
+      position="sticky"
+      top={0}
       direction="column"
       alignItems="center"
       bg="gray.700"

@@ -12,20 +12,14 @@ import {
   MenuGroup,
   Flex,
   Stack,
+  Tooltip,
 } from "@chakra-ui/react";
-import {
-  CheckIcon,
-  DeleteIcon,
-  DragHandleIcon,
-  Search2Icon,
-  UpDownIcon,
-} from "@chakra-ui/icons";
+import { DragHandleIcon, Search2Icon, UpDownIcon } from "@chakra-ui/icons";
 import { Section, Task } from "../../../../types/types";
 import { useState } from "react";
 import "react-day-picker/dist/style.css";
 import PriorityForm from "../PriorityForm/PriorityForm";
 import DatePicker from "./DatePicker/DatePicker";
-import { EllipsisHorizontal } from "../../../UI/Icons/EllipsisHorizontal";
 import { EditNameInput } from "../ProjectDetailViews/EditNameInput";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
@@ -115,6 +109,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
         alignItems="center"
         justifyContent="space-between"
         _hover={{ ".hiddenButton": { opacity: 1 } }}
+        onClick={() => onOpenTaskDetails(task.id)}
       >
         <Stack flexDir="row" {...attributes} {...listeners}>
           <IconButton
@@ -123,58 +118,51 @@ const TaskRow: React.FC<TaskRowProps> = ({
             aria-label="Search database"
             icon={<DragHandleIcon />}
             variant="ghost"
+            onClick={(e) => e.stopPropagation()}
           />
           <EditNameInput task={task} onEditTask={onEditTask} />
         </Stack>
         <Flex>
           <Menu>
-            <MenuButton
-              className="hiddenButton"
-              opacity={0}
-              as={IconButton}
-              icon={<UpDownIcon />}
-              variant="ghost"
-            />
+            <Tooltip label="Move task to another section">
+              <MenuButton
+                className="hiddenButton"
+                opacity={0}
+                as={IconButton}
+                icon={<UpDownIcon />}
+                variant="ghost"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </Tooltip>
             <MenuList>
-              <MenuGroup title="Move task to section">
+              <MenuGroup title="Move task to section:">
                 {sections.map((section) => (
                   <MenuItem
                     key={section.id}
-                    onClick={() => handleChangeTaskLocation(section.id)}
+                    onClick={(e) => {
+                      handleChangeTaskLocation(section.id), e.stopPropagation();
+                    }}
+                    _hover={{ backgroundColor: "gray.600" }}
+                    backgroundColor={
+                      section.id == sectionId ? "gray.500" : "gray.700"
+                    }
                   >
-                    <Flex w="100%">
-                      {section.id == sectionId ? <CheckIcon /> : null}
-                      {section.id == sectionId ? (
-                        <Text ml="0">{section.name}</Text>
-                      ) : (
-                        <Text ml="16px">{section.name}</Text>
-                      )}
-                    </Flex>
+                    <Text ml="16px">{section.name}</Text>
                   </MenuItem>
                 ))}
               </MenuGroup>
             </MenuList>
           </Menu>
-          <Menu>
-            <MenuButton
+          <Tooltip label="Task details">
+            <IconButton
+              onClick={(e) =>{ onOpenTaskDetails(task.id), e.stopPropagation()}}
               className="hiddenButton"
               opacity={0}
-              as={IconButton}
-              icon={<EllipsisHorizontal />}
+              aria-label="Search database"
+              icon={<Search2Icon />}
               variant="ghost"
             />
-            <MenuList>
-              <MenuItem onClick={deleteTaskModal.onOpen} icon={<DeleteIcon />}>
-                Delete Task
-              </MenuItem>
-              <MenuItem
-                onClick={() => onOpenTaskDetails(task.id)}
-                icon={<Search2Icon />}
-              >
-                Task Details
-              </MenuItem>
-            </MenuList>
-          </Menu>
+          </Tooltip>
         </Flex>
       </GridItem>
       <GridItem
