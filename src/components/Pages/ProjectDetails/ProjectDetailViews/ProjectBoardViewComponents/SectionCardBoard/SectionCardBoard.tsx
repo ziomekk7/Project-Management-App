@@ -3,15 +3,11 @@ import {
   Card,
   Heading,
   CardBody,
-  Menu,
-  MenuButton,
-  MenuList,
-  MenuItem,
   IconButton,
   useDisclosure,
+  Tooltip,
 } from "@chakra-ui/react";
 import { CreateTaskCard } from "../CreateTaskCard/CreateTaskCard";
-import { EllipsisHorizontal } from "../../../../../UI/Icons/EllipsisHorizontal";
 import { DeleteIcon, DragHandleIcon } from "@chakra-ui/icons";
 import { Section, Task } from "../../../../../../types/types";
 import { SortableContext, useSortable } from "@dnd-kit/sortable";
@@ -27,27 +23,6 @@ type SectionCardBoardProps = {
   onOpenTaskDetails: (taskId: string, sectionId: string) => void;
   onEditTask: (task: Task) => void;
   activeSection: Section | null;
-};
-
-type SectionMenuProps = {
-  onDeleteSection: () => void;
-};
-
-const SectionMenu: React.FC<SectionMenuProps> = ({ onDeleteSection }) => {
-  return (
-    <Menu>
-      <MenuButton
-        as={IconButton}
-        icon={<EllipsisHorizontal />}
-        variant="ghost"
-      />
-      <MenuList>
-        <MenuItem onClick={onDeleteSection} icon={<DeleteIcon />}>
-          Delete Section
-        </MenuItem>
-      </MenuList>
-    </Menu>
-  );
 };
 
 const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
@@ -84,7 +59,8 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
         p={1}
         ref={setNodeRef}
         style={style}
-        backgroundColor="transparent"
+        backgroundColor="gray.800"
+        _hover={{ border: "1px solid black", ".hiddenButton": { opacity: 1 } }}
       >
         <Stack
           direction="row"
@@ -94,16 +70,28 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
           <Stack flexDirection="row" alignItems="center">
             <div {...attributes} {...listeners}>
               <IconButton
+                opacity={0}
+                className="hiddenButton"
                 aria-label="Search database"
                 icon={<DragHandleIcon />}
                 variant="ghost"
               />
             </div>
-            <Heading size="md" p={3}>
+            <Heading size="md" p={3} pl={0}>
               {section.name}
             </Heading>
           </Stack>
-          <SectionMenu onDeleteSection={deleteTaskModal.onOpen} />
+          <Tooltip label="Delete Section">
+            <IconButton
+              onClick={deleteTaskModal.onOpen}
+              className="hiddenButton"
+              color="red"
+              opacity={0}
+              aria-label="Search database"
+              icon={<DeleteIcon />}
+              variant="ghost"
+            />
+          </Tooltip>
         </Stack>
         <Stack
           overflow="auto"

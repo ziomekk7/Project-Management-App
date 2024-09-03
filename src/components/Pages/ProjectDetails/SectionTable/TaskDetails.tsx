@@ -81,7 +81,13 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
       document.title = `${currentProjectName} Management`;
     };
   }, [task]);
-  console.log(task);
+  const modules = {
+    toolbar: [
+      [{ header: [1, 2, false] }],
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+    ],
+  };
 
   return (
     <>
@@ -146,7 +152,13 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                   />
                 </Stack>
               </Flex>
-              <ReactQuill value={inputValue || ""} onChange={setInputValue} />
+              <div>
+                <ReactQuill
+                  value={inputValue || ""}
+                  onChange={setInputValue}
+                  modules={modules}
+                />
+              </div>
             </Stack>
           </DrawerBody>
         </DrawerContent>

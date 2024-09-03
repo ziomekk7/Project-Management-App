@@ -35,7 +35,6 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
       zIndex={1}
       top={0}
       background="gray.800"
-      _hover={{ ".hiddenButton": { opacity: 1 } }}
       className="HeaderBox"
     >
       <Stack
@@ -45,6 +44,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         spacing={8}
         w="100%"
         justifyContent="space-between"
+        _hover={{ ".hiddenButton": { opacity: 1 } }}
       >
         <Stack direction="row">
           <Heading as="h1" size="lg">
@@ -69,7 +69,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           onClick={burgerMenuDrafter.onOpen}
         />
       </Stack>
-      <Box >
+      <Box>
         <Button onClick={() => onChangeView("list")} m={2} variant="link">
           Table View
         </Button>

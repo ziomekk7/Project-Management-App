@@ -4,16 +4,8 @@ import { Box, Card, CardBody, Stack } from "@chakra-ui/react";
 import { EditNameInput } from "../../EditNameInput";
 import PriorityForm from "../../../PriorityForm/PriorityForm";
 import DatePicker from "../../../SectionTable/DatePicker/DatePicker";
-import { TaskPriority } from "../../../../../../types/types";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
-const PRIORITY_LABELS: Record<TaskPriority, string> = {
-  [TaskPriority.HIGH]: "High",
-  [TaskPriority.MEDIUM]: "Medium",
-  [TaskPriority.LOW]: "Low",
-  [TaskPriority.NONE]: "---",
-};
 
 type TaskCardBoardProps = {
   sectionId: string;
@@ -52,20 +44,25 @@ const TaskCardBoard: React.FC<TaskCardBoardProps> = ({
       key={task.id.toString()}
       onClick={() => onOpenTaskDetails(task.id, sectionId)}
     >
-      <Card border="1px" mb={2} borderColor="gray.600">
+      <Card
+        border="1px"
+        mb={2}
+        borderColor="gray.700"
+        backgroundColor="#1e2533"
+        _hover={{ borderColor: "gray.600" }}
+      >
         <CardBody>
-          <EditNameInput task={task} onEditTask={onEditTask} />
           <Stack>
-            <PriorityForm
-              onChangePriority={(priority) => {
-                onEditTask({
-                  ...task,
-                  priority: priority,
-                });
-              }}
-              selectedPriority={task.priority}
-            />
-            {PRIORITY_LABELS[task.priority]}
+              <EditNameInput task={task} onEditTask={onEditTask} />
+              <PriorityForm
+                onChangePriority={(priority) => {
+                  onEditTask({
+                    ...task,
+                    priority: priority,
+                  });
+                }}
+                selectedPriority={task.priority}
+              />
             <DatePicker
               taskDate={task.date}
               selectedDate={selectedDate ? selectedDate : null}

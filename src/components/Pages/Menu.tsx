@@ -83,6 +83,7 @@ const Menu: React.FC<MenuProps> = ({ onClose }) => {
 
             {projectsQuery.data.map((project) => (
               <Button
+                mt={1}
                 overflow="hidden"
                 whiteSpace="nowrap"
                 textOverflow="ellipsis"
