@@ -25,6 +25,7 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { DeleteModal } from "../DeleteModal/DeleteModal";
 import { ChangeTaskLocationData } from "../../../../api/projectsApi";
+import { borderColor } from "../../../../config";
 
 type TaskRowProps = {
   onChangePriority: (task: Task) => void;
@@ -74,7 +75,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
     md: { display: "flex", templateColumns: "4fr 1fr 1fr" },
     lg: { display: "flex", templateColumns: "4fr 1fr 1fr" },
   });
-  const borderColor = "gray.700";
+
   const style = {
     transition,
     transform: CSS.Translate.toString(transform),
@@ -124,7 +125,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
         </Stack>
         <Flex>
           <Menu>
-            <Tooltip label="Move task to another section">
+            <Tooltip label="Move between sections">
               <MenuButton
                 className="hiddenButton"
                 opacity={0}
@@ -135,7 +136,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
               />
             </Tooltip>
             <MenuList>
-              <MenuGroup title="Move task to section:">
+              <MenuGroup title="Move between sections">
                 {sections.map((section) => (
                   <MenuItem
                     key={section.id}
@@ -155,7 +156,9 @@ const TaskRow: React.FC<TaskRowProps> = ({
           </Menu>
           <Tooltip label="Task details">
             <IconButton
-              onClick={(e) =>{ onOpenTaskDetails(task.id), e.stopPropagation()}}
+              onClick={(e) => {
+                onOpenTaskDetails(task.id), e.stopPropagation();
+              }}
               className="hiddenButton"
               opacity={0}
               aria-label="Search database"

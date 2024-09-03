@@ -12,7 +12,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   });
 
   return (
-    <Grid w="100%" h="100%" templateColumns="200px 1fr ">
+    <Grid w="100%" h="100%" templateColumns="200px 1fr " position="relative">
       <GridItem
         display={menuStyles}
         gridColumnStart={1}
@@ -23,8 +23,8 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
         <Menu />
       </GridItem>
       <GridItem
-        overflow="auto"
         css={CustomScrollbar}
+        overflow="auto"
         gridColumnStart={bodyStyles}
         gridColumnEnd={3}
         gridRowStart={1}

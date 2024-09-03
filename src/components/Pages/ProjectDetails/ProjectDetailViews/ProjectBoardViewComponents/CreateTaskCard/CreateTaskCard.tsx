@@ -28,7 +28,7 @@ export const CreateTaskCard: React.FC<CreateTaskCardProps> = ({
           setAutoFocus={true}
         />
       ) : (
-        <Button onClick={() => setIsHideCreateTaskForm(true)}>
+        <Button onClick={() => setIsHideCreateTaskForm(true)} backgroundColor="gray.700">
           Create Task
         </Button>
       )}

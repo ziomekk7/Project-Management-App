@@ -25,10 +25,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
   return (
     <>
       <Button
-        w={120}
+        size="sm"
+        w={24}
         variant="ghost"
         onClick={(e) => {
-          datePickerModal.onOpen(), e.stopPropagation()
+          datePickerModal.onOpen(), e.stopPropagation();
         }}
       >
         {taskDate ? (

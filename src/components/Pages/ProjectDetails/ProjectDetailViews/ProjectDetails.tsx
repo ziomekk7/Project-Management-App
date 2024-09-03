@@ -11,9 +11,9 @@ import {
   useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
-import { CustomScrollbar, showMd } from "../../../../config";
 import { useEffect } from "react";
 import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
+import { showMd } from "../../../../config";
 // import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
 
 const ProjectDetails = () => {
@@ -57,8 +57,8 @@ const ProjectDetails = () => {
   }
   return (
     <RootLayout>
-      <Container maxW="container.xl" height="100vh">
-        <Flex direction="column" height="100%">
+      <Container maxW="container.xxl" height="100vh">
+        <Flex direction="column" height="100%" >
           <Box flex="none" top={0} position="sticky" zIndex={1}>
             <ProjectHeader
               onChangeView={projectDetailsPage.handleChangeView}
@@ -66,13 +66,13 @@ const ProjectDetails = () => {
               project={projectDetailsPage.project}
             />
             {projectDetailsPage.selectedView === "list" && (
-              <Box display={hideOnSmallResolutions} >
+              <Box display={hideOnSmallResolutions}>
                 <ExampleTaskRow />
               </Box>
             )}
           </Box>
 
-          <Box flex="1" css={CustomScrollbar}>
+          <Box flex="1" >
             {projectDetailsPage.selectedView === "list" ? (
               <ProjectDetailListView
                 {...commonProps}

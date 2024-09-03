@@ -52,13 +52,14 @@ const CreateTaskForm: FC<CreateTaskFormProps> = ({
               {...register("newTask")}
               placeholder="My new task "
               autoFocus
-            ></Input>
+            />
           ) : (
-            <Input {...register("newTask")} placeholder="My new task "></Input>
+            <Input {...register("newTask")} placeholder="My new task " />
           )}
         </InputGroup>
         {errors.newTask?.message && <Text>{errors.newTask?.message}</Text>}
       </form>
+      <input width="100px" type="text" id="name" name="name" required />
     </Stack>
   );
 };

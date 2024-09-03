@@ -31,14 +31,15 @@ export const CustomScrollbar = {
     background: "#84749f",
   },
 };
+export const borderColor = "#2D3748";
 
 export const showMd = {
   base: "none",
   md: "block",
   lg: "block",
-}
-export const hideMd ={
+};
+export const hideMd = {
   base: "block",
   md: "none",
   lg: "none",
-}
+};
