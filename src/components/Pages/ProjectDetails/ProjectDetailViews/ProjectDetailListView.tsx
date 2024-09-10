@@ -1,4 +1,4 @@
-import { Box, Button, Stack} from "@chakra-ui/react";
+import { Box, Button, Stack, useBreakpointValue } from "@chakra-ui/react";
 import CreateSectionForm from "../CreateSectionForm/CreateSectionForm";
 import { Project, Section, Task } from "../../../../types/types";
 import { AddIcon } from "@chakra-ui/icons";
@@ -18,7 +18,8 @@ import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable";
 import { ProjectListBox } from "./ProjectListViewComponents/ProjectListBox";
 import { createPortal } from "react-dom";
 import TaskRow from "../SectionTable/TaskRow";
-import { CustomScrollbar } from "../../../../config";
+import { CustomScrollbar, showMd } from "../../../../config";
+import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
 
 type ProjectDetailListViewProps = {
   onEditTask: (task: Task) => void;
@@ -73,6 +74,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
     },
   });
   const sensors = useSensors(sensor);
+  const hideOnSmallResolutions = useBreakpointValue(showMd);
 
   const renderDragOverlay = () => {
     if (!project) return;
@@ -128,61 +130,71 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
     return;
   }
   return (
-    <Stack css={CustomScrollbar} overflow="auto" gap={0}>
-      <DndContext
-        sensors={sensors}
-        onDragOver={onDragOver}
-        onDragStart={onDragStart}
-        onDragEnd={(e) => {
-          onDragEnd(e), onChangeObjectLocation(e);
-        }}
-        collisionDetection={closestCorners}
-      >
-        <SortableContext
-          strategy={rectSortingStrategy}
-          items={project.sections.map((section) => section.id)}
+    <>
+      <Stack css={CustomScrollbar} overflow="auto" gap={0} h="100%">
+        <DndContext
+          sensors={sensors}
+          onDragOver={onDragOver}
+          onDragStart={onDragStart}
+          onDragEnd={(e) => {
+            onDragEnd(e), onChangeObjectLocation(e);
+          }}
+          collisionDetection={closestCorners}
         >
-          {project.sections.map((section) => (
-            <ProjectListBox
-              activeTask={activeTask}
-              activeSection={activeSection}
-              onChangeTaskLocation={onChangeTaskLocation}
-              sections={project.sections}
-              key={section.id}
-              section={section}
-              onCreateTask={onCreateTask}
-              onDeleteSection={onDeleteSection}
-              hiddenSections={hiddenSections}
-              onEditTask={onEditTask}
-              onDeleteTask={onDeleteTask}
-              onDuplicateTask={onDuplicateTask}
-              onOpenTaskDetails={onOpenTaskDetails}
-              onHideSectionId={onHideSectionId}
-            />
-          ))}
-        </SortableContext>
-        {createPortal(renderDragOverlay(), document.body)}
-      </DndContext>
-      <Stack p={4} w="md">
-        {isCreateSectionFormVisible ? (
-          <CreateSectionForm
-            isCreatingSection={isCreatingSection}
-            onClose={() => onCloseCreateSectionForm()}
-            onCreateSection={(name) => onCreateSection(name)}
-          />
-        ) : !isCreatingSection ? (
-          <Box>
-            <Button
-              leftIcon={<AddIcon />}
-              variant="outline"
-              onClick={() => onOpenCreateSectionForm()}
+          <SortableContext
+            strategy={rectSortingStrategy}
+            items={project.sections.map((section) => section.id)}
+          >
+            <Box
+              position="sticky"
+              top={0}
+              display={hideOnSmallResolutions}
+              zIndex={1}
             >
-              Create Section
-            </Button>
-          </Box>
-        ) : null}
+              <ExampleTaskRow />
+            </Box>
+            {project.sections.map((section) => (
+              <ProjectListBox
+                activeTask={activeTask}
+                activeSection={activeSection}
+                onChangeTaskLocation={onChangeTaskLocation}
+                sections={project.sections}
+                key={section.id}
+                section={section}
+                onCreateTask={onCreateTask}
+                onDeleteSection={onDeleteSection}
+                hiddenSections={hiddenSections}
+                onEditTask={onEditTask}
+                onDeleteTask={onDeleteTask}
+                onDuplicateTask={onDuplicateTask}
+                onOpenTaskDetails={onOpenTaskDetails}
+                onHideSectionId={onHideSectionId}
+              />
+            ))}
+          </SortableContext>
+          {createPortal(renderDragOverlay(), document.body)}
+        </DndContext>
+        <Stack p={4} w="md">
+          {isCreateSectionFormVisible ? (
+            <CreateSectionForm
+              isCreatingSection={isCreatingSection}
+              onClose={() => onCloseCreateSectionForm()}
+              onCreateSection={(name) => onCreateSection(name)}
+            />
+          ) : !isCreatingSection ? (
+            <Box>
+              <Button
+                leftIcon={<AddIcon />}
+                variant="outline"
+                onClick={() => onOpenCreateSectionForm()}
+              >
+                Create Section
+              </Button>
+            </Box>
+          ) : null}
+        </Stack>
       </Stack>
-    </Stack>
+    </>
   );
 };
 
