@@ -112,7 +112,12 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
       }}
       collisionDetection={closestCorners}
     >
-      <Stack direction="row" overflow="auto" h="100%" css={CustomScrollbar}>
+      <Stack
+        direction="row"
+        css={CustomScrollbar}
+        h="100%"
+        className="projectDetailBoardView"
+      >
         {project && (
           <SortableContext
             strategy={rectSortingStrategy}

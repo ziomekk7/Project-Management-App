@@ -7,13 +7,12 @@ import ProjectDetailBoardView from "./ProjectBoardViewComponents/ProjectDetailBo
 import {
   Box,
   Container,
-  Flex,
-  useBreakpointValue,
+  Grid,
+  GridItem,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
-import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
-import { showMd } from "../../../../config";
+import { useEffect, useRef } from "react";
+import { CustomScrollbar } from "../../../../config";
 // import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
 
 const ProjectDetails = () => {
@@ -28,7 +27,8 @@ const ProjectDetails = () => {
       document.title = "Management";
     };
   }, [projectDetailsPage?.project]);
-  const hideOnSmallResolutions = useBreakpointValue(showMd);
+  const elementRef = useRef<HTMLDivElement | null>(null);
+  console.log(elementRef.current?.offsetHeight);
 
   if (!projectDetailsPage) return;
   const commonProps = {
@@ -57,50 +57,47 @@ const ProjectDetails = () => {
   }
   return (
     <RootLayout>
-      <Container maxW="container.xxl" height="100vh">
-        <Flex direction="column" height="100%" >
-          <Box flex="none" top={0} position="sticky" zIndex={1}>
+      <Container maxW="container.xxl" h="100vh">
+        <Grid templateRows="auto 1fr" h="100%">
+          <GridItem top={0} position="sticky" zIndex={1}>
             <ProjectHeader
               onChangeView={projectDetailsPage.handleChangeView}
               onDeleteProject={projectDetailsPage.handleDeleteProject}
               project={projectDetailsPage.project}
             />
-            {projectDetailsPage.selectedView === "list" && (
-              <Box display={hideOnSmallResolutions}>
-                <ExampleTaskRow />
-              </Box>
-            )}
-          </Box>
-
-          <Box flex="1" >
+          </GridItem>
+          <GridItem className="gridItem" overflow="auto" css={CustomScrollbar}>
             {projectDetailsPage.selectedView === "list" ? (
-              <ProjectDetailListView
-                {...commonProps}
-                onDuplicateTask={projectDetailsPage.handleCreateTask}
-                hiddenSections={projectDetailsPage.hiddenSections}
-                onDeleteTask={projectDetailsPage.handleDeleteTask}
-                onHideSectionId={projectDetailsPage.handleHideSection}
-              />
+              <Box h="100%" overflowY="auto" css={CustomScrollbar}>
+                <ProjectDetailListView
+                  {...commonProps}
+                  onDuplicateTask={projectDetailsPage.handleCreateTask}
+                  hiddenSections={projectDetailsPage.hiddenSections}
+                  onDeleteTask={projectDetailsPage.handleDeleteTask}
+                  onHideSectionId={projectDetailsPage.handleHideSection}
+                />
+              </Box>
             ) : (
               <ProjectDetailBoardView {...commonProps} />
             )}
-          </Box>
-          {projectDetailsPage.openTask &&
-            projectDetailsPage.openTaskDetailLocation && (
-              <TaskDetails
-                onClose={projectDetailsPage.handleCloseTaskDetails}
-                isOpenMenu={projectDetailsPage.taskDetailsDrawer.isOpen}
-                taskDate={projectDetailsPage.openTask.date}
-                selectedDate={projectDetailsPage.selectedDate}
-                onDuplicateTask={projectDetailsPage.handleCreateTask}
-                onEditTask={projectDetailsPage.handleEditTask}
-                onOpenDeleteModal={deleteTaskModal.onOpen}
-                onDeleteTask={projectDetailsPage.handleDeleteTask}
-                selectedPriority={projectDetailsPage.openTask.priority}
-                task={projectDetailsPage.openTask}
-              />
-            )}
-        </Flex>
+          </GridItem>
+        </Grid>
+
+        {projectDetailsPage.openTask &&
+          projectDetailsPage.openTaskDetailLocation && (
+            <TaskDetails
+              onClose={projectDetailsPage.handleCloseTaskDetails}
+              isOpenMenu={projectDetailsPage.taskDetailsDrawer.isOpen}
+              taskDate={projectDetailsPage.openTask.date}
+              selectedDate={projectDetailsPage.selectedDate}
+              onDuplicateTask={projectDetailsPage.handleCreateTask}
+              onEditTask={projectDetailsPage.handleEditTask}
+              onOpenDeleteModal={deleteTaskModal.onOpen}
+              onDeleteTask={projectDetailsPage.handleDeleteTask}
+              selectedPriority={projectDetailsPage.openTask.priority}
+              task={projectDetailsPage.openTask}
+            />
+          )}
       </Container>
     </RootLayout>
   );

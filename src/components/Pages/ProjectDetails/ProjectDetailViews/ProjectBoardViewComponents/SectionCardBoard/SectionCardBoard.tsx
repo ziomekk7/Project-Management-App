@@ -94,7 +94,7 @@ const SectionCardBoard: React.FC<SectionCardBoardProps> = ({
           </Tooltip>
         </Stack>
         <Stack
-          overflow="auto"
+          overflowY="auto"
           css={CustomScrollbar}
           flexDirection="column"
           alignItems="center"
