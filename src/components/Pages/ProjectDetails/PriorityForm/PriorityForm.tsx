@@ -33,25 +33,21 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
         {PRIORITY_LABELS[selectedPriority]}
       </MenuButton>
 
-      <MenuList overflow="hidden" p={2} maxW={36} minW={36}>
+      <MenuList overflow="hidden" p={2} maxW="120px" minW="120px">
         {Object.values(TaskPriority).map((priority) => (
           <MenuItem
-            mb={2}
             key={priority}
-            _hover={{ bg: "none" }}
-            // as={Button}
+            mb={2}
+            w={24}
+            bg={PRIORITY_COLORS[priority]}
+            _hover={{ bg: PRIORITY_COLORS_HOVER[priority] }}
+            onClick={() => onChangePriority(priority)}
+            h="30px"
+            borderRadius="5px"
+            display="flex"
+            justifyContent="center"
           >
-            <Button
-              size="sm"
-              w={24}
-              bg={PRIORITY_COLORS[priority]}
-              _hover={{ bg: PRIORITY_COLORS_HOVER[priority] }}
-              onClick={() => {
-                onChangePriority(priority);
-              }}
-            >
-              {PRIORITY_LABELS[priority]}
-            </Button>
+            {PRIORITY_LABELS[priority]}
           </MenuItem>
         ))}
       </MenuList>
