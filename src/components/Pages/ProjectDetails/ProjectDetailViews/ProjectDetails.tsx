@@ -11,9 +11,8 @@ import {
   GridItem,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { CustomScrollbar } from "../../../../config";
-// import ExampleTaskRow from "../SectionTable/ExampleTaskRow";
 
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
@@ -27,8 +26,6 @@ const ProjectDetails = () => {
       document.title = "Management";
     };
   }, [projectDetailsPage?.project]);
-  const elementRef = useRef<HTMLDivElement | null>(null);
-  console.log(elementRef.current?.offsetHeight);
 
   if (!projectDetailsPage) return;
   const commonProps = {
@@ -43,7 +40,7 @@ const ProjectDetails = () => {
     onCloseCreateSectionForm: projectDetailsPage.handleCloseCreateSectionForm,
     onEditTask: projectDetailsPage.handleEditTask,
     onChangeObjectLocation: projectDetailsPage.handleDragEnd,
-    onChangeSectionLocation: projectDetailsPage.handleChangeSectionLocation,
+    // onChangeSectionLocation: projectDetailsPage.handleChangeSectionLocation,
     onChangeTaskLocation: projectDetailsPage.handleChangeTaskLocation,
     onDragOver: projectDetailsPage.handleDragOver,
     onDragStart: projectDetailsPage.handleDragStart,
@@ -66,7 +63,7 @@ const ProjectDetails = () => {
               project={projectDetailsPage.project}
             />
           </GridItem>
-          <GridItem className="gridItem" overflow="auto" css={CustomScrollbar}>
+          <GridItem overflow="auto" css={CustomScrollbar}>
             {projectDetailsPage.selectedView === "list" ? (
               <Box h="100%" overflowY="auto" css={CustomScrollbar}>
                 <ProjectDetailListView

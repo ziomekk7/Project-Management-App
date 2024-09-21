@@ -116,7 +116,6 @@ const ProjectDetailBoardView: React.FC<ProjectDetailBoardViewProps> = ({
         direction="row"
         css={CustomScrollbar}
         h="100%"
-        className="projectDetailBoardView"
       >
         {project && (
           <SortableContext

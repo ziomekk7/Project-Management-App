@@ -35,7 +35,6 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
       zIndex={1}
       top={0}
       background="gray.800"
-      className="HeaderBox"
     >
       <Stack
         pt={2}

@@ -88,7 +88,7 @@ const checkFirstLogg = async () => {
 
 checkFirstLogg();
 
-const saveProjects = async (projects: Project[]) => {
+export const saveProjects = async (projects: Project[]) => {
   try {
     localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
   } catch (error) {
@@ -243,48 +243,11 @@ export const deleteProject = async (data: DeleteProjectData) => {
   await saveProjects(projects);
 };
 
-export const changeSectionLocation = async (
-  data: ChangeSectionLocationData
-) => {
+export const changeLocation = async (data: Project) => {
   const projects = await getProjects();
-  const projectIndex = projects.findIndex((project) =>
-    project.sections.find((section) => section.id === data.sectionId)
+  const editedProjectIndex = projects.findIndex(
+    (project) => project.id === data.id
   );
-  const sectionIndex = projects[projectIndex].sections.findIndex(
-    (section) => section.id === data.sectionId
-  );
-  const section = projects[projectIndex].sections[sectionIndex];
-  projects[projectIndex].sections.splice(sectionIndex, 1);
-  projects[projectIndex].sections.splice(data.destination, 0, section);
-  await saveProjects(projects);
-};
-
-export const changeTaskLocation = async (data: ChangeTaskLocationData) => {
-  const projects = await getProjects();
-  const projectIndex = projects.findIndex((project) =>
-    project.sections.find((section) =>
-      section.tasks.find((task) => task.id === data.taskId)
-    )
-  );
-  const courseSectionIndex = projects[projectIndex].sections.findIndex(
-    (section) => section.tasks.find((task) => task.id === data.taskId)
-  );
-  const destinationSectionIndex = projects[projectIndex].sections.findIndex(
-    (section) => section.id === data.destinationSectionId
-  );
-  const taskSourceIndex = projects[projectIndex].sections[
-    courseSectionIndex
-  ].tasks.findIndex((task) => task.id === data.taskId);
-  const task =
-    projects[projectIndex].sections[courseSectionIndex].tasks[taskSourceIndex];
-  projects[projectIndex].sections[courseSectionIndex].tasks.splice(
-    taskSourceIndex,
-    1
-  );
-  projects[projectIndex].sections[destinationSectionIndex].tasks.splice(
-    data.destinationIndex,
-    0,
-    task
-  );
+  projects.splice(editedProjectIndex, 1, data);
   await saveProjects(projects);
 };
