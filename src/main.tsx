@@ -9,10 +9,8 @@ import theme from './theme.ts'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 	<ChakraProvider theme={theme}>
-		{/* <React.StrictMode> */}
 			<BrowserRouter>
 				<App />
 			</BrowserRouter>
-		{/* </React.StrictMode> */}
 	</ChakraProvider>
 )

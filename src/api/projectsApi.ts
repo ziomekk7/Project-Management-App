@@ -2,6 +2,7 @@ import { Project } from "../types/types";
 import * as z from "zod";
 import { Task, TaskPriority } from "../types/types";
 import { exampleProject } from "../components/UI/Icons/ExpampleProject";
+import { delay } from "../utils/asyns";
 
 export type CreateProjectData = {
   newProject: string;
@@ -89,6 +90,7 @@ const checkFirstLogg = async () => {
 checkFirstLogg();
 
 export const saveProjects = async (projects: Project[]) => {
+  await delay(2000);
   try {
     localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
   } catch (error) {
@@ -97,6 +99,7 @@ export const saveProjects = async (projects: Project[]) => {
 };
 
 export const getProjects = async (): Promise<Project[]> => {
+  await delay(2000);
   const rawProjects = localStorage.getItem(PROJECTS_KEY);
   if (!rawProjects) {
     return [];

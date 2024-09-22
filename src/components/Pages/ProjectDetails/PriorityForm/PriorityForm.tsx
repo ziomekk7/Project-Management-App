@@ -41,7 +41,9 @@ const PriorityForm: React.FC<PriorityFormProps> = ({
             w={24}
             bg={PRIORITY_COLORS[priority]}
             _hover={{ bg: PRIORITY_COLORS_HOVER[priority] }}
-            onClick={() => onChangePriority(priority)}
+            onClick={(e) => {
+              onChangePriority(priority), e.stopPropagation();
+            }}
             h="30px"
             borderRadius="5px"
             display="flex"
