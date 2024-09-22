@@ -55,7 +55,7 @@ const InstructionCard: React.FC<InstructionCardProps> = ({ src, context }) => {
           <Box>
             <Image src={src} />
             <Divider />
-            <Text>{context}</Text>
+            <Text mt={3}>{context}</Text>
           </Box>
         </Stack>
       </CardBody>
@@ -154,9 +154,9 @@ export const MainPage = () => {
             onClick={burgerMenuDrafter.onOpen}
           />
         </Stack>
-        <Card>
+        <Card m={2}>
           <CardBody>
-            <Heading as="h2" size="lg">
+            <Heading as="h2" size="lg" pt={2} pb={2}>
               Inspiration
             </Heading>
             <Text>
@@ -177,51 +177,51 @@ export const MainPage = () => {
             </Text>
           </CardBody>
         </Card>
-        <Card>
+        <Card m={2}>
           <CardBody>
             {" "}
-            <Heading as="h2" size="lg">
+            <Heading as="h2" size="lg" pt={2} pb={2}>
               Technologies
             </Heading>
             <UnorderedList>
               <ListItem>
-                <Stack flexDirection="row" alignItems="center">
+                <Stack flexDirection="row" alignItems="center" mt={1}>
                   <Image w={4} h={4} src={react} />
                   <Text>react-query: 5</Text>
                 </Stack>
               </ListItem>
               <ListItem>
-                <Stack flexDirection="row" alignItems="center">
+                <Stack flexDirection="row" alignItems="center" mt={1}>
                   <Image w={4} h={4} src={dnd} />
                   <Text>dnd-kit/core: 6</Text>
                 </Stack>
               </ListItem>
               <ListItem>
-                <Stack flexDirection="row" alignItems="center">
+                <Stack flexDirection="row" alignItems="center" mt={1}>
                   <Image w={4} h={4} src={chakraUi} />
                   <Text>chakra-ui: 2</Text>
                 </Stack>
               </ListItem>
-              <ListItem>react-quill: 2.0</ListItem>
-              <ListItem>uuid: 9.0</ListItem>
-              <ListItem>zod: 3.22</ListItem>
-              <ListItem>resolvers: 3.3</ListItem>
+              <ListItem mt={1}>react-quill: 2.0</ListItem>
+              <ListItem mt={1}>uuid: 9.0</ListItem>
+              <ListItem mt={1}>zod: 3.22</ListItem>
+              <ListItem mt={1}>resolvers: 3.3</ListItem>
             </UnorderedList>
           </CardBody>
         </Card>
-        <Card>
+        <Card m={2}>
           <CardBody>
             {" "}
-            <Heading as="h2" size="lg">
+            <Heading as="h2" size="lg" pt={2} pb={2}>
               How to use
             </Heading>
             <Accordion defaultIndex={[0]} allowMultiple>
               {instructionData.map((item, index) => (
-                <AccordionItem key={index}>
+                <AccordionItem key={index} m={2}>
                   <h2>
                     <AccordionButton>
                       <Box as="span" flex="1" textAlign="left">
-                        <Heading as="h3" size="md">
+                        <Heading as="h3" size="md" pt={1} pb={1}>
                           {item.name}
                         </Heading>
                       </Box>
