@@ -21,14 +21,11 @@ By drawing inspiration from Asana, I wanted to create a tool that is helpful for
 
 Project is created with:
 
-- react-query: 5.0,
-- chakra-ui: 2.8,
-- dnd-kit/core: 6.1,
-- formik: 2.4,
-- react-quill: 2.0,
-- uuid: 9.0,
-- zod: 3.22,
-- resolvers: 3.3,
+- <img src="./src//images/laptop.png" alt="My Icon" width="20" height="20"> react-query: 5.0,
+- <img src="./src//images/chakraUi.png" alt="My Icon" width="20" height="20"> chakra-ui: 2.8,
+- <img src="./src//images/dnd.png" alt="My Icon" width="20" height="20"> dnd-kit/core: 6.1,
+- <img src="./src//images/quill.png" alt="My Icon" width="20" height="20"> react-quill: 2.0,
+- <img src="./src//images/zod.png" alt="My Icon" width="20" height="20"> zod: 3.22,
 
 ## How to use
 
