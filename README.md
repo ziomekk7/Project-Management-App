@@ -46,7 +46,7 @@ To delete a project, click the menu button (5) near the project name and press t
 You can use two views. To change the view, you have to click on the chosen view (4).
 
 
-
+___
 ### Section
 
 ![screen](./src/images/editSection1.jpg)
@@ -54,15 +54,13 @@ You can use two views. To change the view, you have to click on the chosen view 
 To delete a section, press the button (1) and click 'Delete Section.' In list view, you can hide/show the tasks list by pressing button (2).
 
 
-
-
+___
 ![screen](./src/images/moveSection1.jpg)
 
 To change the order of sections, grab the button (1), move the section to the desired place, and then drop it.
 
 
-
-
+___
 ### Task
 
 ![screen](./src/images/createEditTaskListView1.jpg)
@@ -74,8 +72,7 @@ To set the execution date, press button (6). In the execution date window (7), c
 To set the priority, click button (8) and choose the priority in the priority menu (9).
 
 
-
-
+___
 ![screen](./src/images/createEditTaskBoardView1.jpg)
 
 Click on the input (1), enter the task name, and press Enter. To delete a task, press the button (2), to change an existing task name, just click on the task name (3) and edit it.
@@ -83,15 +80,13 @@ To set the execution date, press button (4). In the execution date window (5), c
 To set the priority, click button (6) and choose the priority in the priority menu (7). Click on the task card (8) to open task details.
 
 
-
-
+___
 ![screen](./src/images/moveTask1.jpg)
 
 To change the order of tasks, grab the button (1), move it to the desired place, and then drop it. You can also move a task to another section.
 
 
-
-
+___
 ### Task Details
 
 ![screen](./src/images/taskDetails1.jpg)
