@@ -1,5 +1,4 @@
 import ProjectDetailListView from "./ProjectDetailListView";
-import { useProjectDetailsPage } from "../../../Hooks/useProjectDetailsPage";
 import TaskDetails from "../SectionTable/TaskDetails";
 import ProjectHeader from "./ProjectHeader/ProjectHeader";
 import ProjectDetailBoardView from "./ProjectBoardViewComponents/ProjectDetailBoardView";
@@ -12,6 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { CustomScrollbar } from "../../../../config";
+import { useProjectDetailsPage } from "../../../Hooks/useProjectDetailsPage";
 
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
