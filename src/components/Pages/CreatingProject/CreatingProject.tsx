@@ -21,7 +21,6 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { v4 as uuidv4 } from "uuid";
-import RootLayout from "../../Roots/RootLayout";
 import { hideMd } from "../../../config";
 import MenuDrawer from "../MenuDrawer";
 import { HamburgerIcon } from "@chakra-ui/icons";
@@ -69,60 +68,56 @@ const CreatingProject = () => {
   };
 
   return (
-    <RootLayout>
-      <Container>
-        <Stack direction="column">
-          <Stack direction="row-reverse">
-            <IconButton
-              w={4}
-              display={burgerButtonStyle}
-              aria-label="Open burger menu"
-              icon={<HamburgerIcon />}
-              onClick={burgerMenuDrafter.onOpen}
-            />
-          </Stack>
-          <form
-            onSubmit={handleSubmit((data) => {
-              handleCreateProject(data.newProject);
-            })}
-          >
-            <Flex direction="column" maxW={80} m={1}>
-              <FormControl isInvalid={!!errors.newProject}>
-                <FormLabel htmlFor="newProject">
-                  <Text fontSize="4xl">New Project</Text>
-                </FormLabel>
-                <Input
-                  w="100%"
-                  {...register("newProject")}
-                  id="newProject"
-                  placeholder="My first project"
-                  autoFocus
-                />
-                {errors.newProject && (
-                  <FormErrorMessage>
-                    {errors.newProject.message}
-                  </FormErrorMessage>
-                )}
-              </FormControl>
-            </Flex>
-            <Button
-              maxW={80}
-              w="100%"
-              variant="outline"
-              isLoading={createProjectMutation.isPending}
-              type="submit"
-              m={1}
-            >
-              Create
-            </Button>
-          </form>
+    <Container>
+      <Stack direction="column">
+        <Stack direction="row-reverse">
+          <IconButton
+            w={4}
+            display={burgerButtonStyle}
+            aria-label="Open burger menu"
+            icon={<HamburgerIcon />}
+            onClick={burgerMenuDrafter.onOpen}
+          />
         </Stack>
-        <MenuDrawer
-          onClose={burgerMenuDrafter.onClose}
-          isOpen={burgerMenuDrafter.isOpen}
-        />
-      </Container>
-    </RootLayout>
+        <form
+          onSubmit={handleSubmit((data) => {
+            handleCreateProject(data.newProject);
+          })}
+        >
+          <Flex direction="column" maxW={80} m={1}>
+            <FormControl isInvalid={!!errors.newProject}>
+              <FormLabel htmlFor="newProject">
+                <Text fontSize="4xl">New Project</Text>
+              </FormLabel>
+              <Input
+                w="100%"
+                {...register("newProject")}
+                id="newProject"
+                placeholder="My first project"
+                autoFocus
+              />
+              {errors.newProject && (
+                <FormErrorMessage>{errors.newProject.message}</FormErrorMessage>
+              )}
+            </FormControl>
+          </Flex>
+          <Button
+            maxW={80}
+            w="100%"
+            variant="outline"
+            isLoading={createProjectMutation.isPending}
+            type="submit"
+            m={1}
+          >
+            Create
+          </Button>
+        </form>
+      </Stack>
+      <MenuDrawer
+        onClose={burgerMenuDrafter.onClose}
+        isOpen={burgerMenuDrafter.isOpen}
+      />
+    </Container>
   );
 };
 

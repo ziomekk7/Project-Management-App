@@ -79,6 +79,7 @@ export const useProjectDetailsPage = () => {
     },
   });
 
+  
   const createProjectSectionMutation = useMutation({
     mutationFn: createProjectSection,
     onMutate: async (data: CreateProjectSectionData) => {
@@ -445,8 +446,7 @@ export const useProjectDetailsPage = () => {
           setDragOverProject({ ...project, sections: updatedSections });
         }
       }
-    }
-    else if (activeType === "task" && overType === "section") {
+    } else if (activeType === "task" && overType === "section") {
       const activeSectionIndex = project.sections.findIndex((section) =>
         section.tasks.some((task) => task.id === activeId)
       );
@@ -481,8 +481,7 @@ export const useProjectDetailsPage = () => {
 
         setDragOverProject({ ...project, sections: updatedSections });
       }
-    }
-    else if (activeType === "section" && overType === "section") {
+    } else if (activeType === "section" && overType === "section") {
       const activeSectionIndex = project.sections.findIndex(
         (section) => section.id === activeId
       );
