@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect } from "react";
 import { CustomScrollbar } from "../../../../config";
-import { useProjectDetailsPage } from "../../../Hooks/useProjectDetailsPage";
+import { useProjectDetailsPage } from "../../../hooks/useProjectDetailsPage";
 
 const ProjectDetails = () => {
   const projectDetailsPage = useProjectDetailsPage();
