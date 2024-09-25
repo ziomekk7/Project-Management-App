@@ -1,5 +1,5 @@
 export const routes = {
-	home: () => '/',
+	home: () => '/',	
 	projects: {
 		create: () => '/project/create',
 		details: (params: { projectId: string }) => `/projects/${params.projectId}/details`,

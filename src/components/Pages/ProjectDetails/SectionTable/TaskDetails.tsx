@@ -105,7 +105,7 @@ const TaskDetails: React.FC<TaskDetailsProps> = ({
                   as={IconButton}
                   icon={<EllipsisHorizontal />}
                   variant="ghost"
-                  ml={1}
+                  ml={2}
                   mr={2}
                 />
                 <MenuList>

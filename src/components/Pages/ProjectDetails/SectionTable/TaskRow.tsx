@@ -127,6 +127,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
           <Menu>
             <Tooltip label="Move between sections">
               <MenuButton
+                mr={2}
                 className="hiddenButton"
                 opacity={0}
                 as={IconButton}
