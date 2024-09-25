@@ -1,5 +1,5 @@
 import { Stack, Button, Text, Image, Divider } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import { useQuery } from "@tanstack/react-query";
 import { queryKeys } from "../../queryKeys";
 import { getProjects } from "../../api/projectsApi";
@@ -48,6 +48,27 @@ const Menu: React.FC<MenuProps> = ({ onClose }) => {
         >
           <Image mr={2} src={homeIcon} alt="Home icon" boxSize="20px" />
           Home
+        </Link>
+      </Button>
+      <Button
+        w="90%"
+        justifyContent="left"
+        variant={location.pathname === routes.aboutApp() ? "solid" : "ghost"}
+        p={3}
+        mb={2}
+      >
+        <Link
+          style={{
+            display: "flex",
+            alignItems: "center",
+            width: "100%",
+            height: "100%",
+          }}
+          to={routes.aboutApp()}
+        >
+          <InfoOutlineIcon mr={2} />
+          {/* <Image mr={2} src={InfoOutlineIcon} alt="Home icon" boxSize="20px" /> */}
+          AboutApp
         </Link>
       </Button>
       <Button
@@ -104,9 +125,9 @@ const Menu: React.FC<MenuProps> = ({ onClose }) => {
                   to={routes.projects.details({ projectId: project.id })}
                   style={{
                     alignItems: "center",
+                    textAlign: "left",
                     width: "100%",
                     textOverflow: "ellipsis",
-                    textAlign: "left",
                     overflow: "hidden",
                     whiteSpace: "nowrap",
                   }}
