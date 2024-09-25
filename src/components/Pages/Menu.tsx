@@ -35,6 +35,7 @@ const Menu: React.FC<MenuProps> = ({ onClose }) => {
         mt={2}
         variant={location.pathname === routes.home() ? "solid" : "ghost"}
         p={3}
+        mb={2}
       >
         <Link
           style={{

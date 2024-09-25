@@ -23,18 +23,19 @@ import {
 } from "@chakra-ui/react";
 import { hideMd } from "../../../config";
 import MenuDrawer from "../MenuDrawer";
-import createProject from "../../../images/createProject.jpg";
-import createSection from "../../../images/createSection.jpg";
-import editSection from "../../../images/editSection.jpg";
-import moveSection from "../../../images/moveSection.jpg";
-import createTaskBoardView from "../../../images/createEditTaskBoardView.jpg";
-import createTaskListView from "../../../images/createEditTaskListView.jpg";
-import moveTask from "../../../images/moveTask.jpg";
-import taskDetails from "../../../images/taskDetails.jpg";
+import createProject from "../../../images/createProject1.jpg";
+import editSection from "../../../images/editSection1.jpg";
+import moveSection from "../../../images/moveSection1.jpg";
+import createTaskBoardView from "../../../images/createEditTaskBoardView1.jpg";
+import createTaskListView from "../../../images/createEditTaskListView1.jpg";
+import moveTask from "../../../images/moveTask1.jpg";
+import taskDetails from "../../../images/taskDetails1.jpg";
 import React, { useEffect } from "react";
 import dnd from "../../../images/dnd.png";
 import chakraUi from "../../../images/chakraUi.png";
 import react from "../../../images/laptop.png";
+import quill from "../../../images/quill.png";
+import zod from "../../../images/zod.png";
 
 type InstructionCardProps = {
   src: string;
@@ -77,19 +78,14 @@ export const MainPage = () => {
                 Next, enter the project name and press the "Create" button (2) or press Enter. 
                 The application will automatically redirect you to the new project. 
                 If you have more than one project, you can switch between them by selecting the project in the menu on the left side (3). 
-                To delete a project, click the menu button (4) near the project name and press the "Delete Project" button. 
-                You can use two views. To change the view, you have to click on the chosen view (5).`,
+                To delete a project, click the menu button (5) near the project name and press the "Delete Project" button. 
+                You can use two views. To change the view, you have to click on the chosen view (4).`,
         },
       ],
     },
     {
       name: "Section",
       instructions: [
-        {
-          src: createSection,
-          context:
-            "Click on the 'Create Section' button (1) and enter the section name (2).",
-        },
         {
           src: editSection,
           context:
@@ -109,15 +105,15 @@ export const MainPage = () => {
           src: createTaskListView,
           context: `Click on the input (1), enter the task name, and press Enter. To change an existing task name, just click on the task name (2) and edit it. 
                 To move a task to another section, click button (3), choose the section where the task should be sent (4), and click it. 
-                After clicking the button (5), you can delete the task (6) or open task details (7). 
-                To set the execution date, press button (8). In the execution date window (9), choose a date and click it. 
-                To set the priority, click button (10) and choose the priority in the priority menu (11).`,
+                After clicking the button (5), you can open task details. 
+                To set the execution date, press button (6). In the execution date window (7), choose a date and click it. 
+                To set the priority, click button (8) and choose the priority in the priority menu (9).`,
         },
         {
           src: createTaskBoardView,
-          context: `Click on the input (1), enter the task name, and press Enter. To change an existing task name, just click on the task name (2) and edit it. 
-                To set the execution date, press button (3). In the execution date window (4), choose a date and click it. 
-                To set the priority, click button (5) and choose the priority in the priority menu (6). Click on the task card (7) to open task details.`,
+          context: `Click on the input (1), enter the task name, and press Enter. To delete a task, press the button (2), to change an existing task name, just click on the task name (3) and edit it. 
+                To set the execution date, press button (4). In the execution date window (5), choose a date and click it. 
+                To set the priority, click button (6) and choose the priority in the priority menu (7). Click on the task card (8) to open task details.`,
         },
         {
           src: moveTask,
@@ -131,7 +127,7 @@ export const MainPage = () => {
       instructions: [
         {
           src: taskDetails,
-          context: `After clicking button (1), you can delete the task (2) or duplicate the task (3). 
+          context: `After clicking button (1), you can duplicate the task or delete the task (3). 
               To set the execution date, press button (4), and to set the priority, press button (5). 
               If you want to include a description, use the text editor (6). You don't need to press anything to save the description, just enter it. 
               In the task duplicate window, the first thing you can do is change the task name. To do this, press the input (7) with the suggested name and change it. 
@@ -202,10 +198,18 @@ export const MainPage = () => {
                   <Text>chakra-ui: 2</Text>
                 </Stack>
               </ListItem>
-              <ListItem mt={1}>react-quill: 2.0</ListItem>
-              <ListItem mt={1}>uuid: 9.0</ListItem>
-              <ListItem mt={1}>zod: 3.22</ListItem>
-              <ListItem mt={1}>resolvers: 3.3</ListItem>
+              <ListItem>
+                <Stack flexDirection="row" alignItems="center" mt={1}>
+                  <Image w={4} h={4} src={quill} />
+                  <Text>react-quill: 2.0</Text>
+                </Stack>
+              </ListItem>
+              <ListItem>
+                <Stack flexDirection="row" alignItems="center" mt={1}>
+                  <Image w={4} h={4} src={zod} />
+                  <Text>zod: 3.22</Text>
+                </Stack>
+              </ListItem>
             </UnorderedList>
           </CardBody>
         </Card>
