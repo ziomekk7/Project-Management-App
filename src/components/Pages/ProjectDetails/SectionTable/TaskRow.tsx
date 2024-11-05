@@ -95,6 +95,7 @@ const TaskRow: React.FC<TaskRowProps> = ({
 
   return (
     <Grid
+      w="100%"
       h={14}
       templateColumns={hideOnSmallResolutions?.templateColumns}
       borderBottom="1px solid "

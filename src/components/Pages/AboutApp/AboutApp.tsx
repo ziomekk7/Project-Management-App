@@ -140,7 +140,7 @@ export const AboutApp = () => {
   return (
     <Stack>
       <Container maxW="container.lg">
-        <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" justifyContent="space-between" mt={2}>
           <Heading as="h1">Atlas</Heading>
           <IconButton
             w={4}
