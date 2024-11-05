@@ -1,19 +1,34 @@
-import { Button, Card, Container, Image, Stack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Card,
+  Container,
+  IconButton,
+  Image,
+  Stack,
+  Text,
+  useBreakpointValue,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { queryKeys } from "../../../queryKeys";
 import { getProjects } from "../../../api/projectsApi";
-import { AddIcon } from "@chakra-ui/icons";
+import { AddIcon, HamburgerIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
 import { routes } from "../../../routes";
 import projectIcon from "../../../images/project.png";
+import { hideMd } from "../../../config";
+import MenuDrawer from "../MenuDrawer";
 
 export const MainPage = () => {
   const projectsQuery = useQuery({
     queryKey: queryKeys.projects.all(),
     queryFn: getProjects,
   });
+
+  const burgerMenuDrafter = useDisclosure();
+  const burgerButtonStyle = useBreakpointValue(hideMd);
 
   const now = new Date();
   const currentHour = now.getHours();
@@ -27,10 +42,17 @@ export const MainPage = () => {
   return (
     <Container maxW="container.lg">
       <Stack>
-        <Stack>
+        <Stack flexDir="row" justifyContent="space-between" mt={2}>
           <Text fontSize="xl" fontWeight="medium" m={2}>
             Home
           </Text>
+          <IconButton
+            w={4}
+            display={burgerButtonStyle}
+            aria-label="Open burger menu"
+            icon={<HamburgerIcon />}
+            onClick={burgerMenuDrafter.onOpen}
+          />
         </Stack>
         <Stack alignItems="center" w="100%" p={2} fontWeight="medium">
           <Text>{format(now, "EEEE, d MMMM", { locale: enUS })}</Text>
@@ -97,7 +119,7 @@ export const MainPage = () => {
                   }}
                   mb={2}
                   p={1}
-                  w="100%" 
+                  w="100%"
                 >
                   <Link
                     style={{
@@ -111,7 +133,7 @@ export const MainPage = () => {
                     <Image w={9} h={9} mr={2} p={1} src={projectIcon} />
                     <Text
                       isTruncated
-                      maxWidth="80%" 
+                      maxWidth="80%"
                       textOverflow="ellipsis"
                       whiteSpace="nowrap"
                       overflow="hidden"
@@ -125,6 +147,10 @@ export const MainPage = () => {
           </Card>
         </Stack>
       </Stack>
+      <MenuDrawer
+        onClose={burgerMenuDrafter.onClose}
+        isOpen={burgerMenuDrafter.isOpen}
+      />
     </Container>
   );
 };

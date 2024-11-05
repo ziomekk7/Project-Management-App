@@ -3,7 +3,6 @@ import {
   FormLabel,
   Input,
   Button,
-  Container,
   Flex,
   Text,
   useDisclosure,
@@ -11,6 +10,7 @@ import {
   IconButton,
   Stack,
   FormErrorMessage,
+  Box,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
 import { createProject } from "../../../api/projectsApi";
@@ -68,9 +68,9 @@ const CreatingProject = () => {
   };
 
   return (
-    <Container>
-      <Stack direction="column">
-        <Stack direction="row-reverse">
+    <Box>
+      <Stack direction="column" p={2} w="100%">
+        <Stack direction="row-reverse" w="100%">
           <IconButton
             w={4}
             display={burgerButtonStyle}
@@ -79,45 +79,50 @@ const CreatingProject = () => {
             onClick={burgerMenuDrafter.onOpen}
           />
         </Stack>
-        <form
-          onSubmit={handleSubmit((data) => {
-            handleCreateProject(data.newProject);
-          })}
-        >
-          <Flex direction="column" maxW={80} m={1}>
-            <FormControl isInvalid={!!errors.newProject}>
-              <FormLabel htmlFor="newProject">
-                <Text fontSize="4xl">New Project</Text>
-              </FormLabel>
-              <Input
-                w="100%"
-                {...register("newProject")}
-                id="newProject"
-                placeholder="My first project"
-                autoFocus
-              />
-              {errors.newProject && (
-                <FormErrorMessage>{errors.newProject.message}</FormErrorMessage>
-              )}
-            </FormControl>
-          </Flex>
-          <Button
-            maxW={80}
-            w="100%"
-            variant="outline"
-            isLoading={createProjectMutation.isPending}
-            type="submit"
-            m={1}
+        <Stack justifyContent="center" w="100%">
+          <form
+            style={{ margin: "0 auto" }}
+            onSubmit={handleSubmit((data) => {
+              handleCreateProject(data.newProject);
+            })}
           >
-            Create
-          </Button>
-        </form>
+            <Flex direction="column" maxW={80} m={1}>
+              <FormControl isInvalid={!!errors.newProject}>
+                <FormLabel htmlFor="newProject">
+                  <Text fontSize="4xl">New Project</Text>
+                </FormLabel>
+                <Input
+                  w="100%"
+                  {...register("newProject")}
+                  id="newProject"
+                  placeholder="My first project"
+                  autoFocus
+                />
+                {errors.newProject && (
+                  <FormErrorMessage>
+                    {errors.newProject.message}
+                  </FormErrorMessage>
+                )}
+              </FormControl>
+            </Flex>
+            <Button
+              maxW={80}
+              w="100%"
+              variant="outline"
+              isLoading={createProjectMutation.isPending}
+              type="submit"
+              m={1}
+            >
+              Create
+            </Button>
+          </form>
+        </Stack>
       </Stack>
       <MenuDrawer
         onClose={burgerMenuDrafter.onClose}
         isOpen={burgerMenuDrafter.isOpen}
       />
-    </Container>
+    </Box>
   );
 };
 
