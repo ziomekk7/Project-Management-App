@@ -1,9 +1,15 @@
-import { Grid, GridItem, Text } from "@chakra-ui/react";
+import { Grid, GridItem, Text, useBreakpointValue } from "@chakra-ui/react";
 const ExampleTaskRow = () => {
+  const exampleTaskRowStyles = useBreakpointValue({
+    base: "none",
+    md: "grid ",
+    lg: "grid ",
+  });
   const borderColor = "gray.700";
   return (
     <Grid
-      templateColumns="4fr minmax(120px, 1fr) minmax(120px, 1fr)"
+      display={exampleTaskRowStyles}
+      templateColumns="4fr minmax(5px, 1fr) minmax(120px, 1fr)"
       borderBottom="1px solid"
       borderTop="1px solid"
       borderColor={borderColor}
