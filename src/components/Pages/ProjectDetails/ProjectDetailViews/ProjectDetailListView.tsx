@@ -131,7 +131,7 @@ const ProjectDetailListView: React.FC<ProjectDetailListViewProps> = ({
   }
   return (
     <>
-      <Stack css={CustomScrollbar} overflow="auto" gap={0} h="100%">
+      <Stack css={CustomScrollbar} overflowX="hidden" gap={0} h="100%">
         <DndContext
           sensors={sensors}
           onDragOver={onDragOver}

@@ -68,104 +68,100 @@ export const ProjectListBox: React.FC<ProjectListBoxProps> = ({
   };
 
   return (
-    <>
-      <Box ref={setNodeRef} style={style} >
-        <div>
-          <Stack
-            h={20}
-            gap={0}
-            borderBottom="1px solid"
-            borderColor="gray.700"
-            key={section.id}
-            direction="row"
-            spacing={4}
-            alignItems="center"
-            w="100%"
-            _hover={{ ".hiddenButton": { opacity: 1 } }}
-          >
-            <div {...attributes} {...listeners}>
-              <IconButton
-                className="hiddenButton"
-                opacity={0}
-                aria-label="Search database"
-                icon={<DragHandleIcon />}
-                variant="ghost"
-              />
-            </div>
-
+    <Box ref={setNodeRef} style={style} >
+      <div>
+        <Stack
+          h={20}
+          gap={0}
+          borderBottom="1px solid"
+          borderColor="gray.700"
+          key={section.id}
+          direction="row"
+          spacing={4}
+          alignItems="center"
+          w="100%"
+          _hover={{ ".hiddenButton": { opacity: 1 } }}
+        >
+          <div {...attributes} {...listeners}>
             <IconButton
-              aria-label="Toggle section"
-              mr={1}
-              icon={
-                !hiddenSections.find(
-                  (sectionId) => sectionId === section.id
-                ) ? (
-                  <Tooltip label="Hide task list">
-                    <ChevronDownIcon />
-                  </Tooltip>
-                ) : (
-                  <Tooltip label="Show task list">
-                    <ChevronRightIcon />
-                  </Tooltip>
-                )
-              }
-              onClick={() => onHideSectionId(section.id)}
+              className="hiddenButton"
+              opacity={0}
+              aria-label="Search database"
+              icon={<DragHandleIcon />}
               variant="ghost"
             />
-
-            <Heading as="h3" size="sm" pr={1}>
-              {section.name}
-            </Heading>
-            <Tooltip label="Delete Project">
-              <IconButton
-                onClick={deleteTaskModal.onOpen}
-                className="hiddenButton"
-                color="red"
-                opacity={0}
-                aria-label="Search database"
-                icon={<DeleteIcon />}
-                variant="ghost"
-              />
-            </Tooltip>
-          </Stack>
-        </div>
-        {!hiddenSections.some((sectionId) => sectionId === section.id) && (
-          <div>
-            <SortableContext items={section.tasks.map((task) => task.id)}>
-              {section.tasks.map((task) => (
-                <TaskRow
-                  activeTask={activeTask}
-                  onChangeTaskLocation={onChangeTaskLocation}
-                  onChangeDate={(task) => onEditTask(task)}
-                  onChangePriority={(task) => onEditTask(task)}
-                  onOpenTaskDetails={(task) =>
-                    onOpenTaskDetails(task, section.id)
-                  }
-                  onDuplicateTask={(task) => onDuplicateTask(task, section.id)}
-                  key={task.id}
-                  task={task}
-                  onDeleteTask={onDeleteTask}
-                  onEditTask={onEditTask}
-                  sectionId={section.id}
-                  sections={sections}
-                />
-              ))}
-            </SortableContext>
-
-            <CreateTaskRow
-              onCreateTask={(task) => {
-                onCreateTask(task, section.id);
-              }}
-            />
           </div>
-        )}
 
-        <DeleteModal
-          isOpen={deleteTaskModal.isOpen}
-          onClose={deleteTaskModal.onClose}
-          onAccept={() => onDeleteSection(section.id)}
-        />
-      </Box>
-    </>
+          <IconButton
+            aria-label="Toggle section"
+            mr={1}
+            icon={
+              !hiddenSections.find((sectionId) => sectionId === section.id) ? (
+                <Tooltip label="Hide task list">
+                  <ChevronDownIcon />
+                </Tooltip>
+              ) : (
+                <Tooltip label="Show task list">
+                  <ChevronRightIcon />
+                </Tooltip>
+              )
+            }
+            onClick={() => onHideSectionId(section.id)}
+            variant="ghost"
+          />
+
+          <Heading as="h3" size="sm" pr={1}>
+            {section.name}
+          </Heading>
+          <Tooltip label="Delete Project">
+            <IconButton
+              onClick={deleteTaskModal.onOpen}
+              className="hiddenButton"
+              color="red"
+              opacity={0}
+              aria-label="Search database"
+              icon={<DeleteIcon />}
+              variant="ghost"
+            />
+          </Tooltip>
+        </Stack>
+      </div>
+      {!hiddenSections.some((sectionId) => sectionId === section.id) && (
+        <div>
+          <SortableContext items={section.tasks.map((task) => task.id)}>
+            {section.tasks.map((task) => (
+              <TaskRow
+                activeTask={activeTask}
+                onChangeTaskLocation={onChangeTaskLocation}
+                onChangeDate={(task) => onEditTask(task)}
+                onChangePriority={(task) => onEditTask(task)}
+                onOpenTaskDetails={(task) =>
+                  onOpenTaskDetails(task, section.id)
+                }
+                onDuplicateTask={(task) => onDuplicateTask(task, section.id)}
+                key={task.id}
+                task={task}
+                onDeleteTask={onDeleteTask}
+                onEditTask={onEditTask}
+                sectionId={section.id}
+                sections={sections}
+              />
+            ))}
+          </SortableContext>
+
+          <CreateTaskRow
+            onCreateTask={(task) => {
+              onCreateTask(task, section.id);
+            }}
+          />
+        </div>
+      )}
+
+      <DeleteModal
+        isOpen={deleteTaskModal.isOpen}
+        onClose={deleteTaskModal.onClose}
+        onAccept={() => onDeleteSection(section.id)}
+      />
+    </Box>
   );
 };
