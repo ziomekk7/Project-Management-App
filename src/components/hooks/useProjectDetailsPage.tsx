@@ -79,7 +79,6 @@ export const useProjectDetailsPage = () => {
     },
   });
 
-  
   const createProjectSectionMutation = useMutation({
     mutationFn: createProjectSection,
     onMutate: async (data: CreateProjectSectionData) => {
@@ -363,7 +362,7 @@ export const useProjectDetailsPage = () => {
 
   const handleDragStart = (event: DragStartEvent) => {
     if (!projectQuery.data) return;
-    setDragOverProject(projectQuery.data);
+    setDragOverProject(dragOverProject || projectQuery.data);
     const { active } = event;
     if (active.data.current?.type === "section") {
       setActiveSection(active.data.current?.section);
@@ -406,10 +405,17 @@ export const useProjectDetailsPage = () => {
         const overSection = project.sections[overSectionIndex];
 
         if (activeSectionIndex === overSectionIndex) {
+          const activeTaskIndex = activeSection.tasks.findIndex(
+            (task) => task.id === activeId
+          );
+          const overTaskIndex = overSection.tasks.findIndex(
+            (task) => task.id === overId
+          );
+
           const updatedTasks = arrayMove(
             activeSection.tasks,
-            activeSection.tasks.findIndex((task) => task.id === activeId),
-            overSection.tasks.findIndex((task) => task.id === overId)
+            activeTaskIndex,
+            overTaskIndex
           );
           const editedSection = { ...activeSection, tasks: updatedTasks };
           const updatedSections = [...project.sections];
@@ -422,6 +428,24 @@ export const useProjectDetailsPage = () => {
             activeSection.tasks.findIndex((task) => task.id === activeId),
             1
           );
+          if (overSectionIndex < activeSectionIndex) {
+            const updatedOverSectionTasks = [...overSection.tasks];
+            if (!activeTask) return;
+            updatedOverSectionTasks.push(activeTask);
+
+            const updatedSections = [...project.sections];
+            updatedSections[activeSectionIndex] = {
+              ...activeSection,
+              tasks: updatedActiveSectionTasks,
+            };
+            updatedSections[overSectionIndex] = {
+              ...overSection,
+              tasks: updatedOverSectionTasks,
+            };
+
+            setDragOverProject({ ...project, sections: updatedSections });
+            handleDndMutation.mutate({ ...project, sections: updatedSections });
+          }
           const updatedOverSectionTasks = [
             ...overSection.tasks.slice(
               0,
